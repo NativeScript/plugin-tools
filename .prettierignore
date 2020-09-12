@@ -1,0 +1,10 @@
+tmp
+/test
+/build
+node_modules
+/package.json
+packages/plugin-tools/src/schematics/**/files/**/*.json
+/.vscode
+/.idea
+/.github
+/coverage

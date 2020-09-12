@@ -1,0 +1,35 @@
+{
+  "name": "@nativescript/plugin-tools",
+  "version": "0.0.1",
+  "description": "NativeScript plugin tooling for workspaces",
+  "homepage": "https://nativescript.org",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NativeScript/plugin-tools.git"
+  },
+  "keywords": [
+    "nativescript",
+    "plugins",
+    "nx"
+  ],
+  "main": "index.js",
+  "types": "index.d.ts",
+  "author": {
+		"name": "NativeScript",
+		"email": "oss@nativescript.org"
+	},
+	"bugs": {
+		"url": "https://github.com/NativeScript/plugin-tools/issues"
+	},
+  "license": "MIT",
+	"readmeFilename": "README.md",
+  "schematics": "./collection.json",
+  "ng-update": {
+    "requirements": {},
+    "migrations": "./migrations.json"
+  },
+  "dependencies": {
+    "@nrwl/workspace": "~10.1.0",
+    "@nstudio/focus": "~10.1.0"
+  }
+}

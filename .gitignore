@@ -1,0 +1,14 @@
+node_modules
+.idea
+/.vscode
+dist
+/build
+/coverage
+test
+.DS_Store
+tmp
+*.log
+.ng_pkg_build
+jest.debug.config.js
+
+package-lock.json

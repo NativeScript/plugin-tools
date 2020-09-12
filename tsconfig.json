@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+    "target": "es2015",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "outDir": "build/packages/plugin-tools",
+    "typeRoots": ["node_modules/@types"],
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "skipLibCheck": true,
+    "types": ["node", "jest"],
+    "lib": ["es2018"],
+    "declaration": true,
+    "baseUrl": ".",
+    "paths": {
+      "@nativescript/plugin-tools": ["./packages/plugin-tools"]
+    }
+  },
+  "exclude": [
+    "tmp",
+    "build",
+    "packages/plugin-tools/src/schematics/*/files/**/*",
+    "scripts"
+  ]
+}
