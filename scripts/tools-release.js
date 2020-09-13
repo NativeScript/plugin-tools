@@ -144,10 +144,7 @@ const options = {
    * All the package.json files that will have their version updated
    * by release-it
    */
-  pkgFiles: [
-    'package.json',
-    'build/npm/plugin-tools/package.json'
-  ],
+  pkgFiles: ['package.json', 'build/npm/plugin-tools/package.json'],
   increment: parsedVersion.version,
   requireUpstream: false,
   github: {

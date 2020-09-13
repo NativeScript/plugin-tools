@@ -4,11 +4,10 @@
 ns plugin add <%= npmScope %>/<%= name %>
 ```
 
-## Usage 
+## Usage
 
 // TODO
 
-    
 ## License
 
 Apache License Version 2.0
