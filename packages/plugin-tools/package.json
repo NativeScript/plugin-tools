@@ -29,7 +29,7 @@
     "migrations": "./migrations.json"
   },
   "dependencies": {
-    "@nrwl/workspace": "~10.1.0",
-    "@nstudio/focus": "~10.1.0"
+    "strip-json-comments": "~3.1.1",
+    "xml2js": "~0.4.23"
   }
 }

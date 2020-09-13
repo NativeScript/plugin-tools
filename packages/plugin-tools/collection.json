@@ -22,6 +22,11 @@
       "factory": "./src/schematics/sync-packages-with-demos",
       "schema": "./src/schematics/sync-packages-with-demos/schema.json",
       "description": "If a developer manually adds a package without using -npm run add- you can try to sync packages with demo apps."
+    },
+    "config": {
+      "factory": "./src/schematics/config",
+      "schema": "./src/schematics/config/schema.json",
+      "description": "Configure workspace scope."
     }
   }
 }

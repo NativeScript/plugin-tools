@@ -14,15 +14,12 @@ export function getNpmScope() {
 export function prerun() {
 	return (tree: Tree, context: SchematicContext) => {
 		if (!npmScope) {
-      console.log('here!!')
-      const nxConfig = getJsonFromFile(tree, 'nx.json');
-      console.log('nxConfig:', nxConfig)
+			const nxConfig = getJsonFromFile(tree, 'nx.json');
 			if (nxConfig && nxConfig.npmScope) {
 				npmScope = `@${nxConfig.npmScope}`;
 			}
 		}
-    checkPackages(tree, context);
-    return tree;
+		checkPackages(tree, context);
 	};
 }
 
