@@ -64,7 +64,7 @@ export default function (schema: Schema): Rule {
       const travisPath = `.travis.yml`;
       let travisContent = tree.read(travisPath).toString('utf-8');
       travisContent = travisContent.replace(
-        '@nativescript',
+        /@nativescript/gm,
         `@${customNpmScope}`
       );
       // context.logger.info('travisContent:' + travisContent);
@@ -79,9 +79,23 @@ export default function (schema: Schema): Rule {
       // context.logger.info(travisContent);
       tree.overwrite(workspaceScriptsPath, workspaceScripts);
 
+      const sharedDemoTsConfigPath = `tools/demo/tsconfig.json`;
+      let sharedDemoTsConfig = getJsonFromFile(tree, sharedDemoTsConfigPath);
+      if (
+        sharedDemoTsConfig &&
+        sharedDemoTsConfig.compilerOptions &&
+        sharedDemoTsConfig.compilerOptions.paths
+      ) {
+        delete sharedDemoTsConfig.compilerOptions.paths[`@nativescript/*`];
+        sharedDemoTsConfig.compilerOptions.paths[`@${customNpmScope}/*`] = [
+          `../../packages/*`,
+        ];
+        tree.overwrite(sharedDemoTsConfigPath, serializeJson(sharedDemoTsConfig));
+      }
+
       const readmePath = `README.md`;
       let readme = tree.read(readmePath).toString('utf-8');
-      readme = readme.replace('@nativescript', `@${customNpmScope}`);
+      readme = readme.replace(/@nativescript/gm, `@${customNpmScope}`);
       // context.logger.info(travisContent);
       tree.overwrite(readmePath, readme);
 
