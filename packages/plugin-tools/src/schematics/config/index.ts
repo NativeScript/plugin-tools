@@ -90,7 +90,10 @@ export default function (schema: Schema): Rule {
         sharedDemoTsConfig.compilerOptions.paths[`@${customNpmScope}/*`] = [
           `../../packages/*`,
         ];
-        tree.overwrite(sharedDemoTsConfigPath, serializeJson(sharedDemoTsConfig));
+        tree.overwrite(
+          sharedDemoTsConfigPath,
+          serializeJson(sharedDemoTsConfig)
+        );
       }
 
       const readmePath = `README.md`;
