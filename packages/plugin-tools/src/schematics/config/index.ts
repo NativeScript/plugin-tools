@@ -98,6 +98,13 @@ export default function (schema: Schema): Rule {
 
       const readmePath = `README.md`;
       let readme = tree.read(readmePath).toString('utf-8');
+      const impNoteIndex = readme.indexOf('**===');
+      if (impNoteIndex > -1) {
+        const headingIndex = readme.indexOf('# @');
+        if (headingIndex > -1) {
+          readme = readme.substring(headingIndex, readme.length);
+        }
+      }
       readme = readme.replace(/@nativescript/gm, `@${customNpmScope}`);
       // context.logger.info(travisContent);
       tree.overwrite(readmePath, readme);
