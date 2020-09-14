@@ -107,7 +107,9 @@ function updateWorkspaceConfig() {
           builder: '@nrwl/workspace:run-commands',
           outputs: ['dist/packages'],
           options: {
-            commands: [`nx g @nativescript/plugin-tools:focus-packages ${name}`],
+            commands: [
+              `nx g @nativescript/plugin-tools:focus-packages ${name}`,
+            ],
             parallel: false,
           },
         },
