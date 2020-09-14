@@ -23,6 +23,11 @@
       "schema": "./src/schematics/sync-packages-with-demos/schema.json",
       "description": "If a developer manually adds a package without using -npm run add- you can try to sync packages with demo apps."
     },
+    "publish": {
+      "factory": "./src/schematics/publish",
+      "schema": "./src/schematics/publish/schema.json",
+      "description": "Publish packages."
+    },
     "config": {
       "factory": "./src/schematics/config",
       "schema": "./src/schematics/config/schema.json",
