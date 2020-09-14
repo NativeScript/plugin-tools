@@ -89,7 +89,7 @@ export default function (schema: Schema): Rule {
               const currentVersion = packageJson.version;
               const parsedVersion = <ISemVer>parseVersionString(currentVersion);
               if (version) {
-                packageJson.version = version;
+                packageJson.version = schema.version;
               } else {
                 // when no version is specified, bump the patch version
                 // console.log('p:', p, 'version:', parsedVersion);
