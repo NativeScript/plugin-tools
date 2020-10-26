@@ -112,7 +112,7 @@ export default function (schema: Schema): Rule {
                     : ''
                 }`;
               }
-              const fullPackageName = `${npmScope}/${p}`;
+              const fullPackageName = packageJson.name;
               console.log(
                 '\n\n👀 ',
                 fullPackageName,
@@ -191,11 +191,12 @@ export default function (schema: Schema): Rule {
 
               // console.log('dist path:', path.resolve(workspaceDir, 'dist', 'packages', p));
 
-              const cmdArgs = ['publish', '--access public'];
+              const cmdArgs = ['publish', '--access', 'public'];
               if (packageDetails.parsedVersion.preReleaseLabel) {
                 cmdArgs.push(
-                  `--tag ${packageDetails.parsedVersion.preReleaseType}`
+                  `--tag`
                 );
+                cmdArgs.push(packageDetails.parsedVersion.preReleaseType);
               }
               const child = spawn(`npm`, cmdArgs, {
                 cwd: path.resolve(workspaceDir, 'dist', 'packages', p),
