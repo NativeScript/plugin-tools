@@ -147,6 +147,7 @@ export default function (schema: Schema): Rule {
               const child = spawn(`nx`, cmdArgs, {
                 cwd: workspaceDir,
                 stdio: 'inherit',
+                shell: true,
               });
 
               child.on('error', (error) => {
@@ -200,6 +201,7 @@ export default function (schema: Schema): Rule {
               const child = spawn(`npm`, cmdArgs, {
                 cwd: path.resolve(workspaceDir, 'dist', 'packages', p),
                 stdio: 'inherit',
+                shell: true,
               });
 
               child.on('error', (error) => {
