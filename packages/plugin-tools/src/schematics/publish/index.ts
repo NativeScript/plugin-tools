@@ -194,9 +194,7 @@ export default function (schema: Schema): Rule {
 
               const cmdArgs = ['publish', '--access', 'public'];
               if (packageDetails.parsedVersion.preReleaseLabel) {
-                cmdArgs.push(
-                  `--tag`
-                );
+                cmdArgs.push(`--tag`);
                 cmdArgs.push(packageDetails.parsedVersion.preReleaseType);
               }
               const child = spawn(`npm`, cmdArgs, {
