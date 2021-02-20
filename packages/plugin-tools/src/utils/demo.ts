@@ -13,7 +13,13 @@ import {
 const xml2js = require('xml2js');
 
 export type SupportedDemoType = 'xml' | 'angular' | 'vue' | 'svelte' | 'react';
-export const SupportedDemoTypes: Array<SupportedDemoType> = ['xml', 'angular']; //, 'vue', 'svelte', 'react'];
+export const SupportedDemoTypes: Array<SupportedDemoType> = [
+  'xml',
+  'angular',
+  'vue',
+  'svelte',
+  'react',
+];
 let demoTypes: Array<SupportedDemoType> = SupportedDemoTypes;
 
 export function setDemoTypes(types: Array<SupportedDemoType>) {
@@ -105,6 +111,44 @@ export function updateDemoDependencies(
 
     tree.overwrite(packagePath, serializeJson(packageData));
   }
+}
+
+export function updateRootDependencies(
+  updates: { scripts?: any; dependencies?: any; devDependencies?: any }
+) {
+  return (tree: Tree, context: SchematicContext) => {
+    const packagePath = `package.json`;
+    const packageData = getJsonFromFile(tree, packagePath);
+
+    if (packageData) {
+      packageData.scripts = packageData.scripts || {};
+      packageData.dependencies = packageData.dependencies || {};
+      packageData.devDependencies = packageData.devDependencies || {};
+      if (updates) {
+        if (updates.scripts) {
+          packageData.scripts = {
+            ...packageData.scripts,
+            ...updates.scripts,
+          };
+        }
+        if (updates.dependencies) {
+          packageData.dependencies = {
+            ...packageData.dependencies,
+            ...updates.dependencies,
+          };
+        }
+        if (updates.devDependencies) {
+          packageData.devDependencies = {
+            ...packageData.devDependencies,
+            ...updates.devDependencies,
+          };
+        }
+      }
+
+      tree.overwrite(packagePath, serializeJson(packageData));
+    }
+    return tree;
+  };
 }
 
 // Angular uses dist output to ensure properly built angular packages
