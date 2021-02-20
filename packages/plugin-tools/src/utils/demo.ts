@@ -113,9 +113,11 @@ export function updateDemoDependencies(
   }
 }
 
-export function updateRootDependencies(
-  updates: { scripts?: any; dependencies?: any; devDependencies?: any }
-) {
+export function updateRootDependencies(updates: {
+  scripts?: any;
+  dependencies?: any;
+  devDependencies?: any;
+}) {
   return (tree: Tree, context: SchematicContext) => {
     const packagePath = `package.json`;
     const packageData = getJsonFromFile(tree, packagePath);
