@@ -1,3 +1,4 @@
+import { JsonArray } from '@angular-devkit/core';
 import {
   chain,
   Rule,
@@ -9,7 +10,11 @@ import {
   mergeWith,
   template,
 } from '@angular-devkit/schematics';
-import { stringUtils, addProjectToNxJsonInTree } from '@nrwl/workspace';
+import {
+  stringUtils,
+  addProjectToNxJsonInTree,
+  updateWorkspace,
+} from '@nrwl/workspace';
 import {
   updateWorkspaceJson,
   getJsonFromFile,
@@ -66,62 +71,74 @@ function addPackageFiles(schema: Schema): Rule {
 
 function updateWorkspaceConfig() {
   return (tree: Tree, context: SchematicContext) => {
-    const projects: any = {};
-    projects[`${name}`] = {
-      root: `packages/${name}`,
-      sourceRoot: `packages/${name}`,
-      projectType: 'library',
-      schematics: {},
-      architect: {
-        build: {
-          builder: '@nrwl/node:package',
-          options: {
-            outputPath: `dist/packages/${name}`,
-            tsConfig: `packages/${name}/tsconfig.json`,
-            packageJson: `packages/${name}/package.json`,
-            main: `packages/${name}/index.ts`,
-            assets: [
-              `packages/${name}/*.md`,
-              `packages/${name}/index.d.ts`,
-              'LICENSE',
-              {
-                glob: '**/*',
-                input: `packages/${name}/platforms/`,
-                output: './platforms/',
-              },
-            ],
+    return updateWorkspace((workspace) => {
+      workspace.projects.add({
+        name,
+        root: `packages/${name}`,
+        sourceRoot: `packages/${name}`,
+        projectType: 'library',
+        schematics: {},
+        targets: {
+          build: {
+            builder: '@nrwl/node:package',
+            options: {
+              outputPath: `dist/packages/${name}`,
+              tsConfig: `packages/${name}/tsconfig.json`,
+              packageJson: `packages/${name}/package.json`,
+              main: `packages/${name}/index.ts`,
+              assets: [
+                `packages/${name}/*.md`,
+                `packages/${name}/index.d.ts`,
+                'LICENSE',
+                {
+                  glob: '**/*',
+                  input: `packages/${name}/platforms/`,
+                  output: './platforms/',
+                },
+              ],
+            },
+          },
+          'build.all': {
+            builder: '@nrwl/workspace:run-commands',
+            options: {
+              commands: [
+                `nx run ${name}:build`,
+                `node tools/scripts/build-finish.ts ${name}`,
+              ],
+              parallel: false,
+            },
+          },
+          focus: {
+            builder: '@nrwl/workspace:run-commands',
+            options: {
+              commands: [
+                `nx g @nativescript/plugin-tools:focus-packages ${name}`,
+              ],
+              parallel: false,
+            },
           },
         },
-        'build.all': {
-          builder: '@nrwl/workspace:run-commands',
-          outputs: ['dist/packages'],
-          options: {
-            commands: [
-              `nx run ${name}:build`,
-              `node tools/scripts/build-finish.ts ${name}`,
-            ],
-            parallel: false,
-          },
-        },
-        focus: {
-          builder: '@nrwl/workspace:run-commands',
-          outputs: ['dist/packages'],
-          options: {
-            commands: [
-              `nx g @nativescript/plugin-tools:focus-packages ${name}`,
-            ],
-            parallel: false,
-          },
-        },
-      },
-    };
-    // add to build all
-    const workspaceData = getJsonFromFile(tree, 'workspace.json');
-    projects.all = workspaceData.projects.all;
-    projects.all.architect.build.options.commands.push(
-      `nx run ${name}:build.all`
-    );
-    return updateWorkspaceJson({ projects })(tree, context);
+      });
+
+      // add to build all
+      const allDef = workspace.projects.get('all');
+      if (allDef) {
+        const buildDef = allDef.targets.get('build');
+        if (buildDef) {
+          (<JsonArray>buildDef.options.commands).push(
+            `nx run ${name}:build.all`
+          );
+          allDef.targets.set('build', buildDef);
+          workspace.projects.set('all', allDef);
+        }
+      }
+      // const workspaceData = getJsonFromFile(tree, 'workspace.json');
+      // projects.all = workspaceData.projects.all;
+      // projects.all.architect.build.options.commands.push(
+      //   `nx run ${name}:build.all`
+      // );
+    });
+    // return updateWorkspaceJson({ projects })(tree, context);
   };
 }
 

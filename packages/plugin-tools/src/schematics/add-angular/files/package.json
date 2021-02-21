@@ -1,5 +1,5 @@
 {
-	"name": "nativescript-<%= name %>-angular",
+	"name": "<%= nxNpmScope %>-<%= name %>-angular",
 	"ngPackage": {
 		"lib": {
 			"entryFile": "index.ts",

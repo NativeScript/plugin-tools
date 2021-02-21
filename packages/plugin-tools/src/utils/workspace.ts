@@ -1,18 +1,26 @@
 /**
  * Workspace utilities
  */
-import { Tree, SchematicContext } from '@angular-devkit/schematics';
+import { Tree, SchematicContext, SchematicsException } from '@angular-devkit/schematics';
 import {
   updateWorkspaceInTree,
   readJsonInTree,
   getWorkspacePath,
+  serializeJson
 } from '@nrwl/workspace';
 import * as stripJsonComments from 'strip-json-comments';
 
+// includes '@' prefix
 let npmScope: string;
+// raw scope without '@' prefix
+let nxNpmScope: string;
 
 export function getNpmScope() {
   return npmScope;
+}
+
+export function getNxNpmScope() {
+  return nxNpmScope;
 }
 
 export function prerun() {
@@ -20,6 +28,7 @@ export function prerun() {
     if (!npmScope) {
       const nxConfig = getJsonFromFile(tree, 'nx.json');
       if (nxConfig && nxConfig.npmScope) {
+        nxNpmScope = nxConfig.npmScope;
         npmScope = `@${nxConfig.npmScope}`;
       }
     }
@@ -83,6 +92,16 @@ export function checkPackages(tree: Tree, context: SchematicContext) {
     setPackageNamesToUpdate(getAllPackages(tree));
   }
   // context.logger.info('packageNamesToUpdate:' + packageNamesToUpdate);
+}
+
+export function updateJsonFile(tree: Tree, path: string, jsonData: any) {
+  try {
+    tree.overwrite(path, serializeJson(jsonData));
+    return tree;
+  } catch (err) {
+    // console.warn(err);
+    throw new SchematicsException(`${path}: ${err}`);
+  }
 }
 
 export function updateReadMe() {

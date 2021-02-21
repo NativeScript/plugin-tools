@@ -16,6 +16,7 @@ import {
   updateReadMe,
   prerun,
   getNpmScope,
+  getNxNpmScope,
 } from '../../utils';
 import { Schema } from './schema';
 
@@ -41,6 +42,7 @@ function addAngularFiles(schema: Schema): Rule {
       template({
         name,
         npmScope: getNpmScope(),
+        nxNpmScope: getNxNpmScope(),
         stringUtils,
         tmpl: '',
         dot: '.',
