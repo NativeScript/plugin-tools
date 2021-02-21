@@ -1,3 +1,9 @@
+# [1.1.0](https://github.com/NativeScript/plugin-tools/compare/1.0.7...1.1.0) (2021-02-21)
+
+### Features
+
+- **tools:** dependency updates for Nx 11.3, Angular 11.2 [a222a3f](https://github.com/NativeScript/plugin-tools/commit/a222a3f712eaca6a66d5cdd926b52afb1384a1eb)
+
 ## 1.0.7 (2020-10-26)
 
 ### Bug Fixes
