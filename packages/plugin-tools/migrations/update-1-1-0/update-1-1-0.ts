@@ -101,16 +101,14 @@ function updateDemoAppPackages(): Rule {
     const appFolders = appsDir.subdirs;
     for (const dir of appFolders) {
       // console.log(dir);
-      if (
-        dir.indexOf('demo') > -1
-      ) {
+      if (dir.indexOf('demo') > -1) {
         const appDir = `${appsDir.path}/${dir}`;
         // console.log('appDir:', appDir);
-  
+
         // update demo app deps
         const packagePath = `${appDir}/package.json`;
         const packageJson = getJsonFromFile(tree, packagePath);
-  
+
         if (packageJson) {
           packageJson.devDependencies = packageJson.devDependencies || {};
           packageJson.devDependencies = {
@@ -118,7 +116,7 @@ function updateDemoAppPackages(): Rule {
             '@nativescript/ios': '7.2.0',
             '@nativescript/webpack': '~4.1.0',
           };
-  
+
           // console.log('path:',path);
           // console.log('packageJson overwrite:', JSON.stringify(packageJson));
           tree = updateJsonFile(tree, packagePath, packageJson);
@@ -126,5 +124,5 @@ function updateDemoAppPackages(): Rule {
       }
     }
     return tree;
-  }
+  };
 }

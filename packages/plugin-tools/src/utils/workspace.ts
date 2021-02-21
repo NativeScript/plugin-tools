@@ -1,12 +1,16 @@
 /**
  * Workspace utilities
  */
-import { Tree, SchematicContext, SchematicsException } from '@angular-devkit/schematics';
+import {
+  Tree,
+  SchematicContext,
+  SchematicsException,
+} from '@angular-devkit/schematics';
 import {
   updateWorkspaceInTree,
   readJsonInTree,
   getWorkspacePath,
-  serializeJson
+  serializeJson,
 } from '@nrwl/workspace';
 import * as stripJsonComments from 'strip-json-comments';
 
