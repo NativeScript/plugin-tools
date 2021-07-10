@@ -27,7 +27,7 @@ import { Schema } from './schema';
 
 let name: string;
 export default function (schema: Schema): Rule {
-  name = stringUtils.dasherize(schema.name.toLowerCase());
+  name = stringUtils.dasherize(schema.name);
   return chain([
     prerun(),
     addPackageFiles(schema),
