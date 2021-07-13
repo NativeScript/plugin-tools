@@ -1,0 +1,45 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "id": "add-demo",
+  "type": "object",
+  "properties": {
+    "framework": {
+      "description": "Framework to create the demo app with",
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1,
+      "default": ["angular", "react", "svelte", "vue", "vanilla"],
+      "x-prompt": {
+        "message": "Which framework would you like to create a demo app with?",
+        "type": "list",
+        "multiselect": "true",
+        "items": [
+          {
+            "value": "angular",
+            "label": "Angular"
+          },
+          {
+            "value": "react",
+            "label": "React"
+          },
+          {
+            "value": "svelte",
+            "label": "Svelte"
+          },
+          {
+            "value": "vue",
+            "label": "Vue"
+          },
+          {
+            "value": "vanilla",
+            "label": "vanilla"
+          }
+        ]
+      }
+    }
+  },
+  "required": ["framework"]
+}

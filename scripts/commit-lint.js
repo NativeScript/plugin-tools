@@ -6,7 +6,7 @@ const gitMessage = require('child_process')
   .toString()
   .trim();
 
-const matchCommit = /(chore|feat|fix|cleanup|docs)\((tools|docs|utils|testing|repo|misc)\):\s(([a-z0-9:\-\s])+)/g.test(
+const matchCommit = /(chore|feat|fix|cleanup|docs)\((tools|core|docs|utils|testing|repo|misc)\):\s(([a-z0-9:\-\s])+)/g.test(
   gitMessage
 );
 const matchRevert = /Revert/gi.test(gitMessage);
@@ -27,7 +27,7 @@ if (exitCode === 0) {
   console.log('\n');
   console.log('possible types: chore|feat|fix|cleanup|docs');
   console.log(
-    'possible scopes: tools|docs|utils|testing|repo|misc (if unsure use "tools")'
+    'possible scopes: tools|core|docs|utils|testing|repo|misc (if unsure use "tools")'
   );
   console.log('\nEXAMPLE: \n' + 'feat(tools): add demo tooling\n');
 }
