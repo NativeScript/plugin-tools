@@ -1,0 +1,16 @@
+{
+	"name": "<%= nxNpmScope %>-<%= name %>-angular",
+	"ngPackage": {
+		"lib": {
+			"entryFile": "index.ts",
+			"umdModuleIds": {
+				"@nativescript/core": "ns-core",
+				"@nativescript/angular": "ns-angular",
+				"<%= npmScope %>/<%= name %>": "ns-<%= name %>"
+			}
+		},
+		"allowedNonPeerDependencies": [
+			"."
+		]
+	}
+}

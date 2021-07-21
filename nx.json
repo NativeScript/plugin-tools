@@ -1,0 +1,34 @@
+{
+  "npmScope": "nativescript",
+  "affected": {
+    "defaultBase": "master"
+  },
+  "implicitDependencies": {
+    "package.json": {
+      "dependencies": "*",
+      "devDependencies": "*"
+    },
+    ".eslintrc.json": "*"
+  },
+  "targetDependencies": {
+    "build": [
+      {
+        "target": "build",
+        "projects": "dependencies"
+      }
+    ]
+  },
+  "projects": {
+    "plugin-tools": {
+      "tags": []
+    },
+    "plugin-tools-e2e": {
+      "tags": [],
+      "implicitDependencies": ["plugin-tools"]
+    }
+  },
+  "workspaceLayout": {
+    "appsDir": "e2e",
+    "libsDir": "packages"
+  }
+}

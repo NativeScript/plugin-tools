@@ -1,6 +1,6 @@
 {
   "name": "@nativescript/plugin-tools",
-  "version": "0.0.1",
+  "version": "2.0.0-alpha.3",
   "description": "NativeScript plugin tooling for workspaces",
   "homepage": "https://nativescript.org",
   "repository": {
@@ -12,8 +12,6 @@
     "plugins",
     "nx"
   ],
-  "main": "index.js",
-  "types": "index.d.ts",
   "author": {
     "name": "NativeScript",
     "email": "oss@nativescript.org"
@@ -21,37 +19,37 @@
   "bugs": {
     "url": "https://github.com/NativeScript/plugin-tools/issues"
   },
-  "license": "MIT",
-  "readmeFilename": "README.md",
-  "schematics": "./collection.json",
+  "main": "src/index.js",
+  "generators": "./generators.json",
+  "executors": "./executors.json",
   "ng-update": {
     "requirements": {},
     "migrations": "./migrations.json"
   },
   "dependencies": {
-    "strip-json-comments": "~3.1.1",
     "xml2js": "~0.4.23",
-    "@nrwl/eslint-plugin-nx": "~11.3.0",
-    "@nrwl/jest": "~11.3.0",
-    "@nrwl/node": "~11.3.0",
-    "@nrwl/workspace": "~11.3.0",
-    "@nstudio/focus": "~11.1.0",
-    "@nstudio/nps-i": "~1.1.0",
+    "@nativescript/nx": "^2.0.0",
+    "@nrwl/eslint-plugin-nx": "12.5.8",
+    "@nrwl/jest": "12.5.8",
+    "@nrwl/node": "12.5.8",
+    "@nrwl/workspace": "12.5.8",
+    "@nstudio/focus": "^12.5.0",
+    "@nstudio/nps-i": "^1.1.0",
     "@types/jest": "~26.0.10",
-    "@types/node": "~12.0.0",
+    "@types/node": "14.14.37",
     "dotenv": "~8.2.0",
-    "husky": "^4.3.0",
+    "husky": "^5.1.3",
     "jest": "~26.5.2",
-    "lint-staged": "^10.5.0",
+    "jsonc-parser": "3.0.0",
+    "lint-staged": "^11.0.0",
     "nativescript-permissions": "^1.3.9",
     "nativescript-theme-core": "~1.0.4",
-    "node-sass": "^4.14.0",
+    "sass": "^1.35.0",
     "parse-version-string": "^1.0.1",
-    "prettier": "~2.2.0",
+    "prettier": "~2.3.0",
     "pretty-data": "^0.40.0",
-    "reflect-metadata": "~0.1.13",
     "rimraf": "^3.0.2",
-    "ts-jest": "~26.5.1",
+    "ts-jest": "27.0.3",
     "ts-node": "~9.1.0",
     "ts-patch": "^1.3.0",
     "tslint": "~6.1.2"
