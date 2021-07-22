@@ -1,10 +1,4 @@
-tmp
-/test
-/build
-node_modules
-/package.json
-packages/plugin-tools/src/schematics/**/files/**/*.json
-/.vscode
-/.idea
-/.github
+# Add files here to ignore them from prettier formatting
+
+/dist
 /coverage

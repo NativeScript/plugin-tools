@@ -1,0 +1,42 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "name": "plugin-tools",
+  "version": "0.0.1",
+  "generators": {
+    "add-package": {
+      "factory": "./src/generators/add-package",
+      "schema": "./src/generators/add-package/schema.json",
+      "description": "Add a new package to the workspace."
+    },
+    "remove-package": {
+      "factory": "./src/generators/remove-package",
+      "schema": "./src/generators/remove-package/schema.json",
+      "description": "Remove a package from the workspace."
+    },
+    "add-angular": {
+      "factory": "./src/generators/add-angular",
+      "schema": "./src/generators/add-angular/schema.json",
+      "description": "Add Angular compatibility to a package."
+    },
+    "focus-packages": {
+      "factory": "./src/generators/focus-packages",
+      "schema": "./src/generators/focus-packages/schema.json",
+      "description": "Focus workspace and demo's to particular packages."
+    },
+    "sync-packages-with-demos": {
+      "factory": "./src/generators/sync-packages-with-demos",
+      "schema": "./src/generators/sync-packages-with-demos/schema.json",
+      "description": "If a developer manually adds a package without using -npm run add- you can try to sync packages with demo apps."
+    },
+    "publish": {
+      "factory": "./src/generators/publish",
+      "schema": "./src/generators/publish/schema.json",
+      "description": "Publish packages."
+    },
+    "config": {
+      "factory": "./src/generators/config",
+      "schema": "./src/generators/config/schema.json",
+      "description": "Configure workspace scope."
+    }
+  }
+}

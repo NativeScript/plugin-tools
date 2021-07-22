@@ -1,0 +1,19 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "cli": "nx",
+  "title": "Add a package",
+  "id": "add-package",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Package name",
+      "$default": {
+        "$source": "argv",
+        "index": 0
+      },
+      "x-prompt": "What should the new package be named?"
+    }
+  },
+  "required": ["name"]
+}
