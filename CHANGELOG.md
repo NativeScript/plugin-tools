@@ -1,3 +1,12 @@
+# [2.0.0](https://github.com/NativeScript/plugin-tools/compare/1.1.0...2.0.0) (2021-07-22)
+
+
+### Features
+
+* nx-plugin structure + Nx 12.5.x + webpack5 ([#4](https://github.com/NativeScript/plugin-tools/issues/4)) ([5cd770b](https://github.com/NativeScript/plugin-tools/commit/5cd770be682362fdd0d8bf98c2efcca4cbebafb4))
+
+
+
 # [1.1.0](https://github.com/NativeScript/plugin-tools/compare/1.0.7...1.1.0) (2021-02-21)
 
 ### Features
