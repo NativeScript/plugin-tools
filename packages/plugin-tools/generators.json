@@ -8,6 +8,11 @@
       "schema": "./src/generators/add-package/schema.json",
       "description": "Add a new package to the workspace."
     },
+    "remove-package": {
+      "factory": "./src/generators/remove-package",
+      "schema": "./src/generators/remove-package/schema.json",
+      "description": "Remove a package from the workspace."
+    },
     "add-angular": {
       "factory": "./src/generators/add-angular",
       "schema": "./src/generators/add-angular/schema.json",

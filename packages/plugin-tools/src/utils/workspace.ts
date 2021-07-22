@@ -1,19 +1,8 @@
 /**
  * Workspace utilities
  */
-import {
-  Tree,
-  SchematicContext,
-  SchematicsException,
-} from '@angular-devkit/schematics';
-import {
-  updateWorkspaceInTree,
-  readJsonInTree,
-  getWorkspacePath,
-  serializeJson,
-} from '@nrwl/workspace';
-import { parseJson } from '@nrwl/devkit';
-import * as stripJsonComments from 'strip-json-comments';
+import { updateWorkspaceInTree, serializeJson } from '@nrwl/workspace';
+import { Tree, parseJson, readJson } from '@nrwl/devkit';
 
 // includes '@' prefix
 let npmScope: string;
@@ -28,17 +17,15 @@ export function getNxNpmScope() {
   return nxNpmScope;
 }
 
-export function prerun() {
-  return (tree: Tree, context: SchematicContext) => {
-    if (!npmScope) {
-      const nxConfig = getJsonFromFile(tree, 'nx.json');
-      if (nxConfig && nxConfig.npmScope) {
-        nxNpmScope = nxConfig.npmScope;
-        npmScope = `@${nxConfig.npmScope}`;
-      }
+export function prerun(tree: Tree) {
+  if (!npmScope) {
+    const nxConfig = getJsonFromFile(tree, 'nx.json');
+    if (nxConfig && nxConfig.npmScope) {
+      nxNpmScope = nxConfig.npmScope;
+      npmScope = `@${nxConfig.npmScope}`;
     }
-    checkPackages(tree, context);
-  };
+  }
+  checkPackages(tree);
 }
 
 let packageNamesToUpdate: Array<string>;
@@ -49,10 +36,6 @@ export function setPackageNamesToUpdate(names: Array<string>) {
 
 export function getPackageNamesToUpdate(): Array<string> {
   return packageNamesToUpdate;
-}
-
-export function readWorkspaceJson(tree: Tree) {
-  return readJsonInTree(tree, getWorkspacePath(tree));
 }
 
 export function updateWorkspaceJson(updates: any) {
@@ -68,12 +51,12 @@ export function updateWorkspaceJson(updates: any) {
 }
 
 export function getJsonFromFile(tree: Tree, path: string) {
-  return jsonParse(tree.get(path).content.toString());
+  return readJson(tree, path);
 }
 
 export function jsonParse(content: string) {
   if (content) {
-    return parseJson(content); 
+    return parseJson(content);
   }
   return {};
 }
@@ -87,49 +70,43 @@ export function sanitizeCollectionArgs(value: string) {
 }
 
 export function getAllPackages(tree: Tree) {
-  return tree.getDir('packages').subdirs.sort();
+  return tree.children('packages').sort();
 }
 
-export function checkPackages(tree: Tree, context: SchematicContext) {
+export function checkPackages(tree: Tree) {
   if (!packageNamesToUpdate) {
     // default to updating demo's for all packages in workspace
     setPackageNamesToUpdate(getAllPackages(tree));
   }
-  // context.logger.info('packageNamesToUpdate:' + packageNamesToUpdate);
+  // console.log('packageNamesToUpdate:' + packageNamesToUpdate);
 }
 
 export function updateJsonFile(tree: Tree, path: string, jsonData: any) {
   try {
-    tree.overwrite(path, serializeJson(jsonData));
+    tree.write(path, serializeJson(jsonData));
     return tree;
   } catch (err) {
     // console.warn(err);
-    throw new SchematicsException(`${path}: ${err}`);
+    throw new Error(`${path}: ${err}`);
   }
 }
 
-export function updateReadMe() {
-  return (tree: Tree, context: SchematicContext) => {
-    const readmePath = 'README.md';
-    let readmeContent = tree.read(readmePath).toString('utf-8');
+export function updateReadMe(tree: Tree) {
+  const readmePath = 'README.md';
+  let readmeContent = tree.read(readmePath).toString('utf-8');
 
-    // Add package as build option
-    const listPackageSectionIndex = readmeContent.indexOf(`- ${npmScope}`);
-    const readmeStart = readmeContent.substring(0, listPackageSectionIndex);
-    const listEndIndex = readmeContent.indexOf(`# How to`);
-    const readmeEnd = readmeContent.substring(
-      listEndIndex,
-      readmeContent.length
-    );
-    const packageNames = getAllPackages(tree);
-    let packageList = '';
-    for (const packageName of packageNames) {
-      packageList += `- ${npmScope}/${packageName}\n`;
-    }
-    readmeContent = `${readmeStart}${packageList}\n${readmeEnd}`;
+  // Add package as build option
+  const listPackageSectionIndex = readmeContent.indexOf(`- ${npmScope}`);
+  const readmeStart = readmeContent.substring(0, listPackageSectionIndex);
+  const listEndIndex = readmeContent.indexOf(`# How to`);
+  const readmeEnd = readmeContent.substring(listEndIndex, readmeContent.length);
+  const packageNames = getAllPackages(tree);
+  let packageList = '';
+  for (const packageName of packageNames) {
+    packageList += `- ${npmScope}/${packageName}\n`;
+  }
+  readmeContent = `${readmeStart}${packageList}\n${readmeEnd}`;
 
-    // context.logger.info(readmeContent);
-    tree.overwrite(readmePath, readmeContent);
-    return tree;
-  };
+  // console.log(readmeContent);
+  tree.write(readmePath, readmeContent);
 }

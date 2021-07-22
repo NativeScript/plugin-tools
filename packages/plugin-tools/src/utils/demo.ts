@@ -1,15 +1,9 @@
 /**
  * Demo utilities
  */
-import { Tree, SchematicContext } from '@angular-devkit/schematics';
+import { Tree } from '@nrwl/devkit';
 import { serializeJson, stringUtils } from '@nrwl/workspace';
-import {
-  checkPackages,
-  getJsonFromFile,
-  getPackageNamesToUpdate,
-  getAllPackages,
-  getNpmScope,
-} from './workspace';
+import { checkPackages, getJsonFromFile, getPackageNamesToUpdate, getAllPackages, getNpmScope } from './workspace';
 const xml2js = require('xml2js');
 
 export type SupportedDemoType = 'xml' | 'angular' | 'vue' | 'svelte' | 'react';
@@ -24,12 +18,7 @@ export function getDemoTypes(): Array<SupportedDemoType> {
   return demoTypes;
 }
 
-export function updateDemoSharedIndex(
-  tree: Tree,
-  allPackages: Array<string>,
-  packages?: Array<string>,
-  addingNew?: boolean
-) {
+export function updateDemoSharedIndex(tree: Tree, allPackages: Array<string>, packages?: Array<string>, addingNew?: boolean) {
   if (addingNew) {
     // just add to all packages
     for (const p of packages) {
@@ -46,32 +35,17 @@ export function updateDemoSharedIndex(
   const demoSharedExport = (name: string) => {
     return `export * from './${name}';\n`;
   };
-  const demoSharedIndex = `export * from './utils';\n${packages
-    .sort()
-    .map(demoSharedExport)
-    .join('')}`;
-  tree.overwrite(demoSharedPath, demoSharedIndex);
+  const demoSharedIndex = `export * from './utils';\n${packages.sort().map(demoSharedExport).join('')}`;
+  tree.write(demoSharedPath, demoSharedIndex);
 }
 
-export function addDependencyToDemoApp(
-  type: SupportedDemoType,
-  demoAppRoot: string
-) {
-  return (tree: Tree, context: SchematicContext) => {
-    checkPackages(tree, context);
-    // update app dependencies for plugin development
-    updateDemoDependencies(tree, type, demoAppRoot);
-    return tree;
-  };
+export function addDependencyToDemoApp(tree: Tree, type: SupportedDemoType, demoAppRoot: string) {
+  checkPackages(tree);
+  // update app dependencies for plugin development
+  updateDemoDependencies(tree, type, demoAppRoot);
 }
 
-export function updateDemoDependencies(
-  tree: Tree,
-  type: SupportedDemoType,
-  demoAppRoot: string,
-  allPackages?: Array<string>,
-  focus?: boolean
-) {
+export function updateDemoDependencies(tree: Tree, type: SupportedDemoType, demoAppRoot: string, allPackages?: Array<string>, focus?: boolean) {
   const packagePath = `${demoAppRoot}/package.json`;
   const packageData = getJsonFromFile(tree, packagePath);
 
@@ -82,16 +56,12 @@ export function updateDemoDependencies(
       // reset to all
       if (allPackages) {
         for (const name of allPackages) {
-          packageData.dependencies[
-            `${getNpmScope()}/${name}`
-          ] = getPathToPackageForDemo(type, name);
+          packageData.dependencies[`${getNpmScope()}/${name}`] = getPathToPackageForDemo(type, name);
         }
       }
     } else {
       for (const name of packageNamesToUpdate) {
-        packageData.dependencies[
-          `${getNpmScope()}/${name}`
-        ] = getPathToPackageForDemo(type, name);
+        packageData.dependencies[`${getNpmScope()}/${name}`] = getPathToPackageForDemo(type, name);
       }
       if (focus && allPackages) {
         // when focusing packages, remove others not being focused on
@@ -103,7 +73,7 @@ export function updateDemoDependencies(
       }
     }
 
-    tree.overwrite(packagePath, serializeJson(packageData));
+    tree.write(packagePath, serializeJson(packageData));
   }
 }
 
@@ -173,11 +143,7 @@ export function getDemoIndexPathForType(type: SupportedDemoType): string {
   }
 }
 
-export function getPackagesForIndex(
-  tree: Tree,
-  packages?: Array<string>,
-  addingNew?: boolean
-) {
+export function getPackagesForIndex(tree: Tree, packages?: Array<string>, addingNew?: boolean) {
   if (addingNew) {
     // just add to all packages
     const allPackages = <Array<string>>getAllPackages(tree);
@@ -194,15 +160,9 @@ export function getPackagesForIndex(
   return packages;
 }
 
-export function resetAngularIndex(
-  tree: Tree,
-  packages?: Array<string>,
-  addingNew?: boolean
-) {
-  const angularIndexPath = `${getDemoAppRoot(
-    'angular'
-  )}/${getDemoIndexPathForType('angular')}`;
-  let angularIndex = tree.get(angularIndexPath).content.toString();
+export function resetAngularIndex(tree: Tree, packages?: Array<string>, addingNew?: boolean) {
+  const angularIndexPath = `${getDemoAppRoot('angular')}/${getDemoIndexPathForType('angular')}`;
+  let angularIndex = tree.read(angularIndexPath).toString();
   const demosIndex = angularIndex.indexOf('[');
   packages = getPackagesForIndex(tree, packages, addingNew);
 
@@ -213,44 +173,29 @@ export function resetAngularIndex(
       .map((p) => `\n	{\n		name: '${p}'\n	}`)
       .join(',') +
     '\n];\n}';
-  tree.overwrite(angularIndexPath, angularIndex);
+  tree.write(angularIndexPath, angularIndex);
 }
 
-export function resetAngularRoutes(
-  tree: Tree,
-  packages?: Array<string>,
-  addingNew?: boolean
-) {
-  const angularRouteModulePath = `${getDemoAppRoot(
-    'angular'
-  )}/src/app-routing.module.ts`;
-  let angularRouteModule = tree.get(angularRouteModulePath).content.toString();
+export function resetAngularRoutes(tree: Tree, packages?: Array<string>, addingNew?: boolean) {
+  const angularRouteModulePath = `${getDemoAppRoot('angular')}/src/app-routing.module.ts`;
+  let angularRouteModule = tree.read(angularRouteModulePath).toString();
   const routeDefIndex = angularRouteModule.indexOf('const routes');
   const routeModuleStart = angularRouteModule.substring(0, routeDefIndex);
   const routeMoudleDefIndex = angularRouteModule.indexOf('@NgModule');
-  const routeModuleEnd = angularRouteModule.substring(
-    routeMoudleDefIndex,
-    angularRouteModule.length
-  );
+  const routeModuleEnd = angularRouteModule.substring(routeMoudleDefIndex, angularRouteModule.length);
   packages = getPackagesForIndex(tree, packages, addingNew);
 
   const packageRoutes =
     packages
       .sort()
-      .map(
-        (p) =>
-          `	{ path: '${p}', loadChildren: () => import('./plugin-demos/${p}.module').then(m => m.${stringUtils.classify(
-            p
-          )}Module) }`
-      )
+      .map((p) => `	{ path: '${p}', loadChildren: () => import('./plugin-demos/${p}.module').then(m => m.${stringUtils.classify(p)}Module) }`)
       .join(',\n') + '\n];\n\n';
   const routeStart = `const routes: Routes = [
    { path: '', redirectTo: '/home', pathMatch: 'full' },
    { path: 'home', component: HomeComponent },\n`;
-  angularRouteModule =
-    routeModuleStart + routeStart + packageRoutes + routeModuleEnd;
+  angularRouteModule = routeModuleStart + routeStart + packageRoutes + routeModuleEnd;
   // console.log('angularRouteModule:', angularRouteModule);
-  tree.overwrite(angularRouteModulePath, angularRouteModule);
+  tree.write(angularRouteModulePath, angularRouteModule);
 }
 
 export function resetIndexForDemoType(tree: Tree, demoType: SupportedDemoType) {
@@ -264,7 +209,7 @@ export function resetIndexForDemoType(tree: Tree, demoType: SupportedDemoType) {
       const demoIndexPath = getDemoIndexPathForType(demoType);
       const demoIndexFullPath = `${getDemoAppRoot(demoType)}/${demoIndexPath}`;
       if (tree.exists(demoIndexFullPath)) {
-        const indexStringData = tree.get(demoIndexFullPath).content.toString();
+        const indexStringData = tree.read(demoIndexFullPath).toString();
         xml2js.parseString(indexStringData, (err, indexData: any) => {
           // console.log('indexData:', indexData);
           if (indexData && indexData.Page) {
@@ -305,7 +250,7 @@ export function resetIndexForDemoType(tree: Tree, demoType: SupportedDemoType) {
                   });
                   const modifiedIndex = xmlBuilder.buildObject(indexData);
                   // console.log('modifiedIndex:', modifiedIndex);
-                  tree.overwrite(demoIndexFullPath, modifiedIndex);
+                  tree.write(demoIndexFullPath, modifiedIndex);
                 }
               }
             }

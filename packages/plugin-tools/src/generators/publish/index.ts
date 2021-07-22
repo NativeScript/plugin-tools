@@ -1,25 +1,4 @@
-import {
-  chain,
-  Rule,
-  Tree,
-  SchematicContext,
-  externalSchematic,
-  noop,
-} from '@angular-devkit/schematics';
-import {
-  sanitizeCollectionArgs,
-  getDemoTypeFromName,
-  updateDemoDependencies,
-  setPackageNamesToUpdate,
-  getAllPackages,
-  resetIndexForDemoType,
-  getPluginDemoPath,
-  updateDemoSharedIndex,
-  getNpmScope,
-  prerun,
-  getJsonFromFile,
-  jsonParse,
-} from '../../utils';
+import { sanitizeCollectionArgs, getDemoTypeFromName, updateDemoDependencies, setPackageNamesToUpdate, getAllPackages, resetIndexForDemoType, getPluginDemoPath, updateDemoSharedIndex, getNpmScope, prerun, getJsonFromFile, jsonParse } from '../../utils';
 import { Schema } from './schema';
 import parseVersionString from 'parse-version-string';
 import { serializeJson } from '@nrwl/workspace';
@@ -27,6 +6,7 @@ import { Observable } from 'rxjs';
 import { spawn } from 'child_process';
 import * as path from 'path';
 import { existsSync, readFileSync, writeFileSync, mkdirSync } from 'fs';
+import { Tree } from '@nrwl/devkit';
 
 interface ISemVer {
   major: number;
@@ -49,186 +29,133 @@ let npmScope: string;
 // console.log('__dirname:', __dirname);
 const workspaceDir = path.resolve(__dirname, '../../../../../..');
 // console.log(`workspaceDir:`, workspaceDir);
-export default function (schema: Schema): Rule {
+export default async function (tree: Tree, schema: Schema) {
   publishPackages = sanitizeCollectionArgs(schema.name);
   if (schema.version) {
     version = <ISemVer>parseVersionString(schema.version);
   }
-  return chain([
-    prerun(),
-    schema.verify
-      ? (tree: Tree, context: SchematicContext) => {
-          npmScope = getNpmScope();
-          setPackageNamesToUpdate(publishPackages);
-          const allPackages = getAllPackages(tree);
-          packageVersions = [];
-          // console.log('allPackages:', allPackages);
 
-          if (
-            !publishPackages ||
-            (publishPackages && publishPackages.length === 0)
-          ) {
-            // when nothing is specified default to all
-            publishPackages = allPackages;
+  prerun(tree);
+  if (schema.verify) {
+    npmScope = getNpmScope();
+    setPackageNamesToUpdate(publishPackages);
+    const allPackages = getAllPackages(tree);
+    packageVersions = [];
+    // console.log('allPackages:', allPackages);
+
+    if (!publishPackages || (publishPackages && publishPackages.length === 0)) {
+      // when nothing is specified default to all
+      publishPackages = allPackages;
+    }
+
+    for (const p of publishPackages) {
+      // const packageJsonPath = `packages/${p}/package.json`;
+      // const packageJson = getJsonFromFile(tree, packageJsonPath);
+
+      const packageJsonPath = path.resolve(workspaceDir, 'packages', p, 'package.json');
+      let packageJson: any = readFileSync(packageJsonPath, { encoding: 'utf-8' });
+      if (packageJson) {
+        packageJson = jsonParse(packageJson);
+        // console.log(`packageJson:`, packageJson);
+        const currentVersion = packageJson.version;
+        const parsedVersion = <ISemVer>parseVersionString(currentVersion);
+        if (version) {
+          packageJson.version = schema.version;
+        } else {
+          // when no version is specified, bump the patch version
+          // console.log('p:', p, 'version:', parsedVersion);
+          if (parsedVersion.preReleaseLabel) {
+            parsedVersion.preReleaseIncrement = typeof parsedVersion.preReleaseIncrement === 'number' ? parsedVersion.preReleaseIncrement + 1 : 0;
+          } else {
+            parsedVersion.patch = parsedVersion.patch + 1;
           }
-
-          for (const p of publishPackages) {
-            // const packageJsonPath = `packages/${p}/package.json`;
-            // const packageJson = getJsonFromFile(tree, packageJsonPath);
-
-            const packageJsonPath = path.resolve(
-              workspaceDir,
-              'packages',
-              p,
-              'package.json'
-            );
-            let packageJson: any = readFileSync(packageJsonPath, { encoding: 'utf-8' });
-            if (packageJson) {
-              packageJson = jsonParse(packageJson);
-              // console.log(`packageJson:`, packageJson);
-              const currentVersion = packageJson.version;
-              const parsedVersion = <ISemVer>parseVersionString(currentVersion);
-              if (version) {
-                packageJson.version = schema.version;
-              } else {
-                // when no version is specified, bump the patch version
-                // console.log('p:', p, 'version:', parsedVersion);
-                if (parsedVersion.preReleaseLabel) {
-                  parsedVersion.preReleaseIncrement =
-                    typeof parsedVersion.preReleaseIncrement === 'number'
-                      ? parsedVersion.preReleaseIncrement + 1
-                      : 0;
-                } else {
-                  parsedVersion.patch = parsedVersion.patch + 1;
-                }
-                packageJson.version = `${parsedVersion.major}.${
-                  parsedVersion.minor
-                }.${parsedVersion.patch}${
-                  parsedVersion.preReleaseLabel
-                    ? '-' +
-                      parsedVersion.preReleaseType +
-                      '.' +
-                      parsedVersion.patch
-                    : ''
-                }`;
-              }
-              const fullPackageName = packageJson.name;
-              console.log(
-                '\n\n👀 ',
-                fullPackageName,
-                '-- current:',
-                currentVersion,
-                '> ⬆ bumping to:',
-                packageJson.version
-              );
-              packageVersions.push({
-                name: fullPackageName,
-                package: p,
-                version: packageJson.version,
-                parsedVersion: <ISemVer>parseVersionString(packageJson.version),
-              });
-              writeFileSync(packageJsonPath, serializeJson(packageJson));
-              // tree.overwrite(packageJsonPath, serializeJson(packageJson));
-            }
-          }
-
-          return tree;
+          packageJson.version = `${parsedVersion.major}.${parsedVersion.minor}.${parsedVersion.patch}${parsedVersion.preReleaseLabel ? '-' + parsedVersion.preReleaseType + '.' + parsedVersion.patch : ''}`;
         }
-      : noop(),
-    schema.verify
-      ? (tree: Tree, context: SchematicContext) => {
-          return new Observable<Tree>((subscriber) => {
-            // console.log(options.args);
-            let cnt = 0;
-            const buildPackage = () => {
-              const p = publishPackages[cnt];
+        const fullPackageName = packageJson.name;
+        console.log('\n\n👀 ', fullPackageName, '-- current:', currentVersion, '> ⬆ bumping to:', packageJson.version);
+        packageVersions.push({
+          name: fullPackageName,
+          package: p,
+          version: packageJson.version,
+          parsedVersion: <ISemVer>parseVersionString(packageJson.version),
+        });
+        writeFileSync(packageJsonPath, serializeJson(packageJson));
+        // tree.overwrite(packageJsonPath, serializeJson(packageJson));
+      }
+    }
+  }
 
-              const cmdArgs = ['run', `${p}:build.all`];
-              const child = spawn(`nx`, cmdArgs, {
-                cwd: workspaceDir,
-                stdio: 'inherit',
-                shell: true,
-              });
+  if (schema.verify) {
+    await new Promise<void>((resolve, reject) => {
+      // console.log(options.args);
+      let cnt = 0;
+      const buildPackage = () => {
+        const p = publishPackages[cnt];
 
-              child.on('error', (error) => {
-                console.log('build emitted error:', error);
-                subscriber.error(error);
-              });
-              child.on('close', (res) => {
-                console.log('build finished with code:', res);
-                subscriber.next(tree);
-                child.kill();
-                cnt++;
-                if (cnt === publishPackages.length) {
-                  subscriber.complete();
-                } else {
-                  buildPackage();
-                }
-              });
-            };
+        const cmdArgs = ['run', `${p}:build.all`];
+        const child = spawn(`nx`, cmdArgs, {
+          cwd: workspaceDir,
+          stdio: 'inherit',
+          shell: true,
+        });
+
+        child.on('error', (error) => {
+          console.log('build emitted error:', error);
+          reject(error);
+        });
+        child.on('close', (res) => {
+          console.log('build finished with code:', res);
+          child.kill();
+          cnt++;
+          if (cnt === publishPackages.length) {
+            console.log(`✅ Successfully built ${packageVersions.map((p) => `${p.name}:${p.version}`).join(',')}`);
+            resolve();
+          } else {
             buildPackage();
-            return () => {
-              console.log(
-                `✅ Successfully built ${packageVersions
-                  .map((p) => `${p.name}:${p.version}`)
-                  .join(',')}`
-              );
-            };
-          });
+          }
+        });
+      };
+      buildPackage();
+    });
+  }
+  if (schema.verify) {
+    await new Promise<void>((resolve, reject) => {
+      let cnt = 0;
+      const publishPackage = () => {
+        const p = publishPackages[cnt];
+        const packageDetails = packageVersions.find((pck) => pck.package === p);
+        console.log(`⚡ publishing ${packageDetails.name} ${packageDetails.version}`);
+
+        // console.log('dist path:', path.resolve(workspaceDir, 'dist', 'packages', p));
+
+        const cmdArgs = ['publish', '--access', 'public'];
+        if (packageDetails.parsedVersion.preReleaseLabel) {
+          cmdArgs.push(`--tag`);
+          cmdArgs.push(packageDetails.parsedVersion.preReleaseType);
         }
-      : noop(),
-    schema.verify
-      ? (tree: Tree, context: SchematicContext) => {
-          return new Observable<Tree>((subscriber) => {
-            let cnt = 0;
-            const publishPackage = () => {
-              const p = publishPackages[cnt];
-              const packageDetails = packageVersions.find(
-                (pck) => pck.package === p
-              );
-              console.log(
-                `⚡ publishing ${packageDetails.name} ${packageDetails.version}`
-              );
+        const child = spawn(`npm`, cmdArgs, {
+          cwd: path.resolve(workspaceDir, 'dist', 'packages', p),
+          stdio: 'inherit',
+          shell: true,
+        });
 
-              // console.log('dist path:', path.resolve(workspaceDir, 'dist', 'packages', p));
-
-              const cmdArgs = ['publish', '--access', 'public'];
-              if (packageDetails.parsedVersion.preReleaseLabel) {
-                cmdArgs.push(`--tag`);
-                cmdArgs.push(packageDetails.parsedVersion.preReleaseType);
-              }
-              const child = spawn(`npm`, cmdArgs, {
-                cwd: path.resolve(workspaceDir, 'dist', 'packages', p),
-                stdio: 'inherit',
-                shell: true,
-              });
-
-              child.on('error', (error) => {
-                console.log('publish emitted error:', error);
-                subscriber.error(error);
-              });
-              child.on('close', (res) => {
-                console.log('publish finished with code:', res);
-                subscriber.next(tree);
-                child.kill();
-                cnt++;
-                if (cnt === publishPackages.length) {
-                  subscriber.complete();
-                } else {
-                  publishPackage();
-                }
-              });
-            };
+        child.on('error', (error) => {
+          console.log('publish emitted error:', error);
+          reject(error);
+        });
+        child.on('close', (res) => {
+          console.log('publish finished with code:', res);
+          child.kill();
+          cnt++;
+          if (cnt === publishPackages.length) {
+            console.log(`🚀 Successfully published:\n${packageVersions.map((p) => `\n* ${p.name}:${p.version}`).join(', ')}\n\n`);
+            resolve();
+          } else {
             publishPackage();
-            return () => {
-              console.log(
-                `🚀 Successfully published:\n${packageVersions
-                  .map((p) => `\n* ${p.name}:${p.version}`)
-                  .join(', ')}\n\n`
-              );
-            };
-          });
-        }
-      : noop(),
-  ]);
+          }
+        });
+      };
+      publishPackage();
+    });
+  }
 }

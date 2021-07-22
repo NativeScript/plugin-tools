@@ -11,7 +11,7 @@
         "factory": "./src/migrations/update-1-1-0/update-1-1-0"
       },
       "update-to-2.0.0": {
-        "version": "2.0.0-alpha.3",
+        "version": "2.0.0-alpha.7",
         "description": "Migrate tools to 2.0.0",
         "factory": "./src/migrations/update-2-0-0/update-2-0-0"
       }

@@ -1,55 +1,19 @@
-import {
-  chain,
-  Rule,
-  Tree,
-  SchematicContext,
-  apply,
-  url,
-  move,
-  mergeWith,
-  template,
-} from '@angular-devkit/schematics';
-import { stringUtils, addProjectToNxJsonInTree } from '@nrwl/workspace';
-import {
-  updateWorkspaceJson,
-  getJsonFromFile,
-  updateReadMe,
-  prerun,
-  getNpmScope,
-  getNxNpmScope,
-} from '../../utils';
+import { generateFiles, joinPathFragments, Tree } from '@nrwl/devkit';
+import { stringUtils } from '@nrwl/workspace';
+import { prerun, getNpmScope, getNxNpmScope } from '../../utils';
 import { Schema } from './schema';
 
 let name: string;
-export default function (schema: Schema): Rule {
+export default async function (tree: Tree, schema: Schema) {
   name = stringUtils.dasherize(schema.name.toLowerCase());
-  return chain([
-    prerun(),
-    addAngularFiles(schema),
-    (tree: Tree, context: SchematicContext) => {
-      context.logger.info(
-        `Angular support added for "${getNpmScope()}/${name}". Continue developing the Angular support in the packages/${name}/angular folder.`
-      );
-    },
-  ]);
+
+  prerun(tree);
+  addAngularFiles(tree);
+  console.log(`Angular support added for "${getNpmScope()}/${name}". Continue developing the Angular support in the packages/${name}/angular folder.`);
 }
 
-function addAngularFiles(schema: Schema): Rule {
-  return (tree: Tree, context: SchematicContext) => {
-    context.logger.info(`Adding Angular support to ${name}...`);
+function addAngularFiles(tree: Tree) {
+  console.log(`Adding Angular support to ${name}...`);
 
-    const templateSource = apply(url('./files'), [
-      template({
-        name,
-        npmScope: getNpmScope(),
-        nxNpmScope: getNxNpmScope(),
-        stringUtils,
-        tmpl: '',
-        dot: '.',
-      }),
-      move(`packages/${name}/angular`),
-    ]);
-
-    return chain([mergeWith(templateSource)])(tree, context);
-  };
+  generateFiles(tree, joinPathFragments(__dirname, 'files'), `./packages/${name}/angular`, { name, npmScope: getNpmScope(), nxNpmScope: getNxNpmScope(), stringUtils, tmpl: '', dot: '.' });
 }
