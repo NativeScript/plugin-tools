@@ -1,4 +1,4 @@
-import { Tree, readJson, updateJson, formatFiles, generateFiles } from '@nrwl/devkit';
+import { Tree, readJson, updateJson, formatFiles, generateFiles, joinPathFragments } from '@nrwl/devkit';
 import { stringUtils } from '@nrwl/workspace';
 import { sanitizeCollectionArgs, setPackageNamesToUpdate, setDemoTypes, SupportedDemoTypes, SupportedDemoType, getDemoTypes, getPackageNamesToUpdate, getDemoAppRoot, addDependencyToDemoApp, checkPackages, getDemoIndexButtonForType, getDemoIndexPathForType, resetAngularIndex, getPluginDemoPath, resetAngularRoutes, updateDemoSharedIndex, getAllPackages, prerun, getNpmScope } from '../../utils';
 import { Schema } from './schema';
@@ -20,26 +20,13 @@ export default function (tree: Tree, schema?: Schema, relativePrefix?: string, a
       setPackageNamesToUpdate(sanitizeCollectionArgs(schema.packages).sort());
     }
   }
-  const demoFileChains: Array<any> = [];
-  const demoIndexChains: Array<any> = [];
-  const demoDependencyChains: Array<any> = [];
-
-  for (const t of getDemoTypes()) {
-    const demoAppRoot = getDemoAppRoot(t);
-    demoFileChains.push(addDemoFiles(tree, t, demoAppRoot, relativePrefix));
-    demoIndexChains.push(addToDemoIndex(tree, t, demoAppRoot));
-    demoDependencyChains.push(addDependencyToDemoApp(tree, t, demoAppRoot));
-  }
 
   prerun(tree);
-  for (const d of demoFileChains) {
-    d();
-  }
-  for (const d of demoIndexChains) {
-    d();
-  }
-  for (const d of demoDependencyChains) {
-    d();
+  for (const t of getDemoTypes()) {
+    const demoAppRoot = getDemoAppRoot(t);
+    addDemoFiles(tree, t, demoAppRoot, relativePrefix);
+    addToDemoIndex(tree, t, demoAppRoot);
+    addDependencyToDemoApp(tree, t, demoAppRoot);
   }
   addDemoSharedFiles(tree, relativePrefix);
   updateDemoSharedIndex(tree, getAllPackages(tree), getPackageNamesToUpdate(), addingNew);
@@ -47,8 +34,7 @@ export default function (tree: Tree, schema?: Schema, relativePrefix?: string, a
   formatFiles(tree);
 }
 
-function addDemoFiles(tree: Tree, type: SupportedDemoType, demoAppRoot: string, relativePrefix: string = './') {
-  return () => {
+function addDemoFiles(tree: Tree, type: SupportedDemoType, demoAppRoot: string, relativePrefix: string = '') {
     console.log(`Updating "${demoAppRoot}"`);
     const demoAppFolder = `${demoAppRoot}/${getPluginDemoPath()}`;
     let viewExt = 'xml';
@@ -63,7 +49,7 @@ function addDemoFiles(tree: Tree, type: SupportedDemoType, demoAppRoot: string, 
       // console.log('packageDemoViewPath: ' + packageDemoViewPath);
       if (!tree.exists(packageDemoViewPath)) {
         // console.log('packageDemoViewPath: DID NOT EXIST!');
-        generateFiles(tree, `${relativePrefix}files_${type}`, demoAppFolder, {
+        generateFiles(tree, joinPathFragments(__dirname, relativePrefix, `files_${type}`), demoAppFolder, {
           name,
           npmScope: getNpmScope(),
           stringUtils,
@@ -72,7 +58,7 @@ function addDemoFiles(tree: Tree, type: SupportedDemoType, demoAppRoot: string, 
         });
       }
     }
-  };
+
 }
 
 function addToDemoIndex(tree: Tree, type: SupportedDemoType, demoAppRoot: string) {
@@ -110,7 +96,7 @@ function addToDemoIndex(tree: Tree, type: SupportedDemoType, demoAppRoot: string
   tree.write(demoIndexViewPath, indexViewContent);
 }
 
-function addDemoSharedFiles(tree: Tree, relativePrefix: string = './') {
+function addDemoSharedFiles(tree: Tree, relativePrefix: string = '') {
   const demoSharedPath = `tools/demo`;
   console.log(`Updating shared demo code in "${demoSharedPath}"`);
 
@@ -119,7 +105,7 @@ function addDemoSharedFiles(tree: Tree, relativePrefix: string = './') {
     // console.log('packageDemoViewPath: ' + packageDemoViewPath);
     if (!tree.exists(demoSharedIndex)) {
       // console.log('packageDemoViewPath: DID NOT EXIST!');
-      generateFiles(tree, `${relativePrefix}files_demo_shared`, demoSharedPath, {
+      generateFiles(tree, joinPathFragments(__dirname, relativePrefix, `files_demo_shared`), demoSharedPath, {
         name,
         npmScope: getNpmScope(),
         stringUtils,

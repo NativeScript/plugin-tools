@@ -91,7 +91,7 @@ export function updateJsonFile(tree: Tree, path: string, jsonData: any) {
   }
 }
 
-export function updateReadMe(tree: Tree) {
+export function updateReadMe(tree: Tree, packages?: Array<string>) {
   const readmePath = 'README.md';
   let readmeContent = tree.read(readmePath).toString('utf-8');
 
@@ -100,7 +100,7 @@ export function updateReadMe(tree: Tree) {
   const readmeStart = readmeContent.substring(0, listPackageSectionIndex);
   const listEndIndex = readmeContent.indexOf(`# How to`);
   const readmeEnd = readmeContent.substring(listEndIndex, readmeContent.length);
-  const packageNames = getAllPackages(tree);
+  const packageNames = packages || getAllPackages(tree);
   let packageList = '';
   for (const packageName of packageNames) {
     packageList += `- ${npmScope}/${packageName}\n`;

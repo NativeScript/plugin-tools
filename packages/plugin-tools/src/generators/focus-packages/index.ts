@@ -69,8 +69,6 @@ export default async function (tree: Tree, schema: Schema) {
       // cleanup index listing to only have buttons for what is being focused on
       resetIndexForDemoType(tree, demoType);
     }
-
-    return tree;
   }
 
   const isFocusing = focusPackages && focusPackages.length > 0;

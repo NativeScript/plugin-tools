@@ -69,6 +69,7 @@ function updateWorkspaceConfig(tree: Tree) {
         },
       },
     },
+    tags: []
   });
   const allConfig = readProjectConfiguration(tree, 'all');
   if (allConfig) {
@@ -82,10 +83,13 @@ function updateWorkspaceConfig(tree: Tree) {
       targets: {
         build: {
           executor: allConfig.targets.build.executor,
+          outputs: ['dist/packages'],
           options: {
             commands,
+            parallel: false
           },
         },
+        focus: allConfig.targets.focus
       },
     });
   }
