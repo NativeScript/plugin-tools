@@ -35,7 +35,7 @@ export function setPackageNamesToUpdate(names: Array<string>) {
 }
 
 export function getPackageNamesToUpdate(): Array<string> {
-  return packageNamesToUpdate;
+  return packageNamesToUpdate ? packageNamesToUpdate.filter(n => n.indexOf('.') === -1) : [];
 }
 
 export function updateWorkspaceJson(updates: any) {
@@ -70,7 +70,11 @@ export function sanitizeCollectionArgs(value: string) {
 }
 
 export function getAllPackages(tree: Tree) {
-  return tree.children('packages').sort();
+  return tree.children('packages').filter(n => {
+    // only include valid package structures (in case other misc folders are present)
+    // ignore hidden files in packages folder (ie, .gitkeep)
+    return tree.exists(`packages/${n}/package.json`) && n.indexOf('.') === -1;
+  }).sort();
 }
 
 export function checkPackages(tree: Tree) {
