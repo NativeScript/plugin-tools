@@ -1,3 +1,12 @@
+## [2.0.4](https://github.com/NativeScript/plugin-tools/compare/2.0.3...2.0.4) (2021-07-24)
+
+
+### Bug Fixes
+
+* migration when run a 2nd time and demo css had already been handled ([dd82faa](https://github.com/NativeScript/plugin-tools/commit/dd82faaa6dd6fab8c6c3b68c70fb9f3109ab41fc))
+
+
+
 ## [2.0.3](https://github.com/NativeScript/plugin-tools/compare/2.0.2...2.0.3) (2021-07-24)
 
 
