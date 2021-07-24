@@ -1,3 +1,12 @@
+## [2.0.3](https://github.com/NativeScript/plugin-tools/compare/2.0.2...2.0.3) (2021-07-24)
+
+
+### Features
+
+* generators for add-demo + remove-package ([cb3c5c9](https://github.com/NativeScript/plugin-tools/commit/cb3c5c999fea2863dcd5d34a90a4a6e240ef46b1))
+
+
+
 ## [2.0.2](https://github.com/NativeScript/plugin-tools/compare/2.0.0...2.0.2) (2021-07-23)
 
 
