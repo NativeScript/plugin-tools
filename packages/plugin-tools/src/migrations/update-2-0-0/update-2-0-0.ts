@@ -125,20 +125,22 @@ function updateDemoFiles(type?: 'angular'): Rule {
     const demoAppCssPath = `${demoPath}/src/app.css`;
     const appCssPath = join(cwd, demoAppCssPath);
     // console.log('webpackConfigPath:', webpackConfigPath);
-    const appCss = fs.readFileSync(appCssPath, {
-      encoding: 'utf-8',
-    });
-    const scssImports = `@import 'nativescript-theme-core/scss/light';
-@import 'nativescript-theme-core/scss/index';`;
-    createOrUpdate(
-      tree,
-      `${demoPath}/src/app.scss`,
-      appCss.replace(
-        `@import '~nativescript-theme-core/css/core.light.css';`,
-        scssImports
-      )
-    );
-    tree.delete(demoAppCssPath);
+    if (fs.existsSync(appCssPath)) {
+      const appCss = fs.readFileSync(appCssPath, {
+        encoding: 'utf-8',
+      });
+      const scssImports = `@import 'nativescript-theme-core/scss/light';
+  @import 'nativescript-theme-core/scss/index';`;
+      createOrUpdate(
+        tree,
+        `${demoPath}/src/app.scss`,
+        appCss.replace(
+          `@import '~nativescript-theme-core/css/core.light.css';`,
+          scssImports
+        )
+      );
+      tree.delete(demoAppCssPath);
+    }
 
     switch (type) {
       case 'angular':
