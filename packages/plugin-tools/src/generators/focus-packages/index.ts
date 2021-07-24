@@ -27,10 +27,10 @@ export default async function (tree: Tree, schema: Schema) {
 
     const appFolders = tree.children('apps');
     for (const dir of appFolders) {
-      const demoViewsPath = `apps/${dir}/${getPluginDemoPath()}`;
-      const demoAppRoot = `apps/${dir}`;
       // console.log(`demoAppRoot: ${demoAppRoot}`);
       const demoType = getDemoTypeFromName(dir);
+      const demoViewsPath = `apps/${dir}/${getPluginDemoPath(demoType)}`;
+      const demoAppRoot = `apps/${dir}`;
       // console.log(`demoType: ${demoType}`);
       updateDemoDependencies(tree, demoType, demoAppRoot, allPackages, true);
 

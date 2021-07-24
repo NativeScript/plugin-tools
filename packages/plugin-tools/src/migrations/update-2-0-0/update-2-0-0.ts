@@ -43,6 +43,9 @@ export default function (): Rule {
         json.scripts[
           'remove-package'
         ] = `nx g @nativescript/plugin-tools:remove-package`;
+        json.scripts[
+          'add-demo'
+        ] = `nx g @nativescript/plugin-tools:add-demo`;
         json.devDependencies = json.devDependencies || {};
         json.devDependencies = {
           ...json.devDependencies,
@@ -92,7 +95,7 @@ export default function (): Rule {
       console.log(`      npm run setup`);
       console.log(`\n`);
       console.log(
-        `   This will ensure your workspace is properly reset with all the updates.\n\n`
+        `   This will ensure your workspace is properly reset with all the updates.`
       );
       console.log(`   It is also recommended to clean all your demo apps.`);
       console.log(`\n`);
@@ -291,13 +294,15 @@ function updateTSConfig(): Rule {
 function updateWorkspace(): Rule {
   return (tree: Tree, context: SchematicContext) => {
     return updateJsonInTree('workspace.json', (json) => {
+      json.version = 2;
       json.projects = json.projects || {};
       for (const project in json.projects) {
         if (json.projects[project].projectType === 'application') {
-          // update to use builder
-          json.projects[project].architect = {
+          // update to use targets/executor
+          delete json.projects[project].architect;
+          json.projects[project].targets = {
             build: {
-              builder: '@nativescript/nx:build',
+              executor: '@nativescript/nx:build',
               options: {
                 noHmr: true,
                 production: true,
@@ -307,37 +312,45 @@ function updateWorkspace(): Rule {
               },
             },
             ios: {
-              builder: '@nativescript/nx:build',
+              executor: '@nativescript/nx:build',
               options: {
                 platform: 'ios',
               },
             },
             android: {
-              builder: '@nativescript/nx:build',
+              executor: '@nativescript/nx:build',
               options: {
                 platform: 'android',
               },
             },
             clean: {
-              builder: '@nativescript/nx:build',
+              executor: '@nativescript/nx:build',
               options: {
                 clean: true,
               },
             },
           };
         } else if (json.projects[project].projectType === 'library') {
+          let targets = json.projects[project].targets;
+          if (!targets) {
+            targets = json.projects[project].architect;
+            delete json.projects[project].architect;
+            json.projects[project].targets = targets;
+          }
           if (
-            json.projects[project].architect &&
-            json.projects[project].architect.build &&
-            json.projects[project].architect.build.options &&
-            json.projects[project].architect.build.options.main
+            targets && targets.build && targets.build.options && targets.build.options.main
           ) {
-            const mainIndex =
-              json.projects[project].architect.build.options.main;
+            const mainIndex = targets.build.options.main;
             if (mainIndex.indexOf('index.d.ts') === -1) {
               // update to use index.d.ts since plugins don't use an explicit index.ts but rather .ios/.android indices
-              json.projects[project].architect.build.options.main =
+              json.projects[project].targets.build.options.main =
                 mainIndex.replace('index.ts', 'index.d.ts');
+            }
+          }
+          for (const t in json.projects[project].targets) {
+            if (json.projects[project].targets[t].builder) {
+              json.projects[project].targets[t].executor = json.projects[project].targets[t].builder;
+              delete json.projects[project].targets[t].builder;
             }
           }
         }

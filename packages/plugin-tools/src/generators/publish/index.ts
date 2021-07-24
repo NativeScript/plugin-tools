@@ -1,4 +1,4 @@
-import { sanitizeCollectionArgs, getDemoTypeFromName, updateDemoDependencies, setPackageNamesToUpdate, getAllPackages, resetIndexForDemoType, getPluginDemoPath, updateDemoSharedIndex, getNpmScope, prerun, getJsonFromFile, jsonParse } from '../../utils';
+import { sanitizeCollectionArgs, setPackageNamesToUpdate, getAllPackages, getNpmScope, prerun, jsonParse } from '../../utils';
 import { Schema } from './schema';
 import parseVersionString from 'parse-version-string';
 import { serializeJson } from '@nrwl/workspace';

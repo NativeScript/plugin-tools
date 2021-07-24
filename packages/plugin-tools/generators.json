@@ -33,6 +33,11 @@
       "schema": "./src/generators/publish/schema.json",
       "description": "Publish packages."
     },
+    "add-demo": {
+      "factory": "./src/generators/add-demo",
+      "schema": "./src/generators/add-demo/schema.json",
+      "description": "Add additional demo app flavors to the workspace. Restricted to 1 of each: demo (vanilla), demo-angular, demo-react, demo-svelte, demo-vue"
+    },
     "config": {
       "factory": "./src/generators/config",
       "schema": "./src/generators/config/schema.json",

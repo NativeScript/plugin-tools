@@ -1,0 +1,32 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "cli": "nx",
+  "title": "Add a demo app",
+  "id": "add-demo",
+  "type": "object",
+  "properties": {
+    "type": {
+      "type": "string",
+      "description": "Provide the demo type",
+      "x-prompt": {
+        "message": "Which additional type of demo flavor would you like to add?",
+        "type": "list",
+        "items": [
+          {
+            "value": "react",
+            "label": "React"
+          },
+          {
+            "value": "svelte",
+            "label": "Svelte"
+          },
+          {
+            "value": "vue",
+            "label": "Vue"
+          }
+        ]
+      }
+    }
+  },
+  "required": ["type"]
+}

@@ -1,6 +1,6 @@
 import { Tree, readJson, updateJson, formatFiles, generateFiles, joinPathFragments } from '@nrwl/devkit';
 import { stringUtils } from '@nrwl/workspace';
-import { sanitizeCollectionArgs, setPackageNamesToUpdate, setDemoTypes, SupportedDemoTypes, SupportedDemoType, getDemoTypes, getPackageNamesToUpdate, getDemoAppRoot, addDependencyToDemoApp, checkPackages, getDemoIndexButtonForType, getDemoIndexPathForType, resetAngularIndex, getPluginDemoPath, resetAngularRoutes, updateDemoSharedIndex, getAllPackages, prerun, getNpmScope } from '../../utils';
+import { sanitizeCollectionArgs, setPackageNamesToUpdate, setDemoTypes, SupportedDemoTypes, SupportedDemoType, getDemoTypes, getPackageNamesToUpdate, getDemoAppRoot, addDependencyToDemoApp, checkPackages, getDemoIndexButtonForType, getDemoIndexPathForType, resetAngularIndex, getPluginDemoPath, resetAngularRoutes, updateDemoSharedIndex, getAllPackages, prerun, getNpmScope, getDemoFlavorExt } from '../../utils';
 import { Schema } from './schema';
 
 export default function (tree: Tree, schema?: Schema, relativePrefix?: string, addingNew?: boolean) {
@@ -24,9 +24,11 @@ export default function (tree: Tree, schema?: Schema, relativePrefix?: string, a
   prerun(tree);
   for (const t of getDemoTypes()) {
     const demoAppRoot = getDemoAppRoot(t);
-    addDemoFiles(tree, t, demoAppRoot, relativePrefix);
-    addToDemoIndex(tree, t, demoAppRoot);
-    addDependencyToDemoApp(tree, t, demoAppRoot);
+    if (tree.exists(`${demoAppRoot}/package.json`)) {
+      addDemoFiles(tree, t, demoAppRoot, relativePrefix);
+      addToDemoIndex(tree, t, demoAppRoot);
+      addDependencyToDemoApp(tree, t, demoAppRoot);
+    }
   }
   addDemoSharedFiles(tree, relativePrefix);
   updateDemoSharedIndex(tree, getAllPackages(tree), getPackageNamesToUpdate(), addingNew);
@@ -36,14 +38,9 @@ export default function (tree: Tree, schema?: Schema, relativePrefix?: string, a
 
 function addDemoFiles(tree: Tree, type: SupportedDemoType, demoAppRoot: string, relativePrefix: string = '') {
     console.log(`Updating "${demoAppRoot}"`);
-    const demoAppFolder = `${demoAppRoot}/${getPluginDemoPath()}`;
-    let viewExt = 'xml';
-    // adjust folder location and viewExt dependent on demo type if needed
-    switch (type) {
-      case 'angular':
-        viewExt = 'component.html';
-        break;
-    }
+    const demoAppFolder = `${demoAppRoot}/${getPluginDemoPath(type)}`;
+    const { viewExt, viewClassExt, viewModuleExt } = getDemoFlavorExt(type);
+
     for (const name of getPackageNamesToUpdate()) {
       const packageDemoViewPath = `${demoAppFolder}/${name}.${viewExt}`;
       // console.log('packageDemoViewPath: ' + packageDemoViewPath);
@@ -66,6 +63,9 @@ function addToDemoIndex(tree: Tree, type: SupportedDemoType, demoAppRoot: string
   if (type === 'angular') {
     resetAngularIndex(tree, getPackageNamesToUpdate(), true);
     resetAngularRoutes(tree, getPackageNamesToUpdate(), true);
+    return tree;
+  } else if (['react', 'svelte', 'vue']) {
+    // TODO: add index page for these flavors
     return tree;
   }
 

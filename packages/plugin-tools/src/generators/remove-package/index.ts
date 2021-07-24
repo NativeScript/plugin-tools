@@ -53,16 +53,16 @@ function removeFromBuildAll(tree: Tree) {
           outputs: ['dist/packages'],
           options: {
             commands,
-            parallel: false
+            parallel: false,
           },
         },
-        focus: allConfig.targets.focus
+        focus: allConfig.targets.focus,
       },
     });
   }
 }
 function removeDemoFiles(tree: Tree, type: SupportedDemoType, demoAppRoot: string) {
-  const demoAppFolder = `${demoAppRoot}/${getPluginDemoPath()}`;
+  const demoAppFolder = `${demoAppRoot}/${getPluginDemoPath(type)}`;
   console.log(`Removing demo files in "${demoAppFolder}"`);
   let viewExt = 'xml';
   let viewClassExt = 'ts';
@@ -74,19 +74,31 @@ function removeDemoFiles(tree: Tree, type: SupportedDemoType, demoAppRoot: strin
       viewClassExt = 'component.ts';
       viewModuleExt = 'module.ts';
       break;
+    case 'react':
+      viewExt = 'tsx';
+      viewClassExt = null;
+      break;
+    case 'svelte':
+      viewExt = 'svelte';
+      viewClassExt = null;
+      break;
+    case 'vue':
+      viewExt = 'vue';
+      viewClassExt = null;
+      break;
   }
-
-  const packageDemoViewPath = `${demoAppFolder}/${name}.${viewExt}`;
-  const packageDemoViewClassPath = `${demoAppFolder}/${name}.${viewClassExt}`;
   let packageDemoViewModulePath;
   if (viewModuleExt) {
     packageDemoViewModulePath = `${demoAppFolder}/${name}.${viewModuleExt}`;
   }
+
+  const packageDemoViewPath = `${demoAppFolder}/${name}.${viewExt}`;
+  const packageDemoViewClassPath = viewClassExt ? `${demoAppFolder}/${name}.${viewClassExt}` : null;
   // console.log('packageDemoViewPath: ' + packageDemoViewPath);
   if (tree.exists(packageDemoViewPath)) {
     tree.delete(packageDemoViewPath);
   }
-  if (tree.exists(packageDemoViewClassPath)) {
+  if (packageDemoViewClassPath && tree.exists(packageDemoViewClassPath)) {
     tree.delete(packageDemoViewClassPath);
   }
   if (packageDemoViewModulePath && tree.exists(packageDemoViewModulePath)) {
@@ -99,6 +111,9 @@ function removeFromDemoIndex(tree: Tree, type: SupportedDemoType, demoAppRoot: s
   if (type === 'angular') {
     resetAngularIndex(tree);
     resetAngularRoutes(tree);
+    return tree;
+  } else if (['react', 'svelte', 'vue']) {
+    // TODO: add index page for these flavors
     return tree;
   }
 

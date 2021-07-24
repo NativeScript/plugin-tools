@@ -7,7 +7,7 @@ import { checkPackages, getJsonFromFile, getPackageNamesToUpdate, getAllPackages
 const xml2js = require('xml2js');
 
 export type SupportedDemoType = 'xml' | 'angular' | 'vue' | 'svelte' | 'react';
-export const SupportedDemoTypes: Array<SupportedDemoType> = ['xml', 'angular']; //, 'vue', 'svelte', 'react'];
+export const SupportedDemoTypes: Array<SupportedDemoType> = ['xml', 'angular', 'react', 'svelte', 'vue']; //, 'vue', 'svelte', 'react'];
 let demoTypes: Array<SupportedDemoType> = SupportedDemoTypes;
 
 export function setDemoTypes(types: Array<SupportedDemoType>) {
@@ -87,8 +87,18 @@ export function getDemoAppRoot(type: SupportedDemoType) {
   return `apps/demo${type !== 'xml' ? '-' + type : ''}`;
 }
 
-export function getPluginDemoPath() {
-  return 'src/plugin-demos';
+export function getPluginDemoPath(type: SupportedDemoType) {
+  return `${getSrcFolderForType(type)}/plugin-demos`;
+}
+
+export function getSrcFolderForType(type: SupportedDemoType) {
+  switch (type) {
+    case 'svelte':
+    case 'vue':
+      return 'app';
+    default:
+      return 'src';
+  }
 }
 
 export function getDemoTypeFromName(name: string): SupportedDemoType {
@@ -99,6 +109,37 @@ export function getDemoTypeFromName(name: string): SupportedDemoType {
     // no suffix defaults to vanilla xml
     return 'xml';
   }
+}
+
+export function getDemoFlavorExt(type: SupportedDemoType) {
+  let viewExt = 'xml';
+  let viewClassExt = 'ts';
+  let viewModuleExt;
+  // adjust folder location and viewExt dependent on demo type if needed
+  switch (type) {
+    case 'angular':
+      viewExt = 'component.html';
+      viewClassExt = 'component.ts';
+      viewModuleExt = 'module.ts';
+      break;
+    case 'react':
+      viewExt = 'tsx';
+      viewClassExt = null;
+      break;
+    case 'svelte':
+      viewExt = 'svelte';
+      viewClassExt = null;
+      break;
+    case 'vue':
+      viewExt = 'vue';
+      viewClassExt = null;
+      break;
+  }
+  return {
+    viewExt,
+    viewClassExt,
+    viewModuleExt
+  };
 }
 
 export function getDemoIndexButtonForType(
