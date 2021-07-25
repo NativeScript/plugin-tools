@@ -196,34 +196,52 @@ function updateDemoAppPackages(): Rule {
 
         // update demo app deps
         const packagePath = `${appDir}/package.json`;
-        const packageJson = parseJson(tree.get(packagePath).content.toString());
-
-        if (packageJson) {
-          if (appDir.indexOf('angular') > -1) {
-            packageJson.main = `./src/main.ts`;
-            for (const key in packageJson.dependencies) {
-              if (key.indexOf('@angular/') > -1) {
-                delete packageJson.dependencies[key];
+        if (tree.exists(packagePath)) {
+          const packageJson = parseJson(tree.get(packagePath).content.toString());
+          if (packageJson.devDependencies) {
+            let hasNativeScriptRuntimes = false;
+            for (const d in packageJson.devDependencies) {
+              if (packageJson.devDependencies[d].indexOf('@nativescript') > -1) {
+                hasNativeScriptRuntimes = true;
+                break;
               }
             }
-            delete packageJson.dependencies['@nativescript/angular'];
-            delete packageJson.dependencies['reflect-metadata'];
-            delete packageJson.dependencies['rxjs'];
-            delete packageJson.dependencies['zone.js'];
-          } else if (appDir.indexOf('svelte') > -1 || appDir.indexOf('vue') > -1) {
-            packageJson.main = `./app/app.ts`;
+            if (!hasNativeScriptRuntimes) {
+              // not a {N} demo app
+              return tree;
+            }
           } else {
-            packageJson.main = `./src/app.ts`;
+            // {N} demo app should have runtimes in devDependencies at least
+            return tree;
           }
-          delete packageJson.dependencies['nativescript-theme-core'];
-          packageJson.devDependencies = {
-            '@nativescript/android': '8.0.0',
-            '@nativescript/ios': '8.0.0',
-          };
-
-          // console.log('path:',path);
-          // console.log('packageJson overwrite:', JSON.stringify(packageJson));
-          tree.overwrite(packagePath, serializeJson(packageJson));
+  
+          if (packageJson) {
+            if (appDir.indexOf('angular') > -1) {
+              packageJson.main = `./src/main.ts`;
+              for (const key in packageJson.dependencies) {
+                if (key.indexOf('@angular/') > -1) {
+                  delete packageJson.dependencies[key];
+                }
+              }
+              delete packageJson.dependencies['@nativescript/angular'];
+              delete packageJson.dependencies['reflect-metadata'];
+              delete packageJson.dependencies['rxjs'];
+              delete packageJson.dependencies['zone.js'];
+            } else if (appDir.indexOf('svelte') > -1 || appDir.indexOf('vue') > -1) {
+              packageJson.main = `./app/app.ts`;
+            } else {
+              packageJson.main = `./src/app.ts`;
+            }
+            delete packageJson.dependencies['nativescript-theme-core'];
+            packageJson.devDependencies = {
+              '@nativescript/android': '8.0.0',
+              '@nativescript/ios': '8.0.0',
+            };
+  
+            // console.log('path:',path);
+            // console.log('packageJson overwrite:', JSON.stringify(packageJson));
+            tree.overwrite(packagePath, serializeJson(packageJson));
+          }
         }
       }
     }
