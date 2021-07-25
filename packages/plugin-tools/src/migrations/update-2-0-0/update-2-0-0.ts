@@ -210,6 +210,8 @@ function updateDemoAppPackages(): Rule {
             delete packageJson.dependencies['reflect-metadata'];
             delete packageJson.dependencies['rxjs'];
             delete packageJson.dependencies['zone.js'];
+          } else if (appDir.indexOf('svelte') > -1 || appDir.indexOf('vue') > -1) {
+            packageJson.main = `./app/app.ts`;
           } else {
             packageJson.main = `./src/app.ts`;
           }
