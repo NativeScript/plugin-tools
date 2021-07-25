@@ -1,3 +1,12 @@
+## [2.0.5](https://github.com/NativeScript/plugin-tools/compare/2.0.4...2.0.5) (2021-07-25)
+
+
+### Bug Fixes
+
+* migration handling when other demo's are present ([1f25314](https://github.com/NativeScript/plugin-tools/commit/1f2531435ba038c1b90f98368aab39a9ef274319))
+
+
+
 ## [2.0.4](https://github.com/NativeScript/plugin-tools/compare/2.0.3...2.0.4) (2021-07-24)
 
 
