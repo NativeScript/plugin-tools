@@ -1,3 +1,12 @@
+## [2.0.7](https://github.com/NativeScript/plugin-tools/compare/2.0.6...2.0.7) (2021-07-26)
+
+
+### Bug Fixes
+
+* demo app migration for devDependency updates ([89ffa7b](https://github.com/NativeScript/plugin-tools/commit/89ffa7b11fc3e7f091597b7893656810d0c4780b))
+
+
+
 ## [2.0.6](https://github.com/NativeScript/plugin-tools/compare/2.0.5...2.0.6) (2021-07-25)
 
 
