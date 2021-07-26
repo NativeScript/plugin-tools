@@ -201,7 +201,7 @@ function updateDemoAppPackages(): Rule {
           if (packageJson.devDependencies) {
             let hasNativeScriptRuntimes = false;
             for (const d in packageJson.devDependencies) {
-              if (packageJson.devDependencies[d].indexOf('@nativescript') > -1) {
+              if (d.indexOf('@nativescript') > -1) {
                 hasNativeScriptRuntimes = true;
                 break;
               }
