@@ -34,4 +34,12 @@ export default async function (tree: Tree) {
     json.devDependencies['typescript'] = '4.3.5';
     return json;
   });
+
+  updateJson(tree, 'workspace.json', (json) => {
+    json.projects = json.projects || {};
+    json.projects['all'].root = '';
+    json.projects['all'].sourceRoot = '';
+    json.projects['all'].projectType = 'application';
+    return json;
+  });
 }
