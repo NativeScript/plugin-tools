@@ -13,6 +13,12 @@
         "index": 0
       },
       "x-prompt": "What should the new package be named?"
+    },
+    "isScoped": {
+      "type": "boolean",
+      "default": true,
+      "description": "Whether the new package should be scoped to the npm scope of the workspace or not.",
+      "x-prompt": "Should it use the npm scope of the workspace? 'Y' is the most common. This is the difference between, for example @nativescript/camera vs. nativescript-camera. If you choose 'N' here, be sure you have specified the full npm name you would like to use during publishing."
     }
   },
   "required": ["name"]

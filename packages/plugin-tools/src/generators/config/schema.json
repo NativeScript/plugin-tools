@@ -12,7 +12,7 @@
         "$source": "argv",
         "index": 0
       },
-      "x-prompt": "What npm scope would you like to use for this workspace?"
+      "x-prompt": "What npm scope would you like to use for this workspace? This will become the default npm scope of the workspace however you can add packages that are non-scoped at anytime via 'npm run add'"
     }
   }
 }

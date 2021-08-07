@@ -3,7 +3,7 @@
  */
 import { Tree } from '@nrwl/devkit';
 import { serializeJson, stringUtils } from '@nrwl/workspace';
-import { checkPackages, getJsonFromFile, getPackageNamesToUpdate, getAllPackages, getNpmScope } from './workspace';
+import { checkPackages, getJsonFromFile, getPackageNamesToUpdate, getAllPackages, getNpmScope, getNpmPackageNames } from './workspace';
 const xml2js = require('xml2js');
 
 export type SupportedDemoType = 'xml' | 'angular' | 'vue' | 'svelte' | 'react';
@@ -48,7 +48,7 @@ export function addDependencyToDemoApp(tree: Tree, type: SupportedDemoType, demo
 export function updateDemoDependencies(tree: Tree, type: SupportedDemoType, demoAppRoot: string, allPackages?: Array<string>, focus?: boolean) {
   const packagePath = `${demoAppRoot}/package.json`;
   const packageData = getJsonFromFile(tree, packagePath);
-
+  const npmPackageNames = getNpmPackageNames();
   if (packageData) {
     packageData.dependencies = packageData.dependencies || {};
     const packageNamesToUpdate = getPackageNamesToUpdate();
@@ -56,18 +56,18 @@ export function updateDemoDependencies(tree: Tree, type: SupportedDemoType, demo
       // reset to all
       if (allPackages) {
         for (const name of allPackages) {
-          packageData.dependencies[`${getNpmScope()}/${name}`] = getPathToPackageForDemo(type, name);
+          packageData.dependencies[npmPackageNames[name]] = getPathToPackageForDemo(type, name);
         }
       }
     } else {
       for (const name of packageNamesToUpdate) {
-        packageData.dependencies[`${getNpmScope()}/${name}`] = getPathToPackageForDemo(type, name);
+        packageData.dependencies[npmPackageNames[name]] = getPathToPackageForDemo(type, name);
       }
       if (focus && allPackages) {
         // when focusing packages, remove others not being focused on
         for (const name of allPackages) {
           if (!packageNamesToUpdate.includes(name)) {
-            delete packageData.dependencies[`${getNpmScope()}/${name}`];
+            delete packageData.dependencies[npmPackageNames[name]];
           }
         }
       }

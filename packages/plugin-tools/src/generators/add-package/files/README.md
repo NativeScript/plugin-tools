@@ -1,7 +1,7 @@
-# <%= npmScope %>/<%= name %>
+# <%= npmPackageName %>
 
 ```javascript
-ns plugin add <%= npmScope %>/<%= name %>
+ns plugin add <%= npmPackageName %>
 ```
 
 ## Usage

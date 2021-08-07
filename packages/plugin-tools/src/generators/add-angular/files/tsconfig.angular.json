@@ -4,7 +4,7 @@
 		"types": ["node"],
 		"baseUrl": ".",
 		"paths": {
-			"<%= npmScope %>/<%= name %>": ["../../../dist/packages/<%= name %>"]
+			"<%= npmPackageName %>": ["../../../dist/packages/<%= name %>"]
 		}
 	}
 }
