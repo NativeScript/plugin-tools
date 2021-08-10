@@ -20,7 +20,7 @@
       },
       "update-to-2.1.0": {
         "cli": "nx",
-        "version": "2.1.0-rc.3",
+        "version": "2.1.0-rc.4",
         "description": "Migrate tools to 2.1.0",
         "factory": "./src/migrations/update-2-1-0/update-2-1-0"
       }
