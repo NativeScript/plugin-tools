@@ -1,31 +1,39 @@
-import { Tree, removeProjectConfiguration, updateJson, readProjectConfiguration, updateProjectConfiguration } from '@nrwl/devkit';
+import { Tree, removeProjectConfiguration, updateJson, readProjectConfiguration, updateProjectConfiguration, readJson } from '@nrwl/devkit';
 import { stringUtils } from '@nrwl/workspace';
-import { prerun, getNpmScope, getDemoTypes, getDemoAppRoot, getPluginDemoPath, SupportedDemoType, checkPackages, getDemoIndexPathForType, getPackageNamesToUpdate, getPathToPackageForDemo, updateReadMe } from '../../utils';
+import { prerun, getNpmScope, getDemoTypes, getDemoAppRoot, getPluginDemoPath, SupportedDemoType, checkPackages, getDemoIndexPathForType, getPackageNamesToUpdate, getPathToPackageForDemo, updateReadMe, getNpmPackageNames } from '../../utils';
 import { Schema } from './schema';
 
 let name: string;
+let npmPackageName: string;
 export default function (tree: Tree, schema: Schema) {
   name = stringUtils.dasherize(schema.name);
 
   prerun(tree);
-  removePackage(tree);
-
-  removeProjectConfiguration(tree, name);
-  removeFromBuildAll(tree);
-
-  updateReadMe(tree, getUpdatedPackages(tree));
-
-  for (const t of getDemoTypes()) {
-    const demoAppRoot = getDemoAppRoot(t);
-    removeDemoFiles(tree, t, demoAppRoot);
-    removeFromDemoIndex(tree, t, demoAppRoot);
-    updateDemoDependencies(tree, demoAppRoot);
+  const packagePath = `packages/${name}/package.json`;
+  if (tree.exists(packagePath)) {
+    const packageJson = readJson(tree, packagePath);
+    npmPackageName = packageJson.name;
+    removePackage(tree);
+  
+    removeProjectConfiguration(tree, name);
+    removeFromBuildAll(tree);
+  
+    updateReadMe(tree, getUpdatedPackages(tree));
+  
+    for (const t of getDemoTypes()) {
+      const demoAppRoot = getDemoAppRoot(t);
+      removeDemoFiles(tree, t, demoAppRoot);
+      removeFromDemoIndex(tree, t, demoAppRoot);
+      updateDemoDependencies(tree, demoAppRoot);
+    }
+  
+    removeSharedDemoFiles(tree);
+    updateDemoSharedIndex(tree);
+  
+    console.log(`"${npmPackageName}" removed from 'packages' and removed from all demo apps.`);
+  } else {
+    console.error(`Nothing found at 'packages/${name}/package.json' to remove.`)
   }
-
-  removeSharedDemoFiles(tree);
-  updateDemoSharedIndex(tree);
-
-  console.log(`"${getNpmScope()}/${name}" removed from 'packages' and removed from all demo apps.`);
 }
 
 function removePackage(tree: Tree) {
@@ -165,7 +173,7 @@ export function updateDemoDependencies(tree: Tree, demoAppRoot: string) {
 
   updateJson(tree, packagePath, (json) => {
     json.dependencies = json.dependencies || {};
-    delete json.dependencies[`${getNpmScope()}/${name}`];
+    delete json.dependencies[npmPackageName];
     return json;
   });
 }

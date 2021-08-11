@@ -1,4 +1,4 @@
-import { sanitizeCollectionArgs, getDemoTypeFromName, updateDemoDependencies, setPackageNamesToUpdate, getAllPackages, resetIndexForDemoType, getPluginDemoPath, updateDemoSharedIndex, getNpmScope, prerun } from '../../utils';
+import { sanitizeCollectionArgs, getDemoTypeFromName, updateDemoDependencies, setPackageNamesToUpdate, getAllPackages, resetIndexForDemoType, getPluginDemoPath, updateDemoSharedIndex, getNpmScope, prerun, getNpmPackageNames } from '../../utils';
 import { Schema } from './schema';
 import { wrapAngularDevkitSchematic } from '@nrwl/devkit/ngcli-adapter';
 import { Tree } from '@nrwl/devkit';
@@ -14,17 +14,16 @@ export default async function (tree: Tree, schema: Schema) {
   await nstudioFocus(tree, {
     name: schema.name,
   });
+  setPackageNamesToUpdate(focusPackages);
+  allPackages = getAllPackages(tree);
+  const npmPackageNames = getNpmPackageNames();
+  // console.log('allPackages:', allPackages);
   // Isolate code in demo apps by default based on focus
   if (!schema.ignoreDemos) {
-    setPackageNamesToUpdate(focusPackages);
-    allPackages = getAllPackages(tree);
-    // console.log('allPackages:', allPackages);
-
     // adjust demo shared index for focusing
     updateDemoSharedIndex(tree, allPackages, focusPackages);
 
     // apps
-
     const appFolders = tree.children('apps');
     for (const dir of appFolders) {
       // console.log(`demoAppRoot: ${demoAppRoot}`);
@@ -72,7 +71,7 @@ export default async function (tree: Tree, schema: Schema) {
   }
 
   const isFocusing = focusPackages && focusPackages.length > 0;
-  const focusTargets = (focusPackages && focusPackages.length ? focusPackages : allPackages).map((n) => `\n${getNpmScope()}/${n}`).join('');
+  const focusTargets = (focusPackages && focusPackages.length ? focusPackages : allPackages).map((n) => `\n${npmPackageNames[n]}`).join('');
   console.log(`${isFocusing ? 'Focusing workspace on:' : 'Resetting workspace for:'}\n${focusTargets}\n\n`);
   if (!schema.ignoreDemos) {
     console.log(` > NOTE: Clean the demo app you plan to test with before running now that the demo code has been updated.\n`);

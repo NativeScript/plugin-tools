@@ -1,5 +1,5 @@
 import { DemoSharedBase } from '../utils';
-import {  } from '<%= npmScope %>/<%= name %>';
+import {  } from '<%= npmPackageName %>';
 
 export class DemoShared<%= stringUtils.classify(name) %> extends DemoSharedBase {
 

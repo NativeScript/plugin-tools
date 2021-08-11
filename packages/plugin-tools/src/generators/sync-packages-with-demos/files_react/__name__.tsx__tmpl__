@@ -2,7 +2,7 @@ import * as React from "react";
 import { Dialogs } from '@nativescript/core';
 import { StyleSheet } from "react-nativescript";
 import { DemoShared<%= stringUtils.classify(name) %> } from '@demo/shared';
-import { } from '<%= npmScope %>/<%= name %>';
+import { } from '<%= npmPackageName %>';
 
 export function HomeScreen() {
     return (

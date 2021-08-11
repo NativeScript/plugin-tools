@@ -1,6 +1,6 @@
 import { Component, NgZone } from '@angular/core';
 import { DemoShared<%= stringUtils.classify(name) %> } from '@demo/shared';
-import { } from '<%= npmScope %>/<%= name %>';
+import { } from '<%= npmPackageName %>';
 
 @Component({
 	selector: 'demo-<%= name %>',

@@ -7,7 +7,7 @@
 
 <script lang="typescript">
     import { DemoShared<%= stringUtils.classify(name) %> } from '@demo/shared';
-    import { } from '<%= npmScope %>/<%= name %>';
+    import { } from '<%= npmPackageName %>';
 
     let message: string = "Test <%= name %>"
 </script>

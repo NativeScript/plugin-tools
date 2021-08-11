@@ -1,6 +1,6 @@
 import { Observable, EventData, Page } from '@nativescript/core';
 import { DemoShared<%= stringUtils.classify(name) %> } from '@demo/shared';
-import { } from '<%= npmScope %>/<%= name %>';
+import { } from '<%= npmPackageName %>';
 
 export function navigatingTo(args: EventData) {
 	const page = <Page>args.object;

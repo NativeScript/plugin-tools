@@ -5,9 +5,11 @@ import syncPackagesWithDemos from '../sync-packages-with-demos';
 import { Schema } from './schema';
 
 let name: string;
+let npmPackageName: string;
 export default async function (tree: Tree, schema: Schema) {
   name = stringUtils.dasherize(schema.name);
   prerun(tree);
+  npmPackageName = schema.isScoped ? `${getNpmScope()}/${name}` : name;
   addPackageFiles(tree);
   addProjectToNxJsonInTree(name, {});
   updateWorkspaceConfig(tree);
@@ -22,11 +24,11 @@ export default async function (tree: Tree, schema: Schema) {
     true
   );
 
-  console.log(`"${getNpmScope()}/${name}" created and added to all demo apps. Ready to develop!`);
+  console.log(`"${npmPackageName}" created and added to all demo apps. Ready to develop!`);
 }
 
 function addPackageFiles(tree: Tree) {
-  generateFiles(tree, joinPathFragments(__dirname, 'files'), `./packages/${name}`, { name, npmScope: getNpmScope(), stringUtils, tmpl: '', dot: '.' });
+  generateFiles(tree, joinPathFragments(__dirname, 'files'), `./packages/${name}`, { name, npmPackageName,  npmScope: getNpmScope(), stringUtils, tmpl: '', dot: '.' });
 }
 
 function updateWorkspaceConfig(tree: Tree) {
@@ -103,11 +105,11 @@ function updateWorkspaceScripts(tree: Tree) {
   const buildSectionIndex = workspaceScripts.indexOf(`'build-all':`);
   const buildStart = workspaceScripts.substring(0, buildSectionIndex);
   const buildEnd = workspaceScripts.substring(buildSectionIndex, workspaceScripts.length);
-  const newBuild = `// ${getNpmScope()}/${name}
+  const newBuild = `// ${npmPackageName}
 			'${name}': {
 				build: {
 					script: 'nx run ${name}:build.all',
-					description: '${getNpmScope()}/${name}: Build',
+					description: '${npmPackageName}: Build',
 				},
 			},
 `;
@@ -119,7 +121,7 @@ function updateWorkspaceScripts(tree: Tree) {
   const focusEnd = workspaceScripts.substring(focusSectionIndex, workspaceScripts.length);
   const newFocus = `'${name}': {
 				script: 'nx run ${name}:focus',
-				description: 'Focus on ${getNpmScope()}/${name}',
+				description: 'Focus on ${npmPackageName}',
 			},
 `;
   workspaceScripts = `${focusStart}${newFocus}			${focusEnd}`;

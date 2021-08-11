@@ -8,6 +8,11 @@ import { Tree, parseJson, readJson } from '@nrwl/devkit';
 let npmScope: string;
 // raw scope without '@' prefix
 let nxNpmScope: string;
+// allow non-scoped packages
+// maps package folder name to full npm name
+// ie, { 'ui-calendar': 'nativescript-ui-calendar', 'camera': '@nativescript/camera' }, etc.
+export interface INpmPackageNameMap { [key: string]: string };
+let npmPackageNames: INpmPackageNameMap;
 
 export function getNpmScope() {
   return npmScope;
@@ -15,6 +20,10 @@ export function getNpmScope() {
 
 export function getNxNpmScope() {
   return nxNpmScope;
+}
+
+export function getNpmPackageNames() {
+  return npmPackageNames;
 }
 
 export function prerun(tree: Tree) {
@@ -35,7 +44,7 @@ export function setPackageNamesToUpdate(names: Array<string>) {
 }
 
 export function getPackageNamesToUpdate(): Array<string> {
-  return packageNamesToUpdate ? packageNamesToUpdate.filter(n => n.indexOf('.') === -1) : [];
+  return packageNamesToUpdate ? packageNamesToUpdate.filter((n) => n.indexOf('.') === -1) : [];
 }
 
 export function updateWorkspaceJson(updates: any) {
@@ -70,11 +79,26 @@ export function sanitizeCollectionArgs(value: string) {
 }
 
 export function getAllPackages(tree: Tree) {
-  return tree.children('packages').filter(n => {
-    // only include valid package structures (in case other misc folders are present)
-    // ignore hidden files in packages folder (ie, .gitkeep)
-    return tree.exists(`packages/${n}/package.json`) && n.indexOf('.') === -1;
-  }).sort();
+  return tree
+    .children('packages')
+    .filter((n) => {
+      // only include valid package structures (in case other misc folders are present)
+      // ignore hidden files in packages folder (ie, .gitkeep)
+      const packagePath = `packages/${n}/package.json`;
+      const validPackage = tree.exists(`packages/${n}/package.json`) && n.indexOf('.') === -1;
+      if (validPackage) {
+        const packageJson = readJson(tree, packagePath);
+        if (packageJson && packageJson.name) {
+          if (!npmPackageNames) {
+            npmPackageNames = {}
+          }
+          npmPackageNames[n] = packageJson.name;
+        }
+      }
+
+      return validPackage;
+    })
+    .sort();
 }
 
 export function checkPackages(tree: Tree) {
@@ -105,9 +129,10 @@ export function updateReadMe(tree: Tree, packages?: Array<string>) {
   const listEndIndex = readmeContent.indexOf(`# How to`);
   const readmeEnd = readmeContent.substring(listEndIndex, readmeContent.length);
   const packageNames = packages || getAllPackages(tree);
+  const npmPackageNames = getNpmPackageNames();
   let packageList = '';
   for (const packageName of packageNames) {
-    packageList += `- ${npmScope}/${packageName}\n`;
+    packageList += `- [${npmPackageNames[packageName]}](packages/${packageName}/README.md)\n`;
   }
   readmeContent = `${readmeStart}${packageList}\n${readmeEnd}`;
 

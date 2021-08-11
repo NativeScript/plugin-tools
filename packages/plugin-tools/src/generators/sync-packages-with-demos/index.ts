@@ -1,8 +1,9 @@
 import { Tree, readJson, updateJson, formatFiles, generateFiles, joinPathFragments } from '@nrwl/devkit';
 import { stringUtils } from '@nrwl/workspace';
-import { sanitizeCollectionArgs, setPackageNamesToUpdate, setDemoTypes, SupportedDemoTypes, SupportedDemoType, getDemoTypes, getPackageNamesToUpdate, getDemoAppRoot, addDependencyToDemoApp, checkPackages, getDemoIndexButtonForType, getDemoIndexPathForType, resetAngularIndex, getPluginDemoPath, resetAngularRoutes, updateDemoSharedIndex, getAllPackages, prerun, getNpmScope, getDemoFlavorExt } from '../../utils';
+import { sanitizeCollectionArgs, setPackageNamesToUpdate, setDemoTypes, SupportedDemoTypes, SupportedDemoType, getDemoTypes, getPackageNamesToUpdate, getDemoAppRoot, addDependencyToDemoApp, checkPackages, getDemoIndexButtonForType, getDemoIndexPathForType, resetAngularIndex, getPluginDemoPath, resetAngularRoutes, updateDemoSharedIndex, getAllPackages, prerun, getNpmScope, getDemoFlavorExt, getNpmPackageNames, INpmPackageNameMap } from '../../utils';
 import { Schema } from './schema';
 
+let npmPackageNames: INpmPackageNameMap;
 export default function (tree: Tree, schema?: Schema, relativePrefix?: string, addingNew?: boolean) {
   if (schema) {
     if (schema.types) {
@@ -22,6 +23,7 @@ export default function (tree: Tree, schema?: Schema, relativePrefix?: string, a
   }
 
   prerun(tree);
+  npmPackageNames = getNpmPackageNames();
   for (const t of getDemoTypes()) {
     const demoAppRoot = getDemoAppRoot(t);
     if (tree.exists(`${demoAppRoot}/package.json`)) {
@@ -48,6 +50,7 @@ function addDemoFiles(tree: Tree, type: SupportedDemoType, demoAppRoot: string, 
         // console.log('packageDemoViewPath: DID NOT EXIST!');
         generateFiles(tree, joinPathFragments(__dirname, relativePrefix, `files_${type}`), demoAppFolder, {
           name,
+          npmPackageName: npmPackageNames[name],
           npmScope: getNpmScope(),
           stringUtils,
           tmpl: '',
@@ -107,6 +110,7 @@ function addDemoSharedFiles(tree: Tree, relativePrefix: string = '') {
       // console.log('packageDemoViewPath: DID NOT EXIST!');
       generateFiles(tree, joinPathFragments(__dirname, relativePrefix, `files_demo_shared`), demoSharedPath, {
         name,
+        npmPackageName: npmPackageNames[name],
         npmScope: getNpmScope(),
         stringUtils,
         tmpl: '',
