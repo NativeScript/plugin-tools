@@ -1,3 +1,12 @@
+# [2.1.0](https://github.com/NativeScript/plugin-tools/compare/2.0.7...2.1.0) (2021-08-11)
+
+
+### Features
+
+* allow nonscoped packages ([#5](https://github.com/NativeScript/plugin-tools/issues/5)) ([7d8bff8](https://github.com/NativeScript/plugin-tools/commit/7d8bff80dcdd3178cb9e9d913678ab5e40ff86af))
+
+
+
 ## [2.0.7](https://github.com/NativeScript/plugin-tools/compare/2.0.6...2.0.7) (2021-07-26)
 
 
