@@ -8,8 +8,8 @@ let name: string;
 let npmPackageName: string;
 export default async function (tree: Tree, schema: Schema) {
   name = stringUtils.dasherize(schema.name);
-  npmPackageName = schema.isScoped ? `${getNpmScope()}/${name}` : name;
   prerun(tree);
+  npmPackageName = schema.isScoped ? `${getNpmScope()}/${name}` : name;
   addPackageFiles(tree);
   addProjectToNxJsonInTree(name, {});
   updateWorkspaceConfig(tree);
