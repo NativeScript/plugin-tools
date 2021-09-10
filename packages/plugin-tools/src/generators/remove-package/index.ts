@@ -120,7 +120,7 @@ function removeFromDemoIndex(tree: Tree, type: SupportedDemoType, demoAppRoot: s
     resetAngularIndex(tree);
     resetAngularRoutes(tree);
     return tree;
-  } else if (['react', 'svelte', 'vue']) {
+  } else if (['react', 'svelte', 'vue'].includes(type)) {
     // TODO: add index page for these flavors
     return tree;
   }
