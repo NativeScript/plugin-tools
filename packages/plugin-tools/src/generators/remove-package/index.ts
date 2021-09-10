@@ -24,7 +24,7 @@ export default function (tree: Tree, schema: Schema) {
       const demoAppRoot = getDemoAppRoot(t);
       removeDemoFiles(tree, t, demoAppRoot);
       removeFromDemoIndex(tree, t, demoAppRoot);
-      updateDemoDependencies(tree, demoAppRoot);
+      updateDemoDependencies(tree, t, demoAppRoot);
     }
   
     removeSharedDemoFiles(tree);
@@ -168,7 +168,11 @@ export function resetAngularRoutes(tree: Tree) {
   tree.write(angularRouteModulePath, angularRouteModule);
 }
 
-export function updateDemoDependencies(tree: Tree, demoAppRoot: string) {
+export function updateDemoDependencies(tree: Tree, type: SupportedDemoType, demoAppRoot: string) {
+  if (['react', 'svelte', 'vue'].includes(type)) {
+    return;
+  }
+  
   const packagePath = `${demoAppRoot}/package.json`;
 
   updateJson(tree, packagePath, (json) => {
