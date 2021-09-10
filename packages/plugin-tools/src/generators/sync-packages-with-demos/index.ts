@@ -67,7 +67,7 @@ function addToDemoIndex(tree: Tree, type: SupportedDemoType, demoAppRoot: string
     resetAngularIndex(tree, getPackageNamesToUpdate(), true);
     resetAngularRoutes(tree, getPackageNamesToUpdate(), true);
     return tree;
-  } else if (['react', 'svelte', 'vue']) {
+  } else if (['react', 'svelte', 'vue'].includes(type)) {
     // TODO: add index page for these flavors
     return tree;
   }
