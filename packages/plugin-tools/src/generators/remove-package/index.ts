@@ -170,6 +170,7 @@ export function resetAngularRoutes(tree: Tree) {
 
 export function updateDemoDependencies(tree: Tree, type: SupportedDemoType, demoAppRoot: string) {
   if (['react', 'svelte', 'vue'].includes(type)) {
+    // TODO: add index page for these flavors
     return;
   }
   
