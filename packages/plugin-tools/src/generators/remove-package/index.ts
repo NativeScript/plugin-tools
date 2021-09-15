@@ -22,9 +22,11 @@ export default function (tree: Tree, schema: Schema) {
   
     for (const t of getDemoTypes()) {
       const demoAppRoot = getDemoAppRoot(t);
-      removeDemoFiles(tree, t, demoAppRoot);
-      removeFromDemoIndex(tree, t, demoAppRoot);
-      updateDemoDependencies(tree, t, demoAppRoot);
+      if (tree.exists(demoAppRoot)) { 
+        removeDemoFiles(tree, t, demoAppRoot);
+        removeFromDemoIndex(tree, t, demoAppRoot);
+        updateDemoDependencies(tree, t, demoAppRoot);
+      }
     }
   
     removeSharedDemoFiles(tree);
