@@ -1,3 +1,14 @@
+# [2.2.0](https://github.com/NativeScript/plugin-tools/compare/2.1.0...2.2.0) (2021-09-15)
+
+
+### Bug Fixes
+
+* demo app index for vanilla is now properly updated ([#6](https://github.com/NativeScript/plugin-tools/issues/6)) ([1867989](https://github.com/NativeScript/plugin-tools/commit/18679891a72bfb3f464eaafd3f31265374d31154))
+* remove package ([#7](https://github.com/NativeScript/plugin-tools/issues/7)) ([afc17e3](https://github.com/NativeScript/plugin-tools/commit/afc17e331b371a030e7c4e9e360d980b21d7bc58))
+* remove-package from demo flavours used ([#9](https://github.com/NativeScript/plugin-tools/issues/9)) ([43e9413](https://github.com/NativeScript/plugin-tools/commit/43e9413c4f5169590b5a5b3a7cab16eb293c0669)), closes [#8](https://github.com/NativeScript/plugin-tools/issues/8)
+
+
+
 # [2.1.0](https://github.com/NativeScript/plugin-tools/compare/2.0.7...2.1.0) (2021-08-11)
 
 
