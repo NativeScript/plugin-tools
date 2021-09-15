@@ -22,10 +22,10 @@ export default function (tree: Tree, schema: Schema) {
   
     for (const t of getDemoTypes()) {
       const demoAppRoot = getDemoAppRoot(t);
-      if (tree.exists(demoAppRoot)) { 
+      if (tree.exists(`${demoAppRoot}/package.json`)) { 
         removeDemoFiles(tree, t, demoAppRoot);
         removeFromDemoIndex(tree, t, demoAppRoot);
-        updateDemoDependencies(tree, t, demoAppRoot);
+        updateDemoDependencies(tree, demoAppRoot);
       }
     }
   
@@ -170,11 +170,7 @@ export function resetAngularRoutes(tree: Tree) {
   tree.write(angularRouteModulePath, angularRouteModule);
 }
 
-export function updateDemoDependencies(tree: Tree, type: SupportedDemoType, demoAppRoot: string) {
-  if (['react', 'svelte', 'vue'].includes(type)) {
-    // TODO: add index page for these flavors
-    return;
-  }
+export function updateDemoDependencies(tree: Tree, demoAppRoot: string) {
   
   const packagePath = `${demoAppRoot}/package.json`;
 

@@ -7,7 +7,7 @@ import { checkPackages, getJsonFromFile, getPackageNamesToUpdate, getAllPackages
 const xml2js = require('xml2js');
 
 export type SupportedDemoType = 'xml' | 'angular' | 'vue' | 'svelte' | 'react';
-export const SupportedDemoTypes: Array<SupportedDemoType> = ['xml', 'angular', 'react', 'svelte', 'vue']; //, 'vue', 'svelte', 'react'];
+export const SupportedDemoTypes: Array<SupportedDemoType> = ['xml', 'angular', 'react', 'svelte', 'vue'];
 let demoTypes: Array<SupportedDemoType> = SupportedDemoTypes;
 
 export function setDemoTypes(types: Array<SupportedDemoType>) {
