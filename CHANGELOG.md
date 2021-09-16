@@ -1,3 +1,12 @@
+## [2.2.1](https://github.com/NativeScript/plugin-tools/compare/2.2.0...2.2.1) (2021-09-16)
+
+
+### Bug Fixes
+
+* migration handling syntax ([d7630ec](https://github.com/NativeScript/plugin-tools/commit/d7630ec2ad55805dddf01bd9ae5953ce0a90d9f8))
+
+
+
 # [2.2.0](https://github.com/NativeScript/plugin-tools/compare/2.1.0...2.2.0) (2021-09-15)
 
 
