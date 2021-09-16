@@ -1,6 +1,6 @@
 {
   "name": "@nativescript/plugin-tools",
-  "version": "2.2.0",
+  "version": "2.2.1",
   "description": "NativeScript plugin tooling for workspaces",
   "homepage": "https://nativescript.org",
   "repository": {
@@ -22,17 +22,19 @@
   "main": "src/index.js",
   "generators": "./generators.json",
   "executors": "./executors.json",
-  "ng-update": {
-    "requirements": {},
+  "nx-migrations": {
     "migrations": "./migrations.json"
   },
   "dependencies": {
     "xml2js": "~0.4.23",
     "@nativescript/nx": "^2.0.0",
+    "@nrwl/cli": "12.9.0",
     "@nrwl/devkit": "12.9.0",
     "@nrwl/eslint-plugin-nx": "12.9.0",
     "@nrwl/jest": "12.9.0",
+    "@nrwl/linter": "12.9.0",
     "@nrwl/node": "12.9.0",
+    "@nrwl/tao": "12.9.0",
     "@nrwl/workspace": "12.9.0",
     "@nstudio/focus": "^12.5.0",
     "@nstudio/nps-i": "^1.1.0",

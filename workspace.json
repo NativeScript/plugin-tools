@@ -43,8 +43,17 @@
               },
               {
                 "input": "./packages/plugin-tools",
-                "glob": "**/*.json",
-                "ignore": ["**/tsconfig*.json"],
+                "glob": "generators.json",
+                "output": "."
+              },
+              {
+                "input": "./packages/plugin-tools",
+                "glob": "executors.json",
+                "output": "."
+              },
+              {
+                "input": "./packages/plugin-tools",
+                "glob": "migrations.json",
                 "output": "."
               }
             ]
@@ -61,8 +70,6 @@
           "executor": "@nrwl/nx-plugin:e2e",
           "options": {
             "target": "plugin-tools:build",
-            "npmPackageName": "@nativescript/plugin-tools",
-            "pluginOutputPath": "dist/packages/plugin-tools",
             "jestConfig": "e2e/plugin-tools-e2e/jest.config.js"
           }
         }
