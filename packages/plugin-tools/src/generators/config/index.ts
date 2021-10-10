@@ -1,11 +1,67 @@
 import { getJsonFromFile } from '../../utils';
 import { Schema } from './schema';
 import { stringUtils, serializeJson } from '@nrwl/workspace';
-import { Tree } from '@nrwl/devkit';
+import { Tree, updateJson, writeJson } from '@nrwl/devkit';
 
 let customNpmScope: string;
+let gitRepo = 'https://github.com/NativeScript/plugins';
+let gitAuthorName = 'NativeScript';
+let gitAuthorEmail = 'oss@nativescript.org';
 export default async function (tree: Tree, schema: Schema) {
   customNpmScope = stringUtils.dasherize(schema.scope);
+  if (schema.repo) {
+    const repo = schema.repo.replace('.git', '');
+    gitRepo = repo.trim();
+  }
+  if (schema.gitAuthorName) {
+    gitAuthorName = schema.gitAuthorName.trim();
+  }
+  if (schema.gitAuthorEmail) {
+    gitAuthorEmail = schema.gitAuthorEmail.trim();
+  }
+
+  // package.json settings that apply to all new packages added to workspace
+  const toolsPackageSettingsPath = 'tools/package-settings.json';
+  const packageSettings = {
+    repository: {
+      type: 'git',
+      url: `${gitRepo}.git`,
+    },
+    keywords: ['NativeScript', 'JavaScript', 'TypeScript', 'iOS', 'Android'],
+    author: {
+      name: gitAuthorName,
+      email: gitAuthorEmail,
+    },
+    bugs: {
+      url: `${gitRepo}/issues`,
+    },
+    license: 'Apache-2.0',
+    homepage: gitRepo,
+  };
+  if (!tree.exists(toolsPackageSettingsPath)) {
+    writeJson(tree, toolsPackageSettingsPath, packageSettings);
+  } else {
+    updateJson(tree, toolsPackageSettingsPath, (json) => {
+      if (!json.repository) {
+        json.repository = {
+          type: 'git'
+        };
+      }
+      json.repository.url = packageSettings.repository.url;
+      if (!json.author) {
+        json.author = {};
+      }
+      json.author.name = packageSettings.author.name;
+      json.author.email = packageSettings.author.email;
+      if (!json.bugs) {
+        json.bugs = {};
+      }
+      json.bugs.url = packageSettings.bugs.url;
+      json.homepage = packageSettings.homepage;
+
+      return json;
+    });
+  }
 
   const nxConfigPath = `nx.json`;
   const nxConfig = getJsonFromFile(tree, nxConfigPath);

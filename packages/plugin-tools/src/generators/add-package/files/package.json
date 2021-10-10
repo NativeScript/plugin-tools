@@ -12,7 +12,7 @@
     },
     "repository": {
         "type": "git",
-        "url": "https://github.com/NativeScript/plugins.git"
+        "url": "<%= repo %>.git"
     },
     "keywords": [
         "NativeScript",
@@ -22,14 +22,14 @@
         "Android"
     ],
     "author": {
-        "name": "NativeScript",
-        "email": "oss@nativescript.org"
+        "name": "<%= gitAuthorName %>",
+        "email": "<%= gitAuthorEmail %>"
     },
     "bugs": {
-        "url": "https://github.com/NativeScript/plugins/issues"
+        "url": "<%= repo %>/issues"
     },
     "license": "Apache-2.0",
-    "homepage": "https://github.com/NativeScript/plugins",
+    "homepage": "<%= repo %>",
     "readmeFilename": "README.md",
     "bootstrapper": "@nativescript/plugin-seed"
 }

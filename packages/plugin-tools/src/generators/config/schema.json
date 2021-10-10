@@ -7,12 +7,28 @@
   "properties": {
     "scope": {
       "type": "string",
-      "description": "npm scope to use for the workspace packages.",
+      "description": "npm scope to use for the workspace packages",
       "$default": {
         "$source": "argv",
         "index": 0
       },
       "x-prompt": "What npm scope would you like to use for this workspace? This will become the default npm scope of the workspace however you can add packages that are non-scoped at anytime via 'npm run add'"
+    },
+    "repo": {
+      "type": "string",
+      "description": "Repository location",
+      "x-prompt": "What is the git repository adress where this workspace will be located remotely? If left unanswered, all plugin packages will default to https://github.com/NativeScript/plugins which you can manually change later. Answering now will ensure all plugins reference the proper git repository url."
+    },
+    "gitAuthorName": {
+      "type": "string",
+      "description": "Author display name",
+      "x-prompt": "What is the author display name? This will set the default package.json author.name field when adding new packages to the workspace."
+    },
+    "gitAuthorEmail": {
+      "type": "string",
+      "description": "Author email",
+      "x-prompt": "What is the author email? This will set the default package.json author.email field when adding new package to the workspace."
     }
-  }
+  },
+  "required": ["scope"]
 }

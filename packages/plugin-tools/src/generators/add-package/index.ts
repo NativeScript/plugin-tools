@@ -1,4 +1,4 @@
-import { addProjectConfiguration, generateFiles, joinPathFragments, readProjectConfiguration, Tree, updateProjectConfiguration } from '@nrwl/devkit';
+import { addProjectConfiguration, generateFiles, joinPathFragments, readJson, readProjectConfiguration, Tree, updateProjectConfiguration } from '@nrwl/devkit';
 import { stringUtils, addProjectToNxJsonInTree } from '@nrwl/workspace';
 import { updateReadMe, prerun, getNpmScope } from '../../utils';
 import syncPackagesWithDemos from '../sync-packages-with-demos';
@@ -28,7 +28,37 @@ export default async function (tree: Tree, schema: Schema) {
 }
 
 function addPackageFiles(tree: Tree) {
-  generateFiles(tree, joinPathFragments(__dirname, 'files'), `./packages/${name}`, { name, npmPackageName,  npmScope: getNpmScope(), stringUtils, tmpl: '', dot: '.' });
+  // set default package values
+  let repo = `https://github.com/NativeScript/plugins`;
+  let gitAuthorName = `NativeScript`;
+  let gitAuthorEmail = `oss@nativescript.org`;
+  // check for custom package settings
+  const toolsPackageSettingsPath = 'tools/package-settings.json';
+  if (tree.exists(toolsPackageSettingsPath)) {
+    const packageSettings = readJson(tree, toolsPackageSettingsPath);
+    if (packageSettings) {
+      if (packageSettings.repository && packageSettings.repository.url) {
+        repo = packageSettings.repository.url.replace('.git', '');
+      }
+      if (packageSettings.author && packageSettings.author.name) {
+        gitAuthorName = packageSettings.author.name;
+      }
+      if (packageSettings.author && packageSettings.author.email) {
+        gitAuthorEmail = packageSettings.author.email;
+      }
+    }
+  }
+  generateFiles(tree, joinPathFragments(__dirname, 'files'), `./packages/${name}`, { 
+    name, 
+    npmPackageName, 
+    npmScope: getNpmScope(),
+    repo,
+    gitAuthorName,
+    gitAuthorEmail,
+    stringUtils, 
+    tmpl: '', 
+    dot: '.' 
+  });
 }
 
 function updateWorkspaceConfig(tree: Tree) {
