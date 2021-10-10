@@ -1,3 +1,12 @@
+# [2.3.0](https://github.com/NativeScript/plugin-tools/compare/2.2.1...2.3.0) (2021-10-10)
+
+
+### Features
+
+* allow config to set default repo url and author details ([80c38b5](https://github.com/NativeScript/plugin-tools/commit/80c38b58da6101a25aac6e67379eef102caac18f))
+
+
+
 ## [2.2.1](https://github.com/NativeScript/plugin-tools/compare/2.2.0...2.2.1) (2021-09-16)
 
 
