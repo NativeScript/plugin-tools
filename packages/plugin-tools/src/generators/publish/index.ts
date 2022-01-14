@@ -1,12 +1,11 @@
 import { sanitizeCollectionArgs, setPackageNamesToUpdate, getAllPackages, getNpmScope, prerun, jsonParse } from '../../utils';
 import { Schema } from './schema';
 import parseVersionString from 'parse-version-string';
-import { serializeJson } from '@nrwl/workspace';
 import { Observable } from 'rxjs';
 import { spawn } from 'child_process';
 import * as path from 'path';
 import { existsSync, readFileSync, writeFileSync, mkdirSync } from 'fs';
-import { Tree } from '@nrwl/devkit';
+import { Tree, serializeJson } from '@nrwl/devkit';
 
 interface ISemVer {
   major: number;

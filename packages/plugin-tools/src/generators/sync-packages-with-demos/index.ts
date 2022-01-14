@@ -39,26 +39,25 @@ export default function (tree: Tree, schema?: Schema, relativePrefix?: string, a
 }
 
 function addDemoFiles(tree: Tree, type: SupportedDemoType, demoAppRoot: string, relativePrefix: string = '') {
-    console.log(`Updating "${demoAppRoot}"`);
-    const demoAppFolder = `${demoAppRoot}/${getPluginDemoPath(type)}`;
-    const { viewExt, viewClassExt, viewModuleExt } = getDemoFlavorExt(type);
+  console.log(`Updating "${demoAppRoot}"`);
+  const demoAppFolder = `${demoAppRoot}/${getPluginDemoPath(type)}`;
+  const { viewExt, viewClassExt, viewModuleExt } = getDemoFlavorExt(type);
 
-    for (const name of getPackageNamesToUpdate()) {
-      const packageDemoViewPath = `${demoAppFolder}/${name}.${viewExt}`;
-      // console.log('packageDemoViewPath: ' + packageDemoViewPath);
-      if (!tree.exists(packageDemoViewPath)) {
-        // console.log('packageDemoViewPath: DID NOT EXIST!');
-        generateFiles(tree, joinPathFragments(__dirname, relativePrefix, `files_${type}`), demoAppFolder, {
-          name,
-          npmPackageName: npmPackageNames[name],
-          npmScope: getNpmScope(),
-          stringUtils,
-          tmpl: '',
-          dot: '.',
-        });
-      }
+  for (const name of getPackageNamesToUpdate()) {
+    const packageDemoViewPath = `${demoAppFolder}/${name}.${viewExt}`;
+    // console.log('packageDemoViewPath: ' + packageDemoViewPath);
+    if (!tree.exists(packageDemoViewPath)) {
+      // console.log('packageDemoViewPath: DID NOT EXIST!');
+      generateFiles(tree, joinPathFragments(__dirname, relativePrefix, `files_${type}`), demoAppFolder, {
+        name,
+        npmPackageName: npmPackageNames[name],
+        npmScope: getNpmScope(),
+        stringUtils,
+        tmpl: '',
+        dot: '.',
+      });
     }
-
+  }
 }
 
 function addToDemoIndex(tree: Tree, type: SupportedDemoType, demoAppRoot: string) {

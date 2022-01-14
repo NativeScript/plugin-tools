@@ -48,16 +48,16 @@ function addPackageFiles(tree: Tree) {
       }
     }
   }
-  generateFiles(tree, joinPathFragments(__dirname, 'files'), `./packages/${name}`, { 
-    name, 
-    npmPackageName, 
+  generateFiles(tree, joinPathFragments(__dirname, 'files'), `./packages/${name}`, {
+    name,
+    npmPackageName,
     npmScope: getNpmScope(),
     repo,
     gitAuthorName,
     gitAuthorEmail,
-    stringUtils, 
-    tmpl: '', 
-    dot: '.' 
+    stringUtils,
+    tmpl: '',
+    dot: '.',
   });
 }
 
@@ -101,7 +101,7 @@ function updateWorkspaceConfig(tree: Tree) {
         },
       },
     },
-    tags: []
+    tags: [],
   });
   const allConfig = readProjectConfiguration(tree, 'all');
   if (allConfig) {
@@ -118,10 +118,10 @@ function updateWorkspaceConfig(tree: Tree) {
           outputs: ['dist/packages'],
           options: {
             commands,
-            parallel: false
+            parallel: false,
           },
         },
-        focus: allConfig.targets.focus
+        focus: allConfig.targets.focus,
       },
     });
   }

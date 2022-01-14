@@ -101,7 +101,7 @@ function updateRootTSConfig(tree: Tree, type: SupportedDemoType) {
 
 function updateWorkspaceConfig(tree: Tree, name: string, type: SupportedDemoType) {
   const srcFolder = getSrcFolderForType(type);
-  
+
   addProjectConfiguration(tree, name, {
     root: `apps/${name}/`,
     projectType: 'application',

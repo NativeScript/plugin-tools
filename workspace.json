@@ -59,7 +59,8 @@
             ]
           }
         }
-      }
+      },
+      "tags": []
     },
     "plugin-tools-e2e": {
       "root": "e2e/plugin-tools-e2e",
@@ -73,10 +74,9 @@
             "jestConfig": "e2e/plugin-tools-e2e/jest.config.js"
           }
         }
-      }
+      },
+      "tags": [],
+      "implicitDependencies": ["plugin-tools"]
     }
-  },
-  "cli": {
-    "defaultCollection": "@nrwl/workspace"
   }
 }

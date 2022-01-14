@@ -1,7 +1,7 @@
 import { getJsonFromFile } from '../../utils';
 import { Schema } from './schema';
-import { stringUtils, serializeJson } from '@nrwl/workspace';
-import { Tree, updateJson, writeJson } from '@nrwl/devkit';
+import { stringUtils } from '@nrwl/workspace';
+import { serializeJson, Tree, updateJson, writeJson } from '@nrwl/devkit';
 
 let customNpmScope: string;
 let gitRepo = 'https://github.com/NativeScript/plugins';
@@ -44,7 +44,7 @@ export default async function (tree: Tree, schema: Schema) {
     updateJson(tree, toolsPackageSettingsPath, (json) => {
       if (!json.repository) {
         json.repository = {
-          type: 'git'
+          type: 'git',
         };
       }
       json.repository.url = packageSettings.repository.url;

@@ -236,73 +236,71 @@ function updateTSConfig(tree: Tree) {
     }
     return tsconfigJson;
   });
-  
 }
 
 function updateWorkspace(tree: Tree) {
   updateJson(tree, 'workspace.json', (json) => {
-      json.version = 2;
-      json.projects = json.projects || {};
-      for (const project in json.projects) {
-        if (json.projects[project].projectType === 'application') {
-          // update to use targets/executor
+    json.version = 2;
+    json.projects = json.projects || {};
+    for (const project in json.projects) {
+      if (json.projects[project].projectType === 'application') {
+        // update to use targets/executor
+        delete json.projects[project].architect;
+        json.projects[project].targets = {
+          build: {
+            executor: '@nativescript/nx:build',
+            options: {
+              noHmr: true,
+              production: true,
+              uglify: true,
+              release: true,
+              forDevice: true,
+            },
+          },
+          ios: {
+            executor: '@nativescript/nx:build',
+            options: {
+              platform: 'ios',
+            },
+          },
+          android: {
+            executor: '@nativescript/nx:build',
+            options: {
+              platform: 'android',
+            },
+          },
+          clean: {
+            executor: '@nativescript/nx:build',
+            options: {
+              clean: true,
+            },
+          },
+        };
+      } else if (json.projects[project].projectType === 'library') {
+        let targets = json.projects[project].targets;
+        if (!targets) {
+          targets = json.projects[project].architect;
           delete json.projects[project].architect;
-          json.projects[project].targets = {
-            build: {
-              executor: '@nativescript/nx:build',
-              options: {
-                noHmr: true,
-                production: true,
-                uglify: true,
-                release: true,
-                forDevice: true,
-              },
-            },
-            ios: {
-              executor: '@nativescript/nx:build',
-              options: {
-                platform: 'ios',
-              },
-            },
-            android: {
-              executor: '@nativescript/nx:build',
-              options: {
-                platform: 'android',
-              },
-            },
-            clean: {
-              executor: '@nativescript/nx:build',
-              options: {
-                clean: true,
-              },
-            },
-          };
-        } else if (json.projects[project].projectType === 'library') {
-          let targets = json.projects[project].targets;
-          if (!targets) {
-            targets = json.projects[project].architect;
-            delete json.projects[project].architect;
-            json.projects[project].targets = targets;
+          json.projects[project].targets = targets;
+        }
+        if (targets && targets.build && targets.build.options && targets.build.options.main) {
+          const mainIndex = targets.build.options.main;
+          if (mainIndex.indexOf('index.d.ts') === -1) {
+            // update to use index.d.ts since plugins don't use an explicit index.ts but rather .ios/.android indices
+            json.projects[project].targets.build.options.main = mainIndex.replace('index.ts', 'index.d.ts');
           }
-          if (targets && targets.build && targets.build.options && targets.build.options.main) {
-            const mainIndex = targets.build.options.main;
-            if (mainIndex.indexOf('index.d.ts') === -1) {
-              // update to use index.d.ts since plugins don't use an explicit index.ts but rather .ios/.android indices
-              json.projects[project].targets.build.options.main = mainIndex.replace('index.ts', 'index.d.ts');
-            }
-          }
-          for (const t in json.projects[project].targets) {
-            if (json.projects[project].targets[t].builder) {
-              json.projects[project].targets[t].executor = json.projects[project].targets[t].builder;
-              delete json.projects[project].targets[t].builder;
-            }
+        }
+        for (const t in json.projects[project].targets) {
+          if (json.projects[project].targets[t].builder) {
+            json.projects[project].targets[t].executor = json.projects[project].targets[t].builder;
+            delete json.projects[project].targets[t].builder;
           }
         }
       }
+    }
 
-      return json;
-    });
-
+    return json;
+  });
 }
 function addHuskyPrecommit(tree: Tree) {
   console.log(`Updating husky precommit...`);

@@ -1,8 +1,8 @@
 /**
  * Demo utilities
  */
-import { Tree } from '@nrwl/devkit';
-import { serializeJson, stringUtils } from '@nrwl/workspace';
+import { Tree, serializeJson } from '@nrwl/devkit';
+import { stringUtils } from '@nrwl/workspace';
 import { checkPackages, getJsonFromFile, getPackageNamesToUpdate, getAllPackages, getNpmScope, getNpmPackageNames } from './workspace';
 const xml2js = require('xml2js');
 
@@ -138,7 +138,7 @@ export function getDemoFlavorExt(type: SupportedDemoType) {
   return {
     viewExt,
     viewClassExt,
-    viewModuleExt
+    viewModuleExt,
   };
 }
 

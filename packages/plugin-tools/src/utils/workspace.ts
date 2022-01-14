@@ -1,8 +1,8 @@
 /**
  * Workspace utilities
  */
-import { updateWorkspaceInTree, serializeJson } from '@nrwl/workspace';
-import { Tree, parseJson, readJson } from '@nrwl/devkit';
+import { updateWorkspaceInTree } from '@nrwl/workspace';
+import { Tree, parseJson, readJson, serializeJson } from '@nrwl/devkit';
 
 // includes '@' prefix
 let npmScope: string;
@@ -11,7 +11,9 @@ let nxNpmScope: string;
 // allow non-scoped packages
 // maps package folder name to full npm name
 // ie, { 'ui-calendar': 'nativescript-ui-calendar', 'camera': '@nativescript/camera' }, etc.
-export interface INpmPackageNameMap { [key: string]: string };
+export interface INpmPackageNameMap {
+  [key: string]: string;
+}
 let npmPackageNames: INpmPackageNameMap;
 
 export function getNpmScope() {
@@ -90,7 +92,7 @@ export function getAllPackages(tree: Tree) {
         const packageJson = readJson(tree, packagePath);
         if (packageJson && packageJson.name) {
           if (!npmPackageNames) {
-            npmPackageNames = {}
+            npmPackageNames = {};
           }
           npmPackageNames[n] = packageJson.name;
         }
