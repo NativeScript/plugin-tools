@@ -41,6 +41,8 @@ export default async function (tree: Tree) {
 // remove from the root tsconfig the paths: "@scope/*": "packages/*"
 // add to the root tsconfig, for every package: "@scope/package": "packages/package/index.ts"
 // add to the root tsconfig, for every package with angular: "@scope/package/angular": "packages/package/angular/index.ts"
+// add cache and overall improvements to the workspace.json (outputs, dependencies and some other stuff) - TODO: find exactly what these are
+// on apps' tsconfig.json, change paths to be { "~/": "app/*", ...all the things from the root tsconfig paths }
 
   // updateDemoAppPackages(tree);
 
