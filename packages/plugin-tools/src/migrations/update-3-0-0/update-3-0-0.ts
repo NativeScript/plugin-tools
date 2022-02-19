@@ -43,6 +43,7 @@ export default async function (tree: Tree) {
 // add to the root tsconfig, for every package with angular: "@scope/package/angular": "packages/package/angular/index.ts"
 // add cache and overall improvements to the workspace.json (outputs, dependencies and some other stuff) - TODO: find exactly what these are
 // on apps' tsconfig.json, change paths to be { "~/": "app/*", ...all the things from the root tsconfig paths }
+// Edit the generators to no longer create the "all" link and also add the correct eslint files
 
   // updateDemoAppPackages(tree);
 
