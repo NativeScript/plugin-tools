@@ -1,5 +1,7 @@
-import { generateFiles, joinPathFragments, readJson, removeProjectConfiguration, Tree, updateJson } from '@nrwl/devkit';
+import { generateFiles, getProjects, getWorkspaceLayout, joinPathFragments, readJson, readProjectConfiguration, readWorkspaceConfiguration, removeProjectConfiguration, Tree, updateJson } from '@nrwl/devkit';
 import { convertToNxProjectGenerator } from '@nrwl/workspace';
+import { readFile, readFileSync } from 'fs';
+import { relative } from 'path';
 
 export default async function (tree: Tree) {
   updateJson(tree, 'package.json', (json) => {
@@ -31,25 +33,65 @@ export default async function (tree: Tree) {
   // remove old legacy eslint
   tree.delete(`.eslintrc`);
   // update root .eslintrc > .eslintrc.json
-  generateFiles(tree, joinPathFragments(__dirname, 'files', '.eslintrc.json'), '.eslintrc.json', {});
+  tree.write(`.eslintrc.json`, readFileSync(joinPathFragments(__dirname, 'files', '.eslintrc.json'), 'utf8'));
+  // generateFiles(tree, joinPathFragments(__dirname, 'files'), '.eslintrc.json', {});
 
   // for all apps and packages add .eslintrc
-  
+  getProjects(tree).forEach((project, name) => {
+    tree.write(joinPathFragments(project.root, '.eslintrc.json'), readFileSync(joinPathFragments(__dirname, 'files', '.eslintrc.package.json'), 'utf8'));
+    // for all packages that have angular implementations add a custom .eslintrc inside the angular/ folder that extends the package's eslint
+    if (tree.exists(joinPathFragments(project.root, 'angular'))) {
+      tree.write(joinPathFragments(project.root, 'angular', '.eslintrc.json'), readFileSync(joinPathFragments(__dirname, 'files', '.eslintrc.angular.json'), 'utf8'));
+    }
+  });
 
-// update all references to the all package (mostly from the helper script)
-// for all packages that have angular implementations add a custom .eslintrc inside the angular/ folder that extends the package's eslint
-// remove from the root tsconfig the paths: "@scope/*": "packages/*"
-// add to the root tsconfig, for every package: "@scope/package": "packages/package/index.ts"
-// add to the root tsconfig, for every package with angular: "@scope/package/angular": "packages/package/angular/index.ts"
-// add cache and overall improvements to the workspace.json (outputs, dependencies and some other stuff) - TODO: find exactly what these are
-// on apps' tsconfig.json, change paths to be { "~/": "app/*", ...all the things from the root tsconfig paths }
-// Edit the generators to no longer create the "all" link and also add the correct eslint files
+  // update all references to the all package (mostly from the helper scripts
+
+  // remove from the root tsconfig the paths: "@scope/*": "packages/*"
+  const libraries: string[] = [];
+  const scope = getWorkspaceLayout(tree).npmScope;
+  // TODO handle scope/noscope
+  const rootPaths = {};
+  getProjects(tree).forEach((project, name) => {
+    if (project.projectType === 'library') {
+      libraries.push(name);
+      const packageMain = readJson(tree, joinPathFragments('packages', name, 'package.json')).main || 'index';
+      const indexFile = [`${packageMain}`, `${packageMain}.d.ts`, `${packageMain}.ts`, 'index.d.ts', 'index.ts'].find((f) => tree.exists(joinPathFragments('packages', name, f))) || 'index.d.ts';
+      rootPaths[`@${scope}/${name}`] = `packages/${name}/${indexFile}`;
+    }
+  });
+  updateJson(tree, 'tsconfig.base.json', (json) => {
+    delete json.compilerOptions.paths[`@${scope}/*`];
+    json.compilerOptions.paths = { ...json.compilerOptions.paths, ...rootPaths };
+    return json;
+  });
+  getProjects(tree).forEach((project, name) => {
+    if (project.projectType === 'application') {
+      updateJson(tree, joinPathFragments(project.root, 'tsconfig.json'), (json) => {
+        delete json.compilerOptions.rootDirs; // TODO: check if this only needs to be removed in angular projects!
+        delete json.compilerOptions.baseUrl; // TODO: check if this only needs to be removed in angular projects!
+        delete json.compilerOptions.paths[`@${scope}/*`];
+        const relativePaths = {};
+        for(const k of Object.keys(rootPaths)) {
+          relativePaths[k] = relative(project.root, rootPaths[k]);
+        }
+        json.compilerOptions.paths = { ...json.compilerOptions.paths, ...relativePaths };
+        return json;
+      });
+    }
+  });
+
+  // add to the root tsconfig, for every package: "@scope/package": "packages/package/index.ts"
+  // add to the root tsconfig, for every package with angular: "@scope/package/angular": "packages/package/angular/index.ts"
+  // add cache and overall improvements to the workspace.json (outputs, dependencies and some other stuff) - TODO: find exactly what these are
+  // on apps' tsconfig.json, change paths to be { "~/": "app/*", ...all the things from the root tsconfig paths }
+  // Edit the generators to no longer create the "all" link and also add the correct eslint files
 
   // updateDemoAppPackages(tree);
 
   // Last Step, migrate plugin workspace to nx-project config style
   convertToNxProjectGenerator(tree, {
-    all: true
+    all: true,
   });
 
   console.log(`\n   NOTE: Your plugin workspace is now migrated. Run this to finish the dependency cleanup:`);
