@@ -29,6 +29,7 @@ export default async function (tree: Tree) {
 
   // remove the "all" package (we are moving everyone to nx run-many)
   removeProjectConfiguration(tree, 'all');
+  // update all references to the all package (mostly from the helper scripts)
   let workspaceScripts = tree.read('tools/workspace-scripts.js', 'utf-8');
   workspaceScripts = workspaceScripts.replace(`'nx run all:focus'`, `'nx g @nativescript/plugin-tools:focus-packages'`);
   workspaceScripts = workspaceScripts.replace(`'nx run all:build'`, `'nx run-many --all --target=build.all'`)
@@ -48,8 +49,6 @@ export default async function (tree: Tree) {
       tree.write(joinPathFragments(project.root, 'angular', '.eslintrc.json'), readFileSync(joinPathFragments(__dirname, 'files', '.eslintrc.angular.json'), 'utf8'));
     }
   });
-
-  // TODO: update all references to the all package (mostly from the helper scripts)
 
   // remove from the root tsconfig the paths: "@scope/*": "packages/*",
   // add to the root tsconfig, for every package: "@scope/package": "packages/package/index.ts",
