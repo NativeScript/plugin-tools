@@ -29,6 +29,10 @@ export default async function (tree: Tree) {
 
   // remove the "all" package (we are moving everyone to nx run-many)
   removeProjectConfiguration(tree, 'all');
+  let workspaceScripts = tree.read('tools/workspace-scripts.js', 'utf-8');
+  workspaceScripts = workspaceScripts.replace(`'nx run all:focus'`, `'nx g @nativescript/plugin-tools:focus-packages'`);
+  workspaceScripts = workspaceScripts.replace(`'nx run all:build'`, `'nx run-many --all --target=build.all'`)
+  tree.write('tools/workspace-scripts.js', workspaceScripts);
 
   // remove old legacy eslint
   tree.delete(`.eslintrc`);
