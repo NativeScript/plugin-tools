@@ -32,7 +32,7 @@ export default async function (tree: Tree) {
   // update all references to the all package (mostly from the helper scripts)
   let workspaceScripts = tree.read('tools/workspace-scripts.js', 'utf-8');
   workspaceScripts = workspaceScripts.replace(`'nx run all:focus'`, `'nx g @nativescript/plugin-tools:focus-packages'`);
-  workspaceScripts = workspaceScripts.replace(`'nx run all:build'`, `'nx run-many --all --target=build.all'`)
+  workspaceScripts = workspaceScripts.replace(`'nx run all:build'`, `'nx run-many --all --target=build.all'`);
   tree.write('tools/workspace-scripts.js', workspaceScripts);
 
   // remove old legacy eslint
@@ -99,8 +99,27 @@ export default async function (tree: Tree) {
     updateProjectConfiguration(tree, lib, projectConfig);
   });
 
-
-  // TODO: add "lint" target and "dependsOn" to all projects
+  // add "lint" target and "dependsOn" to all projects
+  getProjects(tree).forEach((project) => {
+    project.targets['lint'] = project.targets['lint'] || {
+      executor: '@nrwl/linter:eslint',
+      options: {
+        lintFilePatterns: [joinPathFragments(project.root, '**', '*.ts')],
+      },
+    };
+    if (project.projectType === 'application') {
+      const targets = new Set(['build', 'test', 'android', 'ios']);
+      for (const target of Object.keys(project.targets)) {
+        if (!targets.has(target)) {
+          continue;
+        }
+        project.targets[target].dependsOn = project.targets[target].dependsOn || [{
+          target: 'build.all',
+          projects: 'dependencies',
+        }];
+      }
+    }
+  });
   // TODO: add cache and overall improvements to the workspace.json (outputs, dependencies and some other stuff) - TODO: find exactly what these are
   // TODO: Edit the generators to no longer create the "all" link and also add the correct eslint files
   // TODO: Edit the generators to use the new tsconfig
