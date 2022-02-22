@@ -74,8 +74,10 @@ export default async function (tree: Tree) {
   getProjects(tree).forEach((project, name) => {
     if (project.projectType === 'application') {
       updateJson(tree, joinPathFragments(project.root, 'tsconfig.json'), (json) => {
-        delete json.compilerOptions.rootDirs; // TODO: check if this only needs to be removed in angular projects!
-        delete json.compilerOptions.baseUrl; // TODO: check if this only needs to be removed in angular projects!
+        if (name.indexOf('angular') > -1) {
+          delete json.compilerOptions.rootDirs;
+          delete json.compilerOptions.baseUrl;
+        }
         delete json.compilerOptions.paths[`@${scope}/*`];
         const relativePaths = {};
         for (const k of Object.keys(rootPaths)) {
@@ -113,15 +115,15 @@ export default async function (tree: Tree) {
         if (!targets.has(target)) {
           continue;
         }
-        project.targets[target].dependsOn = project.targets[target].dependsOn || [{
-          target: 'build.all',
-          projects: 'dependencies',
-        }];
+        project.targets[target].dependsOn = project.targets[target].dependsOn || [
+          {
+            target: 'build.all',
+            projects: 'dependencies',
+          },
+        ];
       }
     }
   });
-  // TODO: add cache and overall improvements to the workspace.json (outputs, dependencies and some other stuff) - TODO: find exactly what these are
-  // TODO: Edit the generators to no longer create the "all" link and also add the correct eslint files
   // TODO: Edit the generators to use the new tsconfig
 
   // updateDemoAppPackages(tree);
