@@ -213,6 +213,27 @@ describe('removeOldTaskRunnerOptions', () => {
     tree.write('packages/nativescript-angular-plugin/package.json', '{ "main": "other" }');
     tree.write('packages/nativescript-angular-plugin/other.ts', '');
 
+    tree.write('tools/workspace-scripts.js', `const npsUtils = require('nps-utils');
+
+    module.exports = {
+      message: 'NativeScript Plugins ~ made with ❤️  Choose a command to start...',
+      pageSize: 32,
+      scripts: {
+        '@nativescript': {
+            'build-all': {
+            script: 'nx run all:build',
+            description: 'Build all packages',
+          },
+        },
+        focus: {
+          reset: {
+            script: 'nx run all:focus',
+            description: 'Reset Focus',
+          },
+        }
+      }
+    };`);
+
     tree.write('apps/demo/tsconfig.json', `{
       "extends": "../../tsconfig.base.json",
       "compilerOptions": {
@@ -281,6 +302,27 @@ describe('removeOldTaskRunnerOptions', () => {
     console.log(tree.read('tsconfig.base.json', 'utf8'));
     console.log(tree.read('apps/demo/tsconfig.json', 'utf8'));
     console.log(tree.read('apps/demo-angular/tsconfig.json', 'utf8'));
+
+    expect(tree.read('tools/workspace-scripts.js', 'utf-8')).toEqual(`const npsUtils = require('nps-utils');
+
+    module.exports = {
+      message: 'NativeScript Plugins ~ made with ❤️  Choose a command to start...',
+      pageSize: 32,
+      scripts: {
+        '@nativescript': {
+            'build-all': {
+            script: 'nx run-many --all --target=build.all',
+            description: 'Build all packages',
+          },
+        },
+        focus: {
+          reset: {
+            script: 'nx g @nativescript/plugin-tools:focus-packages',
+            description: 'Reset Focus',
+          },
+        }
+      }
+    };`)
     
   });
 });

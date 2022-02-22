@@ -92,7 +92,7 @@ export default async function (tree: Tree) {
   // make sure build.all is cacheable
   libraries.forEach((lib) => {
     const projectConfig = readProjectConfiguration(tree, lib);
-    if (projectConfig.targets['build.all']) {
+    if (projectConfig.targets?.['build.all']) {
       projectConfig.targets['build.all'].outputs = projectConfig.targets['build.all'].outputs || [];
       if (!projectConfig.targets['build.all'].outputs.includes(`dist/packages/${lib}`)) {
         projectConfig.targets['build.all'].outputs.push(`dist/packages/${lib}`);
@@ -103,6 +103,7 @@ export default async function (tree: Tree) {
 
   // add "lint" target and "dependsOn" to all projects
   getProjects(tree).forEach((project) => {
+    project.targets = project.targets || {};
     project.targets['lint'] = project.targets['lint'] || {
       executor: '@nrwl/linter:eslint',
       options: {
