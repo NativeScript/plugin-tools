@@ -323,6 +323,52 @@ describe('removeOldTaskRunnerOptions', () => {
         }
       }
     };`)
+
+    expect(JSON.parse(tree.read('tsconfig.base.json', 'utf-8'))).toEqual(
+    {
+      "compilerOptions": {
+        "rootDir": ".",
+        "sourceMap": true,
+        "declaration": true,
+        "moduleResolution": "node",
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
+        "noEmitHelpers": false,
+        "target": "es2019",
+        "module": "esnext",
+        "lib": [
+          "es2019",
+          "dom"
+        ],
+        "skipLibCheck": true,
+        "skipDefaultLibCheck": true,
+        "baseUrl": ".",
+        "plugins": [
+          {
+            "transform": "@nativescript/webpack/dist/transformers/NativeClass",
+            "type": "raw"
+          }
+        ],
+        "paths": {
+          "@demo/shared": [
+            "tools/demo/index.ts"
+          ],
+          "@nativescript/nativescript-sample-plugin": [
+            "packages/nativescript-sample-plugin/index.d.ts"
+          ],
+          "@nativescript/nativescript-angular-plugin": [
+            "packages/nativescript-angular-plugin/other.ts"
+          ],
+          "@nativescript/nativescript-angular-plugin/angular": [
+            "packages/nativescript-angular-plugin/angular/index.ts"
+          ]
+        }
+      },
+      "exclude": [
+        "node_modules",
+        "tmp"
+      ]
+    });
     
   });
 });

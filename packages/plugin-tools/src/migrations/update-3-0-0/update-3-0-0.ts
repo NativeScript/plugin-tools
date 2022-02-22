@@ -57,13 +57,16 @@ export default async function (tree: Tree) {
   const libraries: string[] = [];
   const scope = getWorkspaceLayout(tree).npmScope;
   // TODO handle scope/noscope
-  const rootPaths = {};
+  const rootPaths: { [key: string]: string[] } = {};
   getProjects(tree).forEach((project, name) => {
     if (project.projectType === 'library') {
       libraries.push(name);
       const packageMain = readJson(tree, joinPathFragments('packages', name, 'package.json')).main || 'index';
       const indexFile = [`${packageMain}`, `${packageMain}.d.ts`, `${packageMain}.ts`, 'index.d.ts', 'index.ts'].find((f) => tree.exists(joinPathFragments('packages', name, f))) || 'index.d.ts';
-      rootPaths[`@${scope}/${name}`] = `packages/${name}/${indexFile}`;
+      rootPaths[`@${scope}/${name}`] = [`packages/${name}/${indexFile}`];
+      if(tree.exists(joinPathFragments(project.root, 'angular'))) {
+        rootPaths[`@${scope}/${name}/angular`] = [`packages/${name}/angular/index.ts`];
+      }
     }
   });
   updateJson(tree, 'tsconfig.base.json', (json) => {
@@ -81,7 +84,7 @@ export default async function (tree: Tree) {
         delete json.compilerOptions.paths[`@${scope}/*`];
         const relativePaths = {};
         for (const k of Object.keys(rootPaths)) {
-          relativePaths[k] = relative(project.root, rootPaths[k]);
+          relativePaths[k] = rootPaths[k].map((p) => relative(project.root, p));
         }
         json.compilerOptions.paths = { ...json.compilerOptions.paths, ...relativePaths };
         return json;
