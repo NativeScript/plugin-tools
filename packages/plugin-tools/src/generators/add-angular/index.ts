@@ -1,4 +1,4 @@
-import { generateFiles, joinPathFragments, readJson, Tree } from '@nrwl/devkit';
+import { generateFiles, joinPathFragments, readJson, Tree, updateJson } from '@nrwl/devkit';
 import { stringUtils } from '@nrwl/workspace';
 import { prerun, getNpmScope, getNxNpmScope } from '../../utils';
 import { Schema } from './schema';
@@ -10,6 +10,12 @@ export default async function (tree: Tree, schema: Schema) {
 
   prerun(tree);
   addAngularFiles(tree);
+  updateJson(tree, 'tsconfig.base.json', (json) => {
+    const packagePath = {};
+    packagePath[`${npmPackageName}/angular`] = [`packages/${name}/angular/index.ts`]
+    json.compilerOptions.paths = { ...json.compilerOptions.paths, ...packagePath };
+    return json;
+  });
   console.log(`Angular support added for "${npmPackageName}". Continue developing the Angular support in the packages/${name}/angular folder.`);
 }
 

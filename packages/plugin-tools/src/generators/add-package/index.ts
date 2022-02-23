@@ -1,4 +1,4 @@
-import { addProjectConfiguration, generateFiles, getProjects, joinPathFragments, readJson, readProjectConfiguration, Tree, updateProjectConfiguration } from '@nrwl/devkit';
+import { addProjectConfiguration, generateFiles, getProjects, joinPathFragments, readJson, readProjectConfiguration, Tree, updateJson, updateProjectConfiguration } from '@nrwl/devkit';
 import { stringUtils, addProjectToNxJsonInTree } from '@nrwl/workspace';
 import { updateReadMe, prerun, getNpmScope } from '../../utils';
 import syncPackagesWithDemos from '../sync-packages-with-demos';
@@ -14,6 +14,12 @@ export default async function (tree: Tree, schema: Schema) {
   updateWorkspaceConfig(tree);
   updateWorkspaceScripts(tree);
   updateReadMe(tree);
+  updateJson(tree, 'tsconfig.base.json', (json) => {
+    const packagePath = {};
+    packagePath[npmPackageName] = [`packages/${name}/index.d.ts`];
+    json.compilerOptions.paths = { ...json.compilerOptions.paths, ...packagePath };
+    return json;
+  });
   syncPackagesWithDemos(
     tree,
     {

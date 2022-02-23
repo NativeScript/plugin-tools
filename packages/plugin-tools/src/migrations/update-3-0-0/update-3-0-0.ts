@@ -15,7 +15,7 @@ export default async function (tree: Tree) {
     }
     json.devDependencies['@nativescript/angular'] = '^13.0.0';
     json.devDependencies['@nativescript/core'] = 'alpha';
-    json.devDependencies['@nativescript/types'] = '^8.0.0';
+    json.devDependencies['@nativescript/types'] = '^8.1.0';
     json.devDependencies['@ngtools/webpack'] = '^13.0.0';
     json.devDependencies['husky'] = '^7.0.0';
     json.devDependencies['nativescript-permissions'] = '1.3.11';
