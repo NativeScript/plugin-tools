@@ -64,7 +64,7 @@ export default async function (tree: Tree) {
       const packageMain = readJson(tree, joinPathFragments('packages', name, 'package.json')).main || 'index';
       const indexFile = [`${packageMain}`, `${packageMain}.d.ts`, `${packageMain}.ts`, 'index.d.ts', 'index.ts'].find((f) => tree.exists(joinPathFragments('packages', name, f))) || 'index.d.ts';
       rootPaths[`@${scope}/${name}`] = [`packages/${name}/${indexFile}`];
-      if(tree.exists(joinPathFragments(project.root, 'angular'))) {
+      if (tree.exists(joinPathFragments(project.root, 'angular'))) {
         rootPaths[`@${scope}/${name}/angular`] = [`packages/${name}/angular/index.ts`];
       }
     }
@@ -76,7 +76,13 @@ export default async function (tree: Tree) {
   });
   getProjects(tree).forEach((project, name) => {
     if (project.projectType === 'application') {
+      if (!tree.exists(joinPathFragments(project.root, 'tsconfig.json'))) {
+        return;
+      }
       updateJson(tree, joinPathFragments(project.root, 'tsconfig.json'), (json) => {
+        if (!json.compilerOptions?.paths) {
+          return json;
+        }
         if (name.indexOf('angular') > -1) {
           delete json.compilerOptions.rootDirs;
           delete json.compilerOptions.baseUrl;
