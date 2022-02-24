@@ -217,9 +217,9 @@ describe('update-3-0-0', () => {
     });
     // write a dummy index
     tree.write('packages/nativescript-angular-plugin/angular/index.ts', '');
-    tree.write('packages/nativescript-sample-plugin/package.json', '{ "main": "index" }');
+    tree.write('packages/nativescript-sample-plugin/package.json', '{ "name": "@nativescript/nativescript-sample-plugin", "main": "index" }');
     tree.write('packages/nativescript-sample-plugin/index.d.ts', '');
-    tree.write('packages/nativescript-angular-plugin/package.json', '{ "main": "other" }');
+    tree.write('packages/nativescript-angular-plugin/package.json', '{ "name": "@nativescript/nativescript-angular-plugin", "main": "other" }');
     tree.write('packages/nativescript-angular-plugin/other.ts', '');
 
     tree.write(
@@ -329,7 +329,7 @@ describe('update-3-0-0', () => {
       scripts: {
         '@nativescript': {
             'build-all': {
-            script: 'nx run-many --all --target=build.all',
+            script: 'nx run-many --target=build.all --all',
             description: 'Build all packages',
           },
         },
@@ -393,13 +393,14 @@ describe('update-3-0-0', () => {
       compilerOptions: {
         paths: {
           '~/*': ['src/*'],
-          '@demo/shared': ['../../tools/demo/index.ts'],
-          '@nativescript/nativescript-sample-plugin': ['../../packages/nativescript-sample-plugin/index.d.ts'],
-          '@nativescript/nativescript-angular-plugin': ['../../packages/nativescript-angular-plugin/other.ts'],
-          '@nativescript/nativescript-angular-plugin/angular': ['../../packages/nativescript-angular-plugin/angular/index.ts'],
+          '@demo/shared': ['tools/demo/index.ts'],
+          '@nativescript/nativescript-sample-plugin': ['packages/nativescript-sample-plugin/index.d.ts'],
+          '@nativescript/nativescript-angular-plugin': ['packages/nativescript-angular-plugin/other.ts'],
+          '@nativescript/nativescript-angular-plugin/angular': ['packages/nativescript-angular-plugin/angular/index.ts'],
         },
       },
       files: ['./references.d.ts', './src/main.ts', './src/polyfills.ts'],
+      include: ['../../packages/**/references.d.ts']
     });
   });
 });

@@ -8,6 +8,7 @@ export default async function (tree: Tree) {
   migrateEslint(tree);
   updateTsConfigPaths(tree);
   updateProjectTargets(tree);
+  addResourcesPodfile(tree);
   // TODO: Edit the generators to use the new tsconfig
   doNxMigrations(tree);
   migrateNgPackagr(tree);
@@ -91,11 +92,13 @@ function updateTsConfigPaths(tree: Tree) {
   const rootPaths: { [key: string]: string[] } = {};
   getProjects(tree).forEach((project, name) => {
     if (project.projectType === 'library') {
-      const packageMain = readJson(tree, joinPathFragments('packages', name, 'package.json')).main || readJson(tree, joinPathFragments('packages', name, 'package.json')).typings || 'index';
+      const packageJson = readJson(tree, joinPathFragments('packages', name, 'package.json'));
+      const packageName = packageJson.name;
+      const packageMain = packageJson.main || packageJson.typings || 'index';
       const indexFile = [`${packageMain}`, `${packageMain}.d.ts`, `${packageMain}.ts`, 'index.d.ts', 'index.ts'].find((f) => tree.exists(joinPathFragments('packages', name, f))) || 'index.d.ts';
-      rootPaths[`@${scope}/${name}`] = [`packages/${name}/${indexFile}`];
+      rootPaths[`${packageName}`] = [`packages/${name}/${indexFile}`];
       if (tree.exists(joinPathFragments(project.root, 'angular'))) {
-        rootPaths[`@${scope}/${name}/angular`] = [`packages/${name}/angular/index.ts`];
+        rootPaths[`${packageName}/angular`] = [`packages/${name}/angular/index.ts`];
       }
     }
   });
@@ -103,6 +106,7 @@ function updateTsConfigPaths(tree: Tree) {
     json.compilerOptions = json.compilerOptions || {};
     json.compilerOptions.paths = json.compilerOptions.paths || {};
     delete json.compilerOptions.paths[`@${scope}/*`];
+    delete json.compilerOptions.paths[`nativescript-*`];
     json.compilerOptions.paths = { ...json.compilerOptions.paths, ...rootPaths };
     json.compilerOptions.lib = json.compilerOptions.lib || [];
     if (json.compilerOptions.lib && json.compilerOptions.lib.length > 0 && !json.compilerOptions.lib.find((l) => l.toLowerCase() === 'dom')) {
@@ -120,11 +124,17 @@ function updateTsConfigPaths(tree: Tree) {
           return json;
         }
         delete json.compilerOptions.paths[`@${scope}/*`];
+        delete json.compilerOptions.paths[`nativescript-*`];
         if (name.indexOf('angular') > -1) {
           delete json.compilerOptions.rootDirs;
           delete json.compilerOptions.baseUrl;
           // since we no longer set rootDirs, we need the absolute paths
           json.compilerOptions.paths = { ...json.compilerOptions.paths, ...rootPaths };
+          let demoShared: string[] = json.compilerOptions.paths['@demo/shared'] || [];
+          demoShared = demoShared.map((v) => v.startsWith('../../') ? v.replace('../../', '') : v);
+          if(demoShared.length > 0) {
+            json.compilerOptions.paths['@demo/shared'] = demoShared;
+          }
           json.include = json.include || [];
           json.include.push('../../packages/**/references.d.ts'); //include the packages reference files
         } else {
@@ -149,9 +159,10 @@ function updateProjectTargets(tree: Tree) {
     const projectConfig = readProjectConfiguration(tree, name);
     if (projectConfig.targets?.['build.all']) {
       projectConfig.targets['build.all'].outputs = projectConfig.targets['build.all'].outputs || [];
-      if (!projectConfig.targets['build.all'].outputs.includes(`dist/packages/${name}`)) {
-        projectConfig.targets['build.all'].outputs.push(`dist/packages/${name}`);
-      }
+      projectConfig.targets['build.all'].outputs = [`dist/packages/${name}`];
+    }
+    if (projectConfig.targets?.['focus']) {
+      delete projectConfig.targets['focus'].outputs;
     }
     updateProjectConfiguration(tree, name, projectConfig);
   });
@@ -179,6 +190,12 @@ function updateProjectTargets(tree: Tree) {
     }
     updateProjectConfiguration(tree, name, project);
   });
+}
+
+function addResourcesPodfile(tree: Tree) {
+  if (!tree.exists('tools/assets/App_Resources/iOS/Podfile')) {
+    generateFiles(tree, joinPathFragments(__dirname, 'files_podfile'), 'tools/assets/App_Resources/iOS', { dot: '.' });
+  }
 }
 
 function doNxMigrations(tree: Tree) {
