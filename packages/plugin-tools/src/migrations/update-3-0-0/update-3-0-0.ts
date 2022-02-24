@@ -223,6 +223,15 @@ function doNxMigrations(tree: Tree) {
   // TODO: should we do this or call nx migrations?
   updateJson(tree, 'nx.json', (json) => {
     delete json.projects;
+    json.tasksRunnerOptions = json.tasksRunnerOptions || {
+      default: {
+        runner: '@nrwl/workspace/tasks-runners/default',
+        options: {
+          cacheableOperations: ['build', 'build.all', 'lint', 'test', 'e2e'],
+          runtimeCacheInputs: ['node -v'],
+        },
+      },
+    };
     return json;
   });
 }
