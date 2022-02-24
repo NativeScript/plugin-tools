@@ -131,8 +131,8 @@ function updateTsConfigPaths(tree: Tree) {
           // since we no longer set rootDirs, we need the absolute paths
           json.compilerOptions.paths = { ...json.compilerOptions.paths, ...rootPaths };
           let demoShared: string[] = json.compilerOptions.paths['@demo/shared'] || [];
-          demoShared = demoShared.map((v) => v.startsWith('../../') ? v.replace('../../', '') : v);
-          if(demoShared.length > 0) {
+          demoShared = demoShared.map((v) => (v.startsWith('../../') ? v.replace('../../', '') : v));
+          if (demoShared.length > 0) {
             json.compilerOptions.paths['@demo/shared'] = demoShared;
           }
           json.include = json.include || [];
@@ -176,17 +176,38 @@ function updateProjectTargets(tree: Tree) {
         lintFilePatterns: [joinPathFragments(project.root, '**', '*.ts')],
       },
     };
-    const targets = project.projectType === 'application' ? new Set(['build', 'test', 'android', 'ios']) : new Set(['build.all']);
+    const targets = project.projectType === 'application' ? new Set(['build', 'test', 'android', 'ios']) : new Set(['build', 'build.all']);
     for (const target of Object.keys(project.targets)) {
       if (!targets.has(target)) {
         continue;
       }
-      project.targets[target].dependsOn = project.targets[target].dependsOn || [
-        {
-          target: 'build.all',
-          projects: 'dependencies',
-        },
-      ];
+      // if (target === 'build.native') {
+      //   project.targets[target].outputs = [joinPathFragments(project.root, 'platforms')];
+      // }
+      project.targets[target].dependsOn = project.targets[target].dependsOn || [];
+      project.targets[target].dependsOn.push({
+        target: 'build.all',
+        projects: 'dependencies',
+      });
+      const additionalDeps = [];
+      if (project.targets[target].executor === '@nrwl/workspace:run-commands') {
+        if (project.targets[target].options?.commands) {
+          const newCommands = [...project.targets[target].options.commands];
+          for (const cmd of <string[]>project.targets[target].options.commands) {
+            const matches = cmd.match(/^nx run ([^\s]*?):([^\s:]*?)$/);
+            if (!matches) {
+              break;
+            }
+            newCommands.shift();
+            additionalDeps.push({
+              target: matches[2],
+              projects: matches[1] === name ? 'self' : matches[1],
+            });
+          }
+          project.targets[target].options.commands = newCommands;
+        }
+      }
+      project.targets[target].dependsOn.push(...additionalDeps);
     }
     updateProjectConfiguration(tree, name, project);
   });
