@@ -100,8 +100,14 @@ function updateTsConfigPaths(tree: Tree) {
     }
   });
   updateJson(tree, 'tsconfig.base.json', (json) => {
+    json.compilerOptions = json.compilerOptions || {};
+    json.compilerOptions.paths = json.compilerOptions.paths || {};
     delete json.compilerOptions.paths[`@${scope}/*`];
     json.compilerOptions.paths = { ...json.compilerOptions.paths, ...rootPaths };
+    json.compilerOptions.lib = json.compilerOptions.lib || [];
+    if (json.compilerOptions.lib && json.compilerOptions.lib.length > 0 && !json.compilerOptions.lib.find((l) => l.toLowerCase() === 'dom')) {
+      json.compilerOptions.lib = [...(json.compilerOptions.lib || []), 'dom'];
+    }
     return json;
   });
   getProjects(tree).forEach((project, name) => {
@@ -113,16 +119,21 @@ function updateTsConfigPaths(tree: Tree) {
         if (!json.compilerOptions?.paths) {
           return json;
         }
+        delete json.compilerOptions.paths[`@${scope}/*`];
         if (name.indexOf('angular') > -1) {
           delete json.compilerOptions.rootDirs;
           delete json.compilerOptions.baseUrl;
+          // since we no longer set rootDirs, we need the absolute paths
+          json.compilerOptions.paths = { ...json.compilerOptions.paths, ...rootPaths };
+          json.include = json.include || [];
+          json.include.push('../../packages/**/references.d.ts'); //include the packages reference files
+        } else {
+          const relativePaths = {};
+          for (const k of Object.keys(rootPaths)) {
+            relativePaths[k] = rootPaths[k].map((p) => relative(project.root, p));
+          }
+          json.compilerOptions.paths = { ...json.compilerOptions.paths, ...relativePaths };
         }
-        delete json.compilerOptions.paths[`@${scope}/*`];
-        const relativePaths = {};
-        for (const k of Object.keys(rootPaths)) {
-          relativePaths[k] = rootPaths[k].map((p) => relative(project.root, p));
-        }
-        json.compilerOptions.paths = { ...json.compilerOptions.paths, ...relativePaths };
         return json;
       });
     }
@@ -203,6 +214,7 @@ function migrateNgPackagr(tree: Tree) {
     });
     updateJson(tree, joinPathFragments(project.root, 'angular', 'tsconfig.json'), (json) => {
       json.compilerOptions = json.compilerOptions || {};
+      // ensure we have the "dom" lib for angular at any costs
       if (!json.compilerOptions.lib && rootLibs.length > 0 && !rootLibs.find((l) => l.toLowerCase() === 'dom')) {
         json.compilerOptions.lib = [...rootLibs, 'dom'];
       }
