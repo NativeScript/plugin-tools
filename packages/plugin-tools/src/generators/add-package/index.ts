@@ -89,15 +89,31 @@ function updateWorkspaceConfig(tree: Tree) {
               output: './platforms/',
             },
           ],
+          dependsOn: [
+            {
+              target: 'build.all',
+              projects: 'dependencies',
+            },
+          ],
         },
       },
       'build.all': {
         executor: '@nrwl/workspace:run-commands',
-        outputs: [`dist/packages/${name}`],
         options: {
-          commands: [`nx run ${name}:build`, `node tools/scripts/build-finish.ts ${name}`],
+          commands: [`node tools/scripts/build-finish.ts ${name}`],
           parallel: false,
         },
+        outputs: [`dist/packages/${name}`],
+        dependsOn: [
+          {
+            target: 'build.all',
+            projects: 'dependencies',
+          },
+          {
+            target: 'build',
+            projects: 'self',
+          },
+        ],
       },
       focus: {
         executor: '@nrwl/workspace:run-commands',

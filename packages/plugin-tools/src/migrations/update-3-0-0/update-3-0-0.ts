@@ -9,6 +9,7 @@ export default async function (tree: Tree) {
   updateTsConfigPaths(tree);
   updateProjectTargets(tree);
   addResourcesPodfile(tree);
+  addNxIgnore(tree);
   // TODO: Edit the generators to use the new tsconfig
   doNxMigrations(tree);
   migrateNgPackagr(tree);
@@ -216,6 +217,19 @@ function updateProjectTargets(tree: Tree) {
 function addResourcesPodfile(tree: Tree) {
   if (!tree.exists('tools/assets/App_Resources/iOS/Podfile')) {
     generateFiles(tree, joinPathFragments(__dirname, 'files_podfile'), 'tools/assets/App_Resources/iOS', { dot: '.' });
+  }
+}
+
+function addNxIgnore(tree: Tree) {
+  const nxIgnoreFile = '.nxignore';
+  let nxIgnore = '';
+  if (tree.exists(nxIgnoreFile)) {
+    nxIgnore = tree.read(nxIgnoreFile, 'utf-8') + '\n';
+  }
+  const focusOffClause = 'apps/**/*_off';
+  if (nxIgnore.indexOf(focusOffClause) === -1) {
+    nxIgnore += focusOffClause;
+    tree.write(nxIgnoreFile, nxIgnore);
   }
 }
 
