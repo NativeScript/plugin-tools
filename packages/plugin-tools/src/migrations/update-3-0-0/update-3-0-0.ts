@@ -1,6 +1,5 @@
 import { generateFiles, getProjects, getWorkspaceLayout, joinPathFragments, readJson, readProjectConfiguration, readWorkspaceConfiguration, removeProjectConfiguration, Tree, updateJson, updateProjectConfiguration } from '@nrwl/devkit';
 import { convertToNxProjectGenerator } from '@nrwl/workspace';
-import { readFile, readFileSync } from 'fs';
 import { relative } from 'path';
 
 export default async function (tree: Tree) {
@@ -38,15 +37,14 @@ export default async function (tree: Tree) {
   // remove old legacy eslint
   tree.delete(`.eslintrc`);
   // update root .eslintrc > .eslintrc.json
-  tree.write(`.eslintrc.json`, readFileSync(joinPathFragments(__dirname, 'files', '.eslintrc.json'), 'utf8'));
-  // generateFiles(tree, joinPathFragments(__dirname, 'files'), '.eslintrc.json', {});
+  generateFiles(tree, joinPathFragments(__dirname, 'files_root'), '.', { dot: '.' });
 
   // for all apps and packages add .eslintrc
   getProjects(tree).forEach((project, name) => {
-    tree.write(joinPathFragments(project.root, '.eslintrc.json'), readFileSync(joinPathFragments(__dirname, 'files', '.eslintrc.package.json'), 'utf8'));
+    generateFiles(tree, joinPathFragments(__dirname, 'files_project'), project.root, { dot: '.' });
     // for all packages that have angular implementations add a custom .eslintrc inside the angular/ folder that extends the package's eslint
     if (tree.exists(joinPathFragments(project.root, 'angular'))) {
-      tree.write(joinPathFragments(project.root, 'angular', '.eslintrc.json'), readFileSync(joinPathFragments(__dirname, 'files', '.eslintrc.angular.json'), 'utf8'));
+      generateFiles(tree, joinPathFragments(__dirname, 'files_angular'), joinPathFragments(project.root, 'angular'), { dot: '.' });
     }
   });
 
