@@ -1,8 +1,36 @@
-import { generateFiles, getProjects, getWorkspaceLayout, joinPathFragments, readJson, readProjectConfiguration, readWorkspaceConfiguration, removeProjectConfiguration, Tree, updateJson, updateProjectConfiguration } from '@nrwl/devkit';
+import { formatFiles, generateFiles, getProjects, getWorkspaceLayout, joinPathFragments, readJson, readProjectConfiguration, readWorkspaceConfiguration, removeProjectConfiguration, Tree, updateJson, updateProjectConfiguration } from '@nrwl/devkit';
 import { convertToNxProjectGenerator } from '@nrwl/workspace';
 import { relative } from 'path';
 
 export default async function (tree: Tree) {
+  updateDependencies(tree);
+  removeAllPackage(tree);
+  migrateEslint(tree);
+  updateTsConfigPaths(tree);
+  updateProjectTargets(tree);
+  // TODO: Edit the generators to use the new tsconfig
+  doNxMigrations(tree);
+  migrateNgPackagr(tree);
+
+  // updateDemoAppPackages(tree);
+
+  // Last Step, migrate plugin workspace to nx-project config style
+  convertToNxProjectGenerator(tree, {
+    all: true,
+  });
+
+  await formatFiles(tree);
+
+  console.log(`\n   NOTE: Your plugin workspace is now migrated. Run this to finish the dependency cleanup:`);
+  console.log(`\n`);
+  console.log(`      npm run setup`);
+  console.log(`\n`);
+  console.log(`   This will ensure your workspace is properly reset with all the updates.`);
+  console.log(`   It is also recommended to clean all your demo apps.`);
+  console.log(`\n`);
+}
+
+function updateDependencies(tree: Tree) {
   updateJson(tree, 'package.json', (json) => {
     if (json.devDependencies['@angular/core']) {
       json.devDependencies['@angular-devkit/build-angular'] = '^13.2.0';
@@ -25,15 +53,19 @@ export default async function (tree: Tree) {
     json.devDependencies['typescript'] = '~4.5.5';
     return json;
   });
+}
 
+function removeAllPackage(tree: Tree) {
   // remove the "all" package (we are moving everyone to nx run-many)
   removeProjectConfiguration(tree, 'all');
   // update all references to the all package (mostly from the helper scripts)
   let workspaceScripts = tree.read('tools/workspace-scripts.js', 'utf-8');
   workspaceScripts = workspaceScripts.replace(`'nx run all:focus'`, `'nx g @nativescript/plugin-tools:focus-packages'`);
-  workspaceScripts = workspaceScripts.replace(`'nx run all:build'`, `'nx run-many --all --target=build.all'`);
+  workspaceScripts = workspaceScripts.replace(`'nx run all:build'`, `'nx run-many --target=build.all --all'`);
   tree.write('tools/workspace-scripts.js', workspaceScripts);
+}
 
+function migrateEslint(tree: Tree) {
   // remove old legacy eslint
   tree.delete(`.eslintrc`);
   // update root .eslintrc > .eslintrc.json
@@ -47,19 +79,19 @@ export default async function (tree: Tree) {
       generateFiles(tree, joinPathFragments(__dirname, 'files_angular'), joinPathFragments(project.root, 'angular'), { dot: '.' });
     }
   });
+}
 
+function updateTsConfigPaths(tree: Tree) {
   // remove from the root tsconfig the paths: "@scope/*": "packages/*",
   // add to the root tsconfig, for every package: "@scope/package": "packages/package/index.ts",
   // add to the root tsconfig, for every package with angular: "@scope/package/angular": "packages/package/angular/index.ts"
   // on apps' tsconfig.json, change paths to be { "~/": "app/*", ...all the things from the root tsconfig paths }
-  const libraries: string[] = [];
   const scope = getWorkspaceLayout(tree).npmScope;
   // TODO handle scope/noscope
   const rootPaths: { [key: string]: string[] } = {};
   getProjects(tree).forEach((project, name) => {
     if (project.projectType === 'library') {
-      libraries.push(name);
-      const packageMain = readJson(tree, joinPathFragments('packages', name, 'package.json')).main || 'index';
+      const packageMain = readJson(tree, joinPathFragments('packages', name, 'package.json')).main || readJson(tree, joinPathFragments('packages', name, 'package.json')).typings || 'index';
       const indexFile = [`${packageMain}`, `${packageMain}.d.ts`, `${packageMain}.ts`, 'index.d.ts', 'index.ts'].find((f) => tree.exists(joinPathFragments('packages', name, f))) || 'index.d.ts';
       rootPaths[`@${scope}/${name}`] = [`packages/${name}/${indexFile}`];
       if (tree.exists(joinPathFragments(project.root, 'angular'))) {
@@ -95,21 +127,26 @@ export default async function (tree: Tree) {
       });
     }
   });
+}
 
+function updateProjectTargets(tree: Tree) {
   // make sure build.all is cacheable
-  libraries.forEach((lib) => {
-    const projectConfig = readProjectConfiguration(tree, lib);
+  getProjects(tree).forEach((project, name) => {
+    if (project.projectType === 'application') {
+      return;
+    }
+    const projectConfig = readProjectConfiguration(tree, name);
     if (projectConfig.targets?.['build.all']) {
       projectConfig.targets['build.all'].outputs = projectConfig.targets['build.all'].outputs || [];
-      if (!projectConfig.targets['build.all'].outputs.includes(`dist/packages/${lib}`)) {
-        projectConfig.targets['build.all'].outputs.push(`dist/packages/${lib}`);
+      if (!projectConfig.targets['build.all'].outputs.includes(`dist/packages/${name}`)) {
+        projectConfig.targets['build.all'].outputs.push(`dist/packages/${name}`);
       }
     }
-    updateProjectConfiguration(tree, lib, projectConfig);
+    updateProjectConfiguration(tree, name, projectConfig);
   });
 
   // add "lint" target and "dependsOn" to all projects
-  getProjects(tree).forEach((project) => {
+  getProjects(tree).forEach((project, name) => {
     project.targets = project.targets || {};
     project.targets['lint'] = project.targets['lint'] || {
       executor: '@nrwl/linter:eslint',
@@ -117,37 +154,87 @@ export default async function (tree: Tree) {
         lintFilePatterns: [joinPathFragments(project.root, '**', '*.ts')],
       },
     };
-    if (project.projectType === 'application') {
-      const targets = new Set(['build', 'test', 'android', 'ios']);
-      for (const target of Object.keys(project.targets)) {
-        if (!targets.has(target)) {
-          continue;
-        }
-        project.targets[target].dependsOn = project.targets[target].dependsOn || [
-          {
-            target: 'build.all',
-            projects: 'dependencies',
-          },
-        ];
+    const targets = project.projectType === 'application' ? new Set(['build', 'test', 'android', 'ios']) : new Set(['build.all']);
+    for (const target of Object.keys(project.targets)) {
+      if (!targets.has(target)) {
+        continue;
       }
+      project.targets[target].dependsOn = project.targets[target].dependsOn || [
+        {
+          target: 'build.all',
+          projects: 'dependencies',
+        },
+      ];
     }
+    updateProjectConfiguration(tree, name, project);
   });
-  // TODO: Edit the generators to use the new tsconfig
+}
 
-  // updateDemoAppPackages(tree);
+function doNxMigrations(tree: Tree) {
+  // TODO: should we do this or call nx migrations?
+  updateJson(tree, 'nx.json', (json) => {
+    delete json.projects;
+    return json;
+  });
+}
 
-  // Last Step, migrate plugin workspace to nx-project config style
-  convertToNxProjectGenerator(tree, {
-    all: true,
+function migrateNgPackagr(tree: Tree) {
+  // ng-packagr migration
+  const rootLibs: string[] = readJson(tree, 'tsconfig.base.json')?.compilerOptions?.lib || [];
+  getProjects(tree).forEach((project) => {
+    if (project.projectType === 'application' || !tree.exists(joinPathFragments(project.root, 'angular', 'package.json')) || tree.exists(joinPathFragments(project.root, 'angular', 'ng-package.json'))) {
+      return;
+    }
+    const oldPackage = readJson(tree, joinPathFragments(project.root, 'angular', 'package.json'));
+    // tree.delete(joinPathFragments(project.root, 'angular', 'package.json'));
+    updateJson(tree, joinPathFragments(project.root, 'angular', 'package.json'), (json) => {
+      delete json.ngPackage;
+      return json;
+    });
+    tree.write(joinPathFragments(project.root, 'angular', 'ng-package.json'), `{}`);
+    updateJson(tree, joinPathFragments(project.root, 'angular', 'ng-package.json'), (json) => {
+      json.$schema = relative(joinPathFragments(project.root, 'angular'), 'node_modules/ng-packagr/ng-package.schema.json');
+      json.lib = {};
+      json.lib.entryFile = oldPackage?.ngPackage?.entryFile || 'index.ts';
+      json.allowedNonPeerDependencies = oldPackage?.ngPackage?.allowedNonPeerDependencies || ['.'];
+      const distFolder = relative(joinPathFragments(project.root, 'angular'), joinPathFragments('dist', project.root, 'angular'));
+      json.dest = json.dest || distFolder;
+      return json;
+    });
+    updateJson(tree, joinPathFragments(project.root, 'angular', 'tsconfig.json'), (json) => {
+      json.compilerOptions = json.compilerOptions || {};
+      if (!json.compilerOptions.lib && rootLibs.length > 0 && !rootLibs.find((l) => l.toLowerCase() === 'dom')) {
+        json.compilerOptions.lib = [...rootLibs, 'dom'];
+      }
+      return json;
+    });
+    updateJson(tree, joinPathFragments(project.root, 'angular', 'tsconfig.angular.json'), (json) => {
+      if ((json.extends as string)?.indexOf('ng-packagr/lib/ts/conf/tsconfig.ngc.json') == -1) {
+        return;
+      }
+
+      const distFolder = relative(joinPathFragments(project.root, 'angular'), joinPathFragments('dist', 'out-tsc'));
+      json.compilerOptions = json.compilerOptions || {};
+      json.compilerOptions.outDir = json.compilerOptions.outDir || distFolder;
+      json.compilerOptions.declarationDir = json.compilerOptions.declarationDir || distFolder;
+      // TODO: we can set this if we want to support angular 11 or lower
+      // WITHOUT THIS LINE ONLY ANGULAR 12 AND ABOVE WILL WORK
+      // json.angularCompilerOptions = json.angularCompilerOptions || {};
+      // json.angularCompilerOptions.compilationMode = json.angularCompilerOptions.compilationMode || 'full';
+
+      json.files = json.files || [oldPackage?.ngPackage?.entryFile || 'index.ts'];
+      return json;
+    });
   });
 
-  console.log(`\n   NOTE: Your plugin workspace is now migrated. Run this to finish the dependency cleanup:`);
-  console.log(`\n`);
-  console.log(`      npm run setup`);
-  console.log(`\n`);
-  console.log(`   This will ensure your workspace is properly reset with all the updates.`);
-  console.log(`   It is also recommended to clean all your demo apps.`);
-  console.log(`\n`);
+  const buildFinishPath = joinPathFragments('tools', 'scripts', 'build-finish.ts');
+  if (tree.exists(buildFinishPath)) {
+    let contents = tree.read(buildFinishPath, 'utf-8');
+    contents = contents.replace(`.forProject(path.join('packages', packageName, 'angular', 'package.json'))`, `.forProject(path.join('packages', packageName, 'angular', 'ng-package.json'))`);
+    contents = contents.replace('copyAngularDist();', 'console.log(`${npmPackageName} angular built successfully.`);\nfinishPreparation();');
+
+    tree.write(buildFinishPath, contents);
+  }
 }
 
 function updateDemoAppPackages(tree: Tree) {
