@@ -122,6 +122,12 @@ function updateWorkspaceConfig(tree: Tree) {
           parallel: false,
         },
       },
+      lint: {
+        executor: '@nrwl/linter:eslint',
+        options: {
+          lintFilePatterns: [`packages/${name}/**/*.ts`],
+        },
+      },
     },
     tags: [],
   });
