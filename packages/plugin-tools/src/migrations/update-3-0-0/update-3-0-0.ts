@@ -158,6 +158,9 @@ function updateProjectTargets(tree: Tree) {
       return;
     }
     const projectConfig = readProjectConfiguration(tree, name);
+    if (projectConfig.targets?.['build']) {
+      projectConfig.targets['build'].executor = '@nrwl/js:tsc';
+    }
     if (projectConfig.targets?.['build.all']) {
       projectConfig.targets['build.all'].outputs = projectConfig.targets['build.all'].outputs || [];
       projectConfig.targets['build.all'].outputs = [`dist/packages/${name}`];
