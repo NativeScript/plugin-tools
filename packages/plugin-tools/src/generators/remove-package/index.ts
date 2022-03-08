@@ -14,27 +14,27 @@ export default function (tree: Tree, schema: Schema) {
     const packageJson = readJson(tree, packagePath);
     npmPackageName = packageJson.name;
     removePackage(tree);
-  
+
     removeProjectConfiguration(tree, name);
     removeFromBuildAll(tree);
-  
+
     updateReadMe(tree, getUpdatedPackages(tree));
-  
+
     for (const t of getDemoTypes()) {
       const demoAppRoot = getDemoAppRoot(t);
-      if (tree.exists(`${demoAppRoot}/package.json`)) { 
+      if (tree.exists(`${demoAppRoot}/package.json`)) {
         removeDemoFiles(tree, t, demoAppRoot);
         removeFromDemoIndex(tree, t, demoAppRoot);
         updateDemoDependencies(tree, demoAppRoot);
       }
     }
-  
+
     removeSharedDemoFiles(tree);
     updateDemoSharedIndex(tree);
-  
+
     console.log(`"${npmPackageName}" removed from 'packages' and removed from all demo apps.`);
   } else {
-    console.error(`Nothing found at 'packages/${name}/package.json' to remove.`)
+    console.error(`Nothing found at 'packages/${name}/package.json' to remove.`);
   }
 }
 
@@ -171,7 +171,6 @@ export function resetAngularRoutes(tree: Tree) {
 }
 
 export function updateDemoDependencies(tree: Tree, demoAppRoot: string) {
-  
   const packagePath = `${demoAppRoot}/package.json`;
 
   updateJson(tree, packagePath, (json) => {

@@ -1,21 +1,12 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "rootDirs": [
-      ".",
-      "../.."
-    ],
+    "rootDirs": [".", "../.."],
     "baseUrl": ".",
     "paths": {
-      "~/*": [
-        "app/*"
-      ],
-      "@demo/shared": [
-        "../../tools/demo/index.ts"
-      ],
-      "<%= npmScope %>/*": [
-        "../../packages/*"
-      ]
+      "~/*": ["app/*"],
+      "@demo/shared": ["../../tools/demo/index.ts"],
+      "<%= npmScope %>/*": ["../../packages/*"]
     }
   }
 }

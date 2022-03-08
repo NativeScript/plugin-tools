@@ -1,7 +1,6 @@
 import { readJson, Tree, updateJson } from '@nrwl/devkit';
 
 export default async function (tree: Tree) {
-
   updateJson(tree, 'package.json', (json) => {
     json.devDependencies['@nativescript/webpack'] = '~5.0.0';
     json.devDependencies['typescript'] = '~4.3.5';
@@ -18,7 +17,6 @@ export default async function (tree: Tree) {
   console.log(`   It is also recommended to clean all your demo apps.`);
   console.log(`\n`);
 }
-
 
 function updateDemoAppPackages(tree: Tree) {
   const appFolders = tree.children('apps');

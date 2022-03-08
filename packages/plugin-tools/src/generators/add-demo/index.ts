@@ -13,7 +13,6 @@ export default async function (tree: Tree, schema: Schema) {
   } else {
     prerun(tree);
     addAppFiles(tree, schema.type);
-    addProjectToNxJsonInTree(demoName, {});
     updateWorkspaceConfig(tree, demoName, schema.type);
     updateWorkspaceScripts(tree, schema.type);
 
@@ -101,7 +100,7 @@ function updateRootTSConfig(tree: Tree, type: SupportedDemoType) {
 
 function updateWorkspaceConfig(tree: Tree, name: string, type: SupportedDemoType) {
   const srcFolder = getSrcFolderForType(type);
-  
+
   addProjectConfiguration(tree, name, {
     root: `apps/${name}/`,
     projectType: 'application',
@@ -116,23 +115,47 @@ function updateWorkspaceConfig(tree: Tree, name: string, type: SupportedDemoType
           release: true,
           forDevice: true,
         },
+        dependsOn: [
+          {
+            target: 'build.all',
+            projects: 'dependencies',
+          },
+        ],
       },
       ios: {
         executor: '@nativescript/nx:build',
         options: {
           platform: 'ios',
         },
+        dependsOn: [
+          {
+            target: 'build.all',
+            projects: 'dependencies',
+          },
+        ],
       },
       android: {
         executor: '@nativescript/nx:build',
         options: {
           platform: 'android',
         },
+        dependsOn: [
+          {
+            target: 'build.all',
+            projects: 'dependencies',
+          },
+        ],
       },
       clean: {
         executor: '@nativescript/nx:build',
         options: {
           clean: true,
+        },
+      },
+      lint: {
+        executor: '@nrwl/linter:eslint',
+        options: {
+          lintFilePatterns: [`apps/${name}/**/*.ts`],
         },
       },
     },

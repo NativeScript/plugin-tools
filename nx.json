@@ -18,17 +18,11 @@
       }
     ]
   },
-  "projects": {
-    "plugin-tools": {
-      "tags": []
-    },
-    "plugin-tools-e2e": {
-      "tags": [],
-      "implicitDependencies": ["plugin-tools"]
-    }
-  },
   "workspaceLayout": {
     "appsDir": "e2e",
     "libsDir": "packages"
+  },
+  "cli": {
+    "defaultCollection": "@nrwl/workspace"
   }
 }

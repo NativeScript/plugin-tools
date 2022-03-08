@@ -1,4 +1,4 @@
-import { addProjectConfiguration, generateFiles, joinPathFragments, readJson, readProjectConfiguration, Tree, updateProjectConfiguration } from '@nrwl/devkit';
+import { addProjectConfiguration, generateFiles, getProjects, joinPathFragments, readJson, readProjectConfiguration, Tree, updateJson, updateProjectConfiguration } from '@nrwl/devkit';
 import { stringUtils, addProjectToNxJsonInTree } from '@nrwl/workspace';
 import { updateReadMe, prerun, getNpmScope } from '../../utils';
 import syncPackagesWithDemos from '../sync-packages-with-demos';
@@ -11,10 +11,15 @@ export default async function (tree: Tree, schema: Schema) {
   prerun(tree);
   npmPackageName = schema.isScoped ? `${getNpmScope()}/${name}` : name;
   addPackageFiles(tree);
-  addProjectToNxJsonInTree(name, {});
   updateWorkspaceConfig(tree);
   updateWorkspaceScripts(tree);
   updateReadMe(tree);
+  updateJson(tree, 'tsconfig.base.json', (json) => {
+    const packagePath = {};
+    packagePath[npmPackageName] = [`packages/${name}/index.d.ts`];
+    json.compilerOptions.paths = { ...json.compilerOptions.paths, ...packagePath };
+    return json;
+  });
   syncPackagesWithDemos(
     tree,
     {
@@ -48,16 +53,16 @@ function addPackageFiles(tree: Tree) {
       }
     }
   }
-  generateFiles(tree, joinPathFragments(__dirname, 'files'), `./packages/${name}`, { 
-    name, 
-    npmPackageName, 
+  generateFiles(tree, joinPathFragments(__dirname, 'files'), `./packages/${name}`, {
+    name,
+    npmPackageName,
     npmScope: getNpmScope(),
     repo,
     gitAuthorName,
     gitAuthorEmail,
-    stringUtils, 
-    tmpl: '', 
-    dot: '.' 
+    stringUtils,
+    tmpl: '',
+    dot: '.',
   });
 }
 
@@ -84,14 +89,31 @@ function updateWorkspaceConfig(tree: Tree) {
               output: './platforms/',
             },
           ],
+          dependsOn: [
+            {
+              target: 'build.all',
+              projects: 'dependencies',
+            },
+          ],
         },
       },
       'build.all': {
         executor: '@nrwl/workspace:run-commands',
         options: {
-          commands: [`nx run ${name}:build`, `node tools/scripts/build-finish.ts ${name}`],
+          commands: [`node tools/scripts/build-finish.ts ${name}`],
           parallel: false,
         },
+        outputs: [`dist/packages/${name}`],
+        dependsOn: [
+          {
+            target: 'build.all',
+            projects: 'dependencies',
+          },
+          {
+            target: 'build',
+            projects: 'self',
+          },
+        ],
       },
       focus: {
         executor: '@nrwl/workspace:run-commands',
@@ -100,31 +122,15 @@ function updateWorkspaceConfig(tree: Tree) {
           parallel: false,
         },
       },
-    },
-    tags: []
-  });
-  const allConfig = readProjectConfiguration(tree, 'all');
-  if (allConfig) {
-    let commands = [];
-    if (allConfig.targets?.build?.options?.commands) {
-      commands = allConfig.targets.build.options.commands;
-      commands.push(`nx run ${name}:build.all`);
-    }
-    updateProjectConfiguration(tree, 'all', {
-      ...allConfig,
-      targets: {
-        build: {
-          executor: allConfig.targets.build.executor,
-          outputs: ['dist/packages'],
-          options: {
-            commands,
-            parallel: false
-          },
+      lint: {
+        executor: '@nrwl/linter:eslint',
+        options: {
+          lintFilePatterns: [`packages/${name}/**/*.ts`],
         },
-        focus: allConfig.targets.focus
       },
-    });
-  }
+    },
+    tags: [],
+  });
 }
 
 function updateWorkspaceScripts(tree: Tree) {
