@@ -1,3 +1,12 @@
+# [3.0.0](https://github.com/NativeScript/plugin-tools/compare/2.3.0...3.0.0) (2022-03-08)
+
+
+### Features
+
+* nx latest and more improvements ([#12](https://github.com/NativeScript/plugin-tools/issues/12)) ([323f0ca](https://github.com/NativeScript/plugin-tools/commit/323f0cab9568ca01595e17bde32167ab9768ca4e))
+
+
+
 # [2.3.0](https://github.com/NativeScript/plugin-tools/compare/2.2.1...2.3.0) (2021-10-10)
 
 ### Features
