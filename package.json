@@ -1,6 +1,6 @@
 {
   "name": "@nativescript/plugin-tools-source",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "license": "MIT",
   "scripts": {
     "clean": "npx rimraf package-lock.json yarn.lock node_modules && yarn",

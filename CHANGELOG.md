@@ -1,3 +1,12 @@
+## [3.0.1](https://github.com/NativeScript/plugin-tools/compare/3.0.0...3.0.1) (2022-03-09)
+
+
+### Bug Fixes
+
+* ensure using Nx 13.8.5 @nrwl/js:tsc executor ([f8ff3be](https://github.com/NativeScript/plugin-tools/commit/f8ff3becc58f6ec14cda5510c9b834af61a44c79))
+
+
+
 # [3.0.0](https://github.com/NativeScript/plugin-tools/compare/2.3.0...3.0.0) (2022-03-08)
 
 
