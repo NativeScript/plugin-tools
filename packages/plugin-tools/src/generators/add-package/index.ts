@@ -73,7 +73,7 @@ function updateWorkspaceConfig(tree: Tree) {
     sourceRoot: `packages/${name}`,
     targets: {
       build: {
-        executor: '@nrwl/node:package',
+        executor: '@nrwl/js:tsc',
         options: {
           outputPath: `dist/packages/${name}`,
           tsConfig: `packages/${name}/tsconfig.json`,
