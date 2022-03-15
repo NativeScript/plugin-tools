@@ -1,3 +1,12 @@
+## [3.0.2](https://github.com/NativeScript/plugin-tools/compare/3.0.1...3.0.2) (2022-03-15)
+
+
+### Bug Fixes
+
+* migration should auto update demo app runtimes ([a47f610](https://github.com/NativeScript/plugin-tools/commit/a47f6108c8f9e200d4c898c22c87fbe8bc458eed))
+
+
+
 ## [3.0.1](https://github.com/NativeScript/plugin-tools/compare/3.0.0...3.0.1) (2022-03-09)
 
 
