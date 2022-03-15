@@ -14,7 +14,7 @@ export default async function (tree: Tree) {
   doNxMigrations(tree);
   migrateNgPackagr(tree);
 
-  // updateDemoAppPackages(tree);
+  updateDemoAppPackages(tree);
 
   // Last Step, migrate plugin workspace to nx-project config style
   convertToNxProjectGenerator(tree, {
@@ -331,24 +331,21 @@ function updateDemoAppPackages(tree: Tree) {
               break;
             }
           }
-          if (!hasNativeScriptRuntimes) {
-            // not a {N} demo app
-            return;
+          if (hasNativeScriptRuntimes) {
+            updateJson(tree, packagePath, (packageJson) => {
+              packageJson.devDependencies = {
+                ...(packageJson.devDependencies || {}),
+                '@nativescript/android': '~8.2.0',
+                '@nativescript/ios': '~8.2.0',
+              };
+    
+              return packageJson;
+            });
           }
         } else {
           // {N} demo app should have runtimes in devDependencies at least
-          return;
+          break;
         }
-
-        updateJson(tree, packagePath, (packageJson) => {
-          packageJson.devDependencies = {
-            ...(packageJson.devDependencies || {}),
-            '@nativescript/android': '~8.1.1',
-            '@nativescript/ios': '~8.1.0',
-          };
-
-          return packageJson;
-        });
       }
     }
   }
