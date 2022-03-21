@@ -16,7 +16,6 @@ export default function (tree: Tree, schema: Schema) {
     removePackage(tree);
 
     removeProjectConfiguration(tree, name);
-    removeFromBuildAll(tree);
 
     updateReadMe(tree, getUpdatedPackages(tree));
 
@@ -44,33 +43,6 @@ function removePackage(tree: Tree) {
   tree.delete(`packages/${name}`);
 }
 
-function removeFromBuildAll(tree: Tree) {
-  const allConfig = readProjectConfiguration(tree, 'all');
-  if (allConfig) {
-    let commands = [];
-    if (allConfig.targets?.build?.options?.commands) {
-      commands = allConfig.targets.build.options.commands;
-      const index = commands.indexOf(`nx run ${name}:build.all`);
-      if (index > -1) {
-        commands.splice(index, 1);
-      }
-    }
-    updateProjectConfiguration(tree, 'all', {
-      ...allConfig,
-      targets: {
-        build: {
-          executor: allConfig.targets.build.executor,
-          outputs: ['dist/packages'],
-          options: {
-            commands,
-            parallel: false,
-          },
-        },
-        focus: allConfig.targets.focus,
-      },
-    });
-  }
-}
 function removeDemoFiles(tree: Tree, type: SupportedDemoType, demoAppRoot: string) {
   const demoAppFolder = `${demoAppRoot}/${getPluginDemoPath(type)}`;
   console.log(`Removing demo files in "${demoAppFolder}"`);
