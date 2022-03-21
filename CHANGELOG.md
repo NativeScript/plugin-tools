@@ -1,3 +1,12 @@
+## [3.0.3](https://github.com/NativeScript/plugin-tools/compare/3.0.2...3.0.3) (2022-03-21)
+
+
+### Bug Fixes
+
+* remove-package handling ([211395d](https://github.com/NativeScript/plugin-tools/commit/211395d6c23911994bb398b78269eb84f0b81a8f))
+
+
+
 ## [3.0.2](https://github.com/NativeScript/plugin-tools/compare/3.0.1...3.0.2) (2022-03-15)
 
 
