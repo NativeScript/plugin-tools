@@ -1,5 +1,5 @@
 import { addProjectConfiguration, generateFiles, getProjects, joinPathFragments, readJson, readProjectConfiguration, Tree, updateJson, updateProjectConfiguration } from '@nrwl/devkit';
-import { stringUtils, addProjectToNxJsonInTree } from '@nrwl/workspace';
+import { stringUtils } from '@nrwl/workspace';
 import { updateReadMe, prerun, getNpmScope } from '../../utils';
 import syncPackagesWithDemos from '../sync-packages-with-demos';
 import { Schema } from './schema';
