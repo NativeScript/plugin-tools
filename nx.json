@@ -10,19 +10,37 @@
     },
     ".eslintrc.json": "*"
   },
-  "targetDependencies": {
-    "build": [
-      {
-        "target": "build",
-        "projects": "dependencies"
-      }
-    ]
-  },
   "workspaceLayout": {
     "appsDir": "e2e",
     "libsDir": "packages"
   },
-  "cli": {
-    "defaultCollection": "@nrwl/workspace"
+  "$schema": "./node_modules/nx/schemas/nx-schema.json",
+  "targetDefaults": {
+    "build": {
+      "dependsOn": [
+        "^build"
+      ]
+    }
+  },
+  "tasksRunnerOptions": {
+    "default": {
+      "runner": "nx/tasks-runners/default",
+      "options": {
+        "useDaemonProcess": false,
+        "cacheableOperations": [
+          "build",
+          "build.all",
+          "lint",
+          "test",
+          "e2e"
+        ],
+        "runtimeCacheInputs": [
+          "node -v"
+        ],
+        "canTrackAnalytics": false,
+        "showUsageWarnings": true,
+        "parallel": 1
+      }
+    }
   }
 }
