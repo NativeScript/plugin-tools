@@ -1,3 +1,12 @@
+## [4.0.3](https://github.com/NativeScript/plugin-tools/compare/4.0.2...4.0.3) (2022-07-04)
+
+
+### Features
+
+* include @nrwl/nx-cloud for executors ([9e46567](https://github.com/NativeScript/plugin-tools/commit/9e46567e16a021357b9f02e610451138e6f23a60))
+
+
+
 ## [4.0.2](https://github.com/NativeScript/plugin-tools/compare/4.0.1...4.0.2) (2022-07-04)
 
 
