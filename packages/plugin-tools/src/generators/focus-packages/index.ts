@@ -1,4 +1,4 @@
-import { sanitizeCollectionArgs, getDemoTypeFromName, updateDemoDependencies, setPackageNamesToUpdate, getAllPackages, resetIndexForDemoType, getPluginDemoPath, updateDemoSharedIndex, getNpmScope, prerun, getNpmPackageNames } from '../../utils';
+import { sanitizeCollectionArgs, getDemoTypeFromName, updateDemoDependencies, setPackageNamesToUpdate, getAllPackages, resetIndexForDemoType, getPluginDemoPath, updateDemoSharedIndex, getNpmScope, prerun, getNpmPackageNames, getSrcFolderForType } from '../../utils';
 import { Schema } from './schema';
 import { wrapAngularDevkitSchematic } from '@nrwl/devkit/ngcli-adapter';
 import { Tree } from '@nrwl/devkit';
@@ -29,6 +29,7 @@ export default async function (tree: Tree, schema: Schema) {
       // console.log(`demoAppRoot: ${demoAppRoot}`);
       const demoType = getDemoTypeFromName(dir);
       const demoViewsPath = `apps/${dir}/${getPluginDemoPath(demoType)}`;
+      const demoModalViewsPath = `apps/${dir}/${getSrcFolderForType(demoType)}/modals`;
       const demoAppRoot = `apps/${dir}`;
       // console.log(`demoType: ${demoType}`);
       updateDemoDependencies(tree, demoType, demoAppRoot, allPackages, true);
@@ -59,6 +60,31 @@ export default async function (tree: Tree, schema: Schema) {
               }
               if (tree.exists(tsClass)) {
                 tree.rename(tsClass, `${tsClass}_off`);
+              }
+            }
+            break;
+        }
+      }
+
+      const allModals = tree.children(demoModalViewsPath);
+      for (const filename of allModals) {
+        switch (demoType) {
+          case 'xml':
+            const currentFilename = `${demoModalViewsPath}/${filename}`;
+            let origFilename = currentFilename;
+            if (currentFilename.indexOf('_off') > -1) {
+              origFilename = currentFilename.split('_off')[0];
+            }
+            const relatedToFocusedPackage = focusPackages.find((p) => {
+              return origFilename.indexOf(p) > -1;
+            });
+            if (focusPackages.length === 0 || relatedToFocusedPackage) {
+              if (tree.exists(`${origFilename}_off`)) {
+                tree.rename(`${origFilename}_off`, origFilename);
+              }
+            } else {
+              if (tree.exists(origFilename)) {
+                tree.rename(origFilename, `${origFilename}_off`);
               }
             }
             break;
