@@ -35,6 +35,12 @@
       "version": "3.0.0",
       "description": "Migrate tools to 3.0.0",
       "implementation": "./src/migrations/update-3-0-0/update-3-0-0"
+    },
+    "update-to-4.0.0": {
+      "cli": "nx",
+      "version": "4.0.0",
+      "description": "Migrate tools to 4.0.0",
+      "implementation": "./src/migrations/update-4-0-0/update-4-0-0"
     }
   }
 }
