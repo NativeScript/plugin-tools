@@ -1,3 +1,12 @@
+## [4.0.1](https://github.com/NativeScript/plugin-tools/compare/4.0.0...4.0.1) (2022-07-04)
+
+
+### Bug Fixes
+
+* migration handling resilience with config updates ([fc9870a](https://github.com/NativeScript/plugin-tools/commit/fc9870adefa6ce2fb8807a7c7461b02d0d621e40))
+
+
+
 # [4.0.0](https://github.com/NativeScript/plugin-tools/compare/3.0.3...4.0.0) (2022-07-04)
 
 
