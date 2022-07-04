@@ -1,3 +1,14 @@
+# [4.0.0](https://github.com/NativeScript/plugin-tools/compare/3.0.3...4.0.0) (2022-07-04)
+
+
+### Features
+
+* **focus:** consider custom modals for demos ([3210cb2](https://github.com/NativeScript/plugin-tools/commit/3210cb21141009d03af8f8b3475df239f696a97d))
+* migration for latest nx ([b07021a](https://github.com/NativeScript/plugin-tools/commit/b07021a1df1f3945de7750d3a77fcb87f0b816c5))
+* nx and flavor updates ([afa72d4](https://github.com/NativeScript/plugin-tools/commit/afa72d4d0ae2137dfcfc0adab833afe869249180))
+
+
+
 ## [3.0.3](https://github.com/NativeScript/plugin-tools/compare/3.0.2...3.0.3) (2022-03-21)
 
 
