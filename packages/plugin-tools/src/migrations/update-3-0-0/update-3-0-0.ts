@@ -1,4 +1,4 @@
-import { formatFiles, generateFiles, getProjects, getWorkspaceLayout, joinPathFragments, readJson, readProjectConfiguration, readWorkspaceConfiguration, removeProjectConfiguration, Tree, updateJson, updateProjectConfiguration } from '@nrwl/devkit';
+import { formatFiles, generateFiles, getProjects, getWorkspaceLayout, joinPathFragments, readJson, readProjectConfiguration, readWorkspaceConfiguration, removeProjectConfiguration, TargetDependencyConfig, Tree, updateJson, updateProjectConfiguration } from '@nrwl/devkit';
 import { convertToNxProjectGenerator } from '@nrwl/workspace';
 import { relative } from 'path';
 
@@ -59,7 +59,11 @@ function updateDependencies(tree: Tree) {
 
 function removeAllPackage(tree: Tree) {
   // remove the "all" package (we are moving everyone to nx run-many)
-  removeProjectConfiguration(tree, 'all');
+  try {
+    removeProjectConfiguration(tree, 'all');
+  } catch (err) {
+    // may not exist
+  }
   // update all references to the all package (mostly from the helper scripts)
   let workspaceScripts = tree.read('tools/workspace-scripts.js', 'utf-8');
   workspaceScripts = workspaceScripts.replace(`'nx run all:focus'`, `'nx g @nativescript/plugin-tools:focus-packages'`);
@@ -189,10 +193,15 @@ function updateProjectTargets(tree: Tree) {
       //   project.targets[target].outputs = [joinPathFragments(project.root, 'platforms')];
       // }
       project.targets[target].dependsOn = project.targets[target].dependsOn || [];
-      project.targets[target].dependsOn.push({
-        target: 'build.all',
-        projects: 'dependencies',
-      });
+      const hasBuildAll = project.targets[target].dependsOn.find((t: TargetDependencyConfig) => {
+        return t.target === 'build.all';
+      })
+      if (!hasBuildAll) {
+        project.targets[target].dependsOn.push({
+          target: 'build.all',
+          projects: 'dependencies',
+        });
+      }
       const additionalDeps = [];
       if (project.targets[target].executor === '@nrwl/workspace:run-commands') {
         if (project.targets[target].options?.commands) {
