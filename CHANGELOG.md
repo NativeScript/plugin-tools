@@ -1,3 +1,12 @@
+## [4.0.2](https://github.com/NativeScript/plugin-tools/compare/4.0.1...4.0.2) (2022-07-04)
+
+
+### Features
+
+* include @nrwl/angular for executors ([830d79c](https://github.com/NativeScript/plugin-tools/commit/830d79cb80b1bc54d0e95ef88cbbb9c8f9c8af1b))
+
+
+
 ## [4.0.1](https://github.com/NativeScript/plugin-tools/compare/4.0.0...4.0.1) (2022-07-04)
 
 
