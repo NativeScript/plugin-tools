@@ -1,3 +1,12 @@
+# [4.1.0](https://github.com/NativeScript/plugin-tools/compare/4.0.3...4.1.0) (2022-09-17)
+
+
+### Features
+
+* upgrade to nx 14.7.5 ([#15](https://github.com/NativeScript/plugin-tools/issues/15)) ([fb7cde4](https://github.com/NativeScript/plugin-tools/commit/fb7cde4a7315b47afdf044a4d7780dcf497fe1ea))
+
+
+
 ## [4.0.3](https://github.com/NativeScript/plugin-tools/compare/4.0.2...4.0.3) (2022-07-04)
 
 
