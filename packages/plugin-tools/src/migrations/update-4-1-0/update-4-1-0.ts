@@ -1,5 +1,6 @@
 import { formatFiles, Tree, updateJson } from '@nrwl/devkit';
 import { readModulePackageJson } from 'nx/src/utils/package-json';
+import { updateDemoAppPackages } from '../../utils/migrations';
 import { dirname } from 'path';
 const migrations = require('./migrations-to-run.json');
 
@@ -41,6 +42,12 @@ function readPackageMigrationConfig(packageName: string, dir?: string) {
 
 export default async function (tree: Tree) {
   updateDependencies(tree);
+  updateDemoAppPackages(tree, {
+    devDependencies: {
+      '@nativescript/android': '~8.3.0',
+      '@nativescript/ios': '~8.3.0',
+    },
+  });
   for (const migration of migrations.migrations) {
     const packageName = migration.package;
     const implRelativePath = migration.implementation || migration.factory;

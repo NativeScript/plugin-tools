@@ -1,6 +1,7 @@
 import { formatFiles, generateFiles, getProjects, getWorkspaceLayout, joinPathFragments, readJson, readProjectConfiguration, readWorkspaceConfiguration, removeProjectConfiguration, TargetDependencyConfig, Tree, updateJson, updateProjectConfiguration } from '@nrwl/devkit';
 import { convertToNxProjectGenerator } from '@nrwl/workspace';
 import { relative } from 'path';
+import { updateDemoAppPackages } from '../../utils/migrations';
 
 export default async function (tree: Tree) {
   updateDependencies(tree);
@@ -14,7 +15,12 @@ export default async function (tree: Tree) {
   doNxMigrations(tree);
   migrateNgPackagr(tree);
 
-  updateDemoAppPackages(tree);
+  updateDemoAppPackages(tree, {
+    devDependencies: {
+      '@nativescript/android': '~8.2.0',
+      '@nativescript/ios': '~8.2.0',
+    },
+  });
 
   // Last Step, migrate plugin workspace to nx-project config style
   convertToNxProjectGenerator(tree, {
@@ -195,7 +201,7 @@ function updateProjectTargets(tree: Tree) {
       project.targets[target].dependsOn = project.targets[target].dependsOn || [];
       const hasBuildAll = project.targets[target].dependsOn.find((t: TargetDependencyConfig) => {
         return t.target === 'build.all';
-      })
+      });
       if (!hasBuildAll) {
         project.targets[target].dependsOn.push({
           target: 'build.all',
@@ -319,43 +325,5 @@ function migrateNgPackagr(tree: Tree) {
     contents = contents.replace('copyAngularDist();', 'console.log(`${npmPackageName} angular built successfully.`);\nfinishPreparation();');
 
     tree.write(buildFinishPath, contents);
-  }
-}
-
-function updateDemoAppPackages(tree: Tree) {
-  const appFolders = tree.children('apps');
-  for (const dir of appFolders) {
-    if (dir.indexOf('demo') > -1) {
-      const appDir = `apps/${dir}`;
-
-      // update demo app deps
-      const packagePath = `${appDir}/package.json`;
-      if (tree.exists(packagePath)) {
-        const packageJson = readJson(tree, packagePath);
-        if (packageJson.devDependencies) {
-          let hasNativeScriptRuntimes = false;
-          for (const d in packageJson.devDependencies) {
-            if (d.indexOf('@nativescript') > -1) {
-              hasNativeScriptRuntimes = true;
-              break;
-            }
-          }
-          if (hasNativeScriptRuntimes) {
-            updateJson(tree, packagePath, (packageJson) => {
-              packageJson.devDependencies = {
-                ...(packageJson.devDependencies || {}),
-                '@nativescript/android': '~8.2.0',
-                '@nativescript/ios': '~8.2.0',
-              };
-    
-              return packageJson;
-            });
-          }
-        } else {
-          // {N} demo app should have runtimes in devDependencies at least
-          break;
-        }
-      }
-    }
   }
 }

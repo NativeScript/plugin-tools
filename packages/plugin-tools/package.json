@@ -27,7 +27,7 @@
   },
   "dependencies": {
     "xml2js": "~0.4.23",
-    "@nativescript/nx": "^4.0.1",
+    "@nativescript/nx": "^4.0.2",
     "@nrwl/angular": "14.7.5",
     "@nrwl/eslint-plugin-nx": "14.7.5",
     "@nrwl/node": "14.7.5",
@@ -35,9 +35,9 @@
     "@nrwl/workspace": "14.7.5",
     "@nstudio/focus": "^14.3.0",
     "@nstudio/nps-i": "^2.0.0",
-    "@types/node": "18.0.0",
-    "@typescript-eslint/eslint-plugin": "5.24.0",
-    "@typescript-eslint/parser": "5.24.0",
+    "@types/node": "18.7.1",
+    "@typescript-eslint/eslint-plugin": "^5.36.1",
+    "@typescript-eslint/parser": "^5.36.1",
     "dotenv": "~10.0.0",
     "eslint": "~8.15.0",
     "eslint-config-prettier": "^8.1.0",
@@ -50,8 +50,8 @@
     "prettier": "^2.7.0",
     "pretty-data": "^0.40.0",
     "rimraf": "^3.0.2",
-    "ts-jest": "27.1.4",
-    "ts-node": "10.8.1",
+    "ts-jest": "28.0.8",
+    "ts-node": "10.9.1",
     "ts-patch": "^2.0.0"
   }
 }
