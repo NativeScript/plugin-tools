@@ -1,3 +1,12 @@
+## [4.1.1](https://github.com/NativeScript/plugin-tools/compare/4.1.0...4.1.1) (2022-09-17)
+
+
+### Bug Fixes
+
+* migration handling ([9fcb9c9](https://github.com/NativeScript/plugin-tools/commit/9fcb9c93ecd1d0c6f991bc7ff9023c79135d894e))
+
+
+
 # [4.1.0](https://github.com/NativeScript/plugin-tools/compare/4.0.3...4.1.0) (2022-09-17)
 
 
