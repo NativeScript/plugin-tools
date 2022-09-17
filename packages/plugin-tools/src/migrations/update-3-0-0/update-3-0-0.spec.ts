@@ -1,12 +1,12 @@
 import { addProjectConfiguration, getWorkspaceLayout, NxJsonConfiguration, readJson, Tree, updateJson, writeJson } from '@nrwl/devkit';
-import { createTree, createTreeWithEmptyWorkspace } from '@nrwl/devkit/testing';
+import { createTree, createTreeWithEmptyV1Workspace } from '@nrwl/devkit/testing';
 import update300 from './update-3-0-0';
 
 describe('update-3-0-0', () => {
   let tree: Tree;
 
   beforeEach(() => {
-    tree = createTreeWithEmptyWorkspace();
+    tree = createTreeWithEmptyV1Workspace();
     tree.write(
       'workspace.json',
       `{
@@ -400,7 +400,7 @@ describe('update-3-0-0', () => {
         },
       },
       files: ['./references.d.ts', './src/main.ts', './src/polyfills.ts'],
-      include: ['../../packages/**/references.d.ts']
+      include: ['../../packages/**/references.d.ts'],
     });
   });
 });
