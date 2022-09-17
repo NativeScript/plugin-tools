@@ -54,17 +54,19 @@ export default async function (tree: Tree) {
     const collectionPath = readPackageMigrationConfig(packageName).migrations;
     let implPath: string;
 
-    try {
-      implPath = require.resolve(implRelativePath, {
-        paths: [dirname(collectionPath)],
-      });
-    } catch (e) {
-      // workaround for a bug in node 12
-      implPath = require.resolve(`${dirname(collectionPath)}/${implRelativePath}`);
+    if (collectionPath) {
+      try {
+        implPath = require.resolve(implRelativePath, {
+          paths: [dirname(collectionPath)],
+        });
+      } catch (e) {
+        // workaround for a bug in node 12
+        implPath = require.resolve(`${dirname(collectionPath)}/${implRelativePath}`);
+      }
+  
+      const fn = require(implPath).default;
+      await fn(tree, {});
     }
-
-    const fn = require(implPath).default;
-    await fn(tree, {});
   }
   // TODO: Edit the generators to use the new tsconfig
 
