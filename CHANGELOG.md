@@ -1,3 +1,12 @@
+## [5.0.2](https://github.com/NativeScript/plugin-tools/compare/4.1.1...5.0.2) (2022-12-26)
+
+
+### Features
+
+* nx migrate 15.4.1, {N} 8.4, Angular 15 ([#17](https://github.com/NativeScript/plugin-tools/issues/17)) ([1d32498](https://github.com/NativeScript/plugin-tools/commit/1d32498af30b2b0122af179a8b9e7b5d9e5d1054))
+
+
+
 ## [4.1.1](https://github.com/NativeScript/plugin-tools/compare/4.1.0...4.1.1) (2022-09-17)
 
 
