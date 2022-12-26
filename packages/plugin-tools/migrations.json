@@ -48,9 +48,9 @@
       "description": "Migrate tools to 4.1.0",
       "implementation": "./src/migrations/update-4-1-0/update-4-1-0"
     },
-    "update-to-5.0.0": {
+    "update-to-5.0.2": {
       "cli": "nx",
-      "version": "5.0.0",
+      "version": "5.0.2",
       "description": "Migrate tools to 5.0.0",
       "implementation": "./src/migrations/update-5-0-0/update-5-0-0"
     }

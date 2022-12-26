@@ -1,6 +1,6 @@
 {
   "name": "@nativescript/plugin-tools",
-  "version": "5.0.0",
+  "version": "5.0.2",
   "description": "NativeScript plugin tooling for workspaces",
   "homepage": "https://nativescript.org",
   "repository": {
@@ -32,6 +32,7 @@
     "@nrwl/eslint-plugin-nx": "15.4.1",
     "@nrwl/node": "15.4.1",
     "@nrwl/nx-cloud": "15.0.2",
+    "@nrwl/nx-plugin": "15.4.1",
     "@nrwl/workspace": "15.4.1",
     "@nstudio/focus": "^15.0.2",
     "@nstudio/nps-i": "^2.0.0",

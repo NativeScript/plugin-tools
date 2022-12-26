@@ -42,6 +42,13 @@ function readPackageMigrationConfig(packageName: string, dir?: string) {
 
 export default async function (tree: Tree) {
   updateDependencies(tree);
+  updateJson(tree, 'tsconfig.base.json', (json) => {
+    json.compilerOptions = json.compilerOptions || {};
+    json.compilerOptions.target = 'ES2020';
+    json.compilerOptions.module = 'ESNext';
+    json.compilerOptions.lib = ['ESNext', 'dom'];
+    return json;
+  });
   updateDemoAppPackages(tree, {
     devDependencies: {
       '@nativescript/android': '~8.4.0',
