@@ -1,7 +1,7 @@
 # <%= npmPackageName %>
 
 ```javascript
-ns plugin add <%= npmPackageName %>
+npm install <%= npmPackageName %>
 ```
 
 ## Usage
