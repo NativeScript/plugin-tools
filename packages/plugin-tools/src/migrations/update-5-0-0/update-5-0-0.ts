@@ -106,6 +106,7 @@ function updateDependencies(tree: Tree) {
     json.devDependencies['@nativescript/types'] = '~8.4.0';
     json.devDependencies['@ngtools/webpack'] = '^15.0.0';
     json.devDependencies['ng-packagr'] = '^15.0.0';
+    json.devDependencies['typescript'] = '~4.8.0';
     return json;
   });
 }
