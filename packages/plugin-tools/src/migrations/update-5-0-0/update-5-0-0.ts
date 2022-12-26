@@ -44,8 +44,8 @@ export default async function (tree: Tree) {
   updateDependencies(tree);
   updateDemoAppPackages(tree, {
     devDependencies: {
-      '@nativescript/android': '~8.3.0',
-      '@nativescript/ios': '~8.3.0',
+      '@nativescript/android': '~8.4.0',
+      '@nativescript/ios': '~8.4.0',
     },
   });
   for (const migration of migrations.migrations) {
@@ -55,17 +55,24 @@ export default async function (tree: Tree) {
     let implPath: string;
 
     if (collectionPath) {
+      let fn: any;
       try {
-        implPath = require.resolve(implRelativePath, {
-          paths: [dirname(collectionPath)],
-        });
-      } catch (e) {
-        // workaround for a bug in node 12
-        implPath = require.resolve(`${dirname(collectionPath)}/${implRelativePath}`);
-      }
+        try {
+          implPath = require.resolve(implRelativePath, {
+            paths: [dirname(collectionPath)],
+          });
+        } catch (e) {
+          // workaround for a bug in node 12
+          implPath = require.resolve(`${dirname(collectionPath)}/${implRelativePath}`);
+        }
 
-      const fn = require(implPath).default;
-      await fn(tree, {});
+        fn = require(implPath).default;
+      } catch (e) {
+        // ignore, most likely missing package
+      }
+      if (fn) {
+        await fn(tree, {});
+      }
     }
   }
   // TODO: Edit the generators to use the new tsconfig
@@ -84,19 +91,21 @@ export default async function (tree: Tree) {
 function updateDependencies(tree: Tree) {
   updateJson(tree, 'package.json', (json) => {
     if (json.devDependencies['@angular/core']) {
-      json.devDependencies['@angular-devkit/build-angular'] = '^14.2.0';
+      json.devDependencies['@angular-devkit/build-angular'] = '^15.0.0';
       for (const key in json.devDependencies) {
-        // only @angular/ as @angular-eslint is still on 14.0
         if (key.indexOf('@angular/') > -1) {
-          json.devDependencies[key] = '^14.2.0';
+          json.devDependencies[key] = '^15.0.0';
+        }
+        if (key.indexOf('@angular-eslint/') > -1) {
+          json.devDependencies[key] = '^15.1.0';
         }
       }
     }
-    json.devDependencies['@nativescript/angular'] = '^14.2.0';
-    json.devDependencies['@nativescript/core'] = '~8.3.0';
-    json.devDependencies['@nativescript/types'] = '~8.3.0';
-    json.devDependencies['@ngtools/webpack'] = '^14.2.0';
-    json.devDependencies['ng-packagr'] = '^14.2.0';
+    json.devDependencies['@nativescript/angular'] = '^15.0.0';
+    json.devDependencies['@nativescript/core'] = '~8.4.0';
+    json.devDependencies['@nativescript/types'] = '~8.4.0';
+    json.devDependencies['@ngtools/webpack'] = '^15.0.0';
+    json.devDependencies['ng-packagr'] = '^15.0.0';
     return json;
   });
 }

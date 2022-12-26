@@ -12,7 +12,7 @@ export default async function (tree: Tree, schema: Schema) {
   addAngularFiles(tree);
   updateJson(tree, 'tsconfig.base.json', (json) => {
     const packagePath = {};
-    packagePath[`${npmPackageName}/angular`] = [`packages/${name}/angular/index.ts`]
+    packagePath[`${npmPackageName}/angular`] = [`packages/${name}/angular/index.ts`];
     json.compilerOptions.paths = { ...json.compilerOptions.paths, ...packagePath };
     return json;
   });

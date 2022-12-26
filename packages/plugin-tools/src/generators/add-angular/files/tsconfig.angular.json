@@ -7,7 +7,7 @@
       "<%= npmPackageName %>": ["../../../dist/packages/<%= name %>"]
     },
     "outDir": "../../../dist/out-tsc",
-		"declarationDir": "../../../dist/out-tsc",
+    "declarationDir": "../../../dist/out-tsc"
   },
   "files": ["index.ts"]
 }

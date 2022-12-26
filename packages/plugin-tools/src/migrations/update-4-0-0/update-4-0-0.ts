@@ -57,7 +57,7 @@ function doNxMigrations(tree: Tree) {
           cacheableOperations: ['build', 'build.all', 'lint', 'test', 'e2e'],
           runtimeCacheInputs: ['node -v'],
           parallel: 1,
-          useDaemonProcess: false
+          useDaemonProcess: false,
         },
       },
     };
