@@ -98,7 +98,7 @@ function updateWorkspaceConfig(tree: Tree) {
         },
       },
       'build.all': {
-        executor: '@nrwl/workspace:run-commands',
+        executor: 'nx:run-commands',
         options: {
           commands: [`node tools/scripts/build-finish.ts ${name}`],
           parallel: false,
@@ -116,7 +116,7 @@ function updateWorkspaceConfig(tree: Tree) {
         ],
       },
       focus: {
-        executor: '@nrwl/workspace:run-commands',
+        executor: 'nx:run-commands',
         options: {
           commands: [`nx g @nativescript/plugin-tools:focus-packages ${name}`],
           parallel: false,
