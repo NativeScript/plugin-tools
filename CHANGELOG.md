@@ -1,3 +1,12 @@
+## [5.0.3](https://github.com/NativeScript/plugin-tools/compare/5.0.2...5.0.3) (2022-12-28)
+
+
+### Bug Fixes
+
+* executor prefix ([f9aa310](https://github.com/NativeScript/plugin-tools/commit/f9aa3107afd278dbbd3a6c2e4e561e18aaf0cc97))
+
+
+
 ## [5.0.2](https://github.com/NativeScript/plugin-tools/compare/4.1.1...5.0.2) (2022-12-26)
 
 
