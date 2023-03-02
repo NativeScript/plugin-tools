@@ -1,12 +1,12 @@
 import { addProjectConfiguration, getWorkspaceLayout, NxJsonConfiguration, readJson, Tree, updateJson, writeJson } from '@nrwl/devkit';
-import { createTree, createTreeWithEmptyV1Workspace } from '@nrwl/devkit/testing';
+import { createTree, createTreeWithEmptyWorkspace } from '@nrwl/devkit/testing';
 import update300 from './update-3-0-0';
 
 describe('update-3-0-0', () => {
   let tree: Tree;
 
   beforeEach(() => {
-    tree = createTreeWithEmptyV1Workspace();
+    tree = createTreeWithEmptyWorkspace();
     tree.write(
       'workspace.json',
       `{

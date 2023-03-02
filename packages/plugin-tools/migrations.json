@@ -53,6 +53,12 @@
       "version": "5.0.2",
       "description": "Migrate tools to 5.0.0",
       "implementation": "./src/migrations/update-5-0-0/update-5-0-0"
+    },
+    "update-to-5.1.0": {
+      "cli": "nx",
+      "version": "5.1.0",
+      "description": "Migrate tools to 5.1.0",
+      "implementation": "./src/migrations/update-5-1-0/update-5-1-0"
     }
   }
 }
