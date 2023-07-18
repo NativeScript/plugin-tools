@@ -63,6 +63,7 @@
     "nx": "15.4.1",
     "parse-version-string": "^1.0.1",
     "prettier": "2.7.1",
+    "semver": "^7.5.4",
     "ts-jest": "28.0.8",
     "ts-node": "10.9.1",
     "tslib": "^2.0.0",
