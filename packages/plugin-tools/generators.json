@@ -42,6 +42,11 @@
       "factory": "./src/generators/config",
       "schema": "./src/generators/config/schema.json",
       "description": "Configure workspace scope."
+    },
+    "bump-packages": {
+      "factory": "./src/generators/bump-packages/generator",
+      "schema": "./src/generators/bump-packages/schema.json",
+      "description": "bump-packages generator"
     }
   }
 }

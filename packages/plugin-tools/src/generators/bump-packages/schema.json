@@ -1,0 +1,44 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "cli": "nx",
+  "$id": "BumpPackages",
+  "title": "",
+  "type": "object",
+  "properties": {
+    "targetVersion": {
+      "x-prompt": "What's the new version (patch, minor, major) or explicit version number?.",
+      "type": "string",
+      "description": "Desired version to bump (patch, minor, major), or explicit version number (must comply with semver)",
+      "default": "patch",
+      "$default": {
+        "$source": "argv",
+        "index": 0
+      },
+      "anyOf": [
+        {
+          "enum": ["major", "premajor", "minor", "preminor", "patch", "prepatch", "prerelease"]
+        },
+        {
+          "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?$"
+        }
+      ],
+      "x-priority": "important"
+    },
+    "projectName": {
+      "description": "Project to bump. If unspecified all projects are bumped",
+      "type": "string",
+      "x-dropdown": "projects"
+    },
+    "tags": {
+      "type": "string",
+      "description": "Filter projects by tags (comma separated)",
+      "alias": "t"
+    },
+    "projectType": {
+      "type": "string",
+      "enum": ["application", "library"],
+      "default": "library"
+    }
+  },
+  "required": ["targetVersion"]
+}

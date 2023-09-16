@@ -49,6 +49,7 @@
     "lint-staged": "^14.0.0",
     "nativescript-theme-core": "~1.0.4",
     "sass": "^1.35.0",
+    "semver": "^7.5.4",
     "parse-version-string": "^1.0.1",
     "prettier": "^2.7.0",
     "pretty-data": "^0.40.0",
