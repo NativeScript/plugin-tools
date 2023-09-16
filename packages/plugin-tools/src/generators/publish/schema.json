@@ -1,6 +1,7 @@
 {
   "$schema": "http://json-schema.org/schema",
-  "id": "publish",
+  "$id": "publish",
+  "cli": "nx",
   "title": "Publish packages",
   "type": "object",
   "properties": {

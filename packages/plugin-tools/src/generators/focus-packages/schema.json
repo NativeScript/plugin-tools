@@ -1,6 +1,7 @@
 {
   "$schema": "http://json-schema.org/schema",
-  "id": "focus-packages",
+  "$id": "focus-packages",
+  "cli": "nx",
   "title": "Focus the workspace",
   "type": "object",
   "properties": {

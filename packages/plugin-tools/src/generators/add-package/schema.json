@@ -1,7 +1,8 @@
 {
   "$schema": "http://json-schema.org/schema",
   "title": "Add a package",
-  "id": "add-package",
+  "$id": "add-package",
+  "cli": "nx",
   "type": "object",
   "properties": {
     "name": {

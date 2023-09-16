@@ -1,6 +1,7 @@
 {
   "$schema": "http://json-schema.org/schema",
-  "id": "config",
+  "$id": "config",
+  "cli": "nx",
   "title": "Configure workspace",
   "type": "object",
   "properties": {

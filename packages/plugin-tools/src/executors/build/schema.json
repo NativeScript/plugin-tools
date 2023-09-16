@@ -3,6 +3,8 @@
   "outputCapture": "direct-nodejs",
   "$schema": "http://json-schema.org/schema",
   "title": "Build executor",
+  "$id": "build-executor",
+  "cli": "nx",
   "description": "",
   "type": "object",
   "properties": {},

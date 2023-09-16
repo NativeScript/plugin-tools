@@ -1,4 +1,4 @@
-import { ProjectConfiguration, Tree, formatFiles, getProjects, logger } from '@nrwl/devkit';
+import { ProjectConfiguration, Tree, formatFiles, getProjects, logger } from '@nx/devkit';
 import * as semver from 'semver';
 import { BumpPackagesGeneratorSchema } from './schema';
 
