@@ -5,7 +5,7 @@
       "description": "Split global configuration files into individual project.json files. This migration has been added automatically to the beginning of your migration set to retroactively make them work with the new version of Nx.",
       "cli": "nx",
       "implementation": "./src/migrations/update-15-7-0/split-configuration-into-project-json-files",
-      "package": "@nrwl/workspace",
+      "package": "@nx/workspace",
       "name": "15-7-0-split-configuration-into-project-json-files"
     },
     {
@@ -13,7 +13,7 @@
       "description": "Split global configuration files (e.g., workspace.json) into individual project.json files.",
       "cli": "nx",
       "implementation": "./src/migrations/update-15-7-0/split-configuration-into-project-json-files",
-      "package": "@nrwl/workspace",
+      "package": "@nx/workspace",
       "name": "15-7-0-split-configuration-into-project-json-files"
     },
     {
@@ -21,7 +21,7 @@
       "version": "15.8.0-beta.0",
       "description": "Rename .lib.swcrc to .swcrc for better SWC support throughout the workspace",
       "factory": "./src/migrations/update-15-8-0/rename-swcrc-config",
-      "package": "@nrwl/js",
+      "package": "@nx/js",
       "name": "rename-swcrc-config"
     },
     {
@@ -29,7 +29,7 @@
       "cli": "nx",
       "description": "Update jest configs to support jest 29 changes (https://jestjs.io/docs/upgrading-to-jest29)",
       "factory": "./src/migrations/update-15-8-0/update-configs-jest-29",
-      "package": "@nrwl/jest",
+      "package": "@nx/jest",
       "name": "update-configs-jest-29"
     },
     {
@@ -37,7 +37,7 @@
       "cli": "nx",
       "description": "Update jest test files to support jest 29 changes (https://jestjs.io/docs/upgrading-to-jest29)",
       "factory": "./src/migrations/update-15-8-0/update-tests-jest-29",
-      "package": "@nrwl/jest",
+      "package": "@nx/jest",
       "name": "update-tests-jest-29"
     },
     {
@@ -45,7 +45,7 @@
       "version": "15.7.1-beta.0",
       "description": "Add node_modules to root eslint ignore",
       "factory": "./src/migrations/update-15-7-1/add-eslint-ignore",
-      "package": "@nrwl/linter",
+      "package": "@nx/linter",
       "name": "add-eslint-ignore"
     }
   ]

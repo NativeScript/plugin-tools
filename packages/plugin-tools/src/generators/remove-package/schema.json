@@ -1,6 +1,5 @@
 {
   "$schema": "http://json-schema.org/schema",
-  "cli": "nx",
   "title": "Remove a package",
   "id": "remove-package",
   "type": "object",

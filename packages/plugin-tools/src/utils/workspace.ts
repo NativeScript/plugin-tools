@@ -1,8 +1,7 @@
 /**
  * Workspace utilities
  */
-import { updateWorkspaceInTree } from '@nrwl/workspace';
-import { Tree, parseJson, readJson, serializeJson } from '@nrwl/devkit';
+import { Tree, parseJson, readJson, serializeJson, updateJson } from '@nx/devkit';
 
 // includes '@' prefix
 let npmScope: string;
@@ -47,18 +46,6 @@ export function setPackageNamesToUpdate(names: Array<string>) {
 
 export function getPackageNamesToUpdate(): Array<string> {
   return packageNamesToUpdate ? packageNamesToUpdate.filter((n) => n.indexOf('.') === -1) : [];
-}
-
-export function updateWorkspaceJson(updates: any) {
-  return updateWorkspaceInTree((json) => {
-    for (const key in updates) {
-      json[key] = {
-        ...(json[key] || {}),
-        ...updates[key],
-      };
-    }
-    return json;
-  });
 }
 
 export function getJsonFromFile(tree: Tree, path: string) {

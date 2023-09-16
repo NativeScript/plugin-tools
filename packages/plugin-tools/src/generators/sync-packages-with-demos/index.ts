@@ -1,5 +1,5 @@
-import { Tree, readJson, updateJson, formatFiles, generateFiles, joinPathFragments } from '@nrwl/devkit';
-import { stringUtils } from '@nrwl/workspace';
+import { Tree, readJson, updateJson, formatFiles, generateFiles, joinPathFragments } from '@nx/devkit';
+import { stringUtils } from '@nx/workspace';
 import { sanitizeCollectionArgs, setPackageNamesToUpdate, setDemoTypes, SupportedDemoTypes, SupportedDemoType, getDemoTypes, getPackageNamesToUpdate, getDemoAppRoot, addDependencyToDemoApp, checkPackages, getDemoIndexButtonForType, getDemoIndexPathForType, resetAngularIndex, getPluginDemoPath, resetAngularRoutes, updateDemoSharedIndex, getAllPackages, prerun, getNpmScope, getDemoFlavorExt, getNpmPackageNames, INpmPackageNameMap } from '../../utils';
 import { Schema } from './schema';
 

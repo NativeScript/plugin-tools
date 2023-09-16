@@ -1,5 +1,5 @@
-import { addProjectConfiguration, generateFiles, getProjects, joinPathFragments, readJson, readProjectConfiguration, Tree, updateJson, updateProjectConfiguration } from '@nrwl/devkit';
-import { stringUtils } from '@nrwl/workspace';
+import { addProjectConfiguration, generateFiles, getProjects, joinPathFragments, readJson, readProjectConfiguration, Tree, updateJson, updateProjectConfiguration } from '@nx/devkit';
+import { stringUtils } from '@nx/workspace';
 import { updateReadMe, prerun, getNpmScope } from '../../utils';
 import syncPackagesWithDemos from '../sync-packages-with-demos';
 import { Schema } from './schema';
@@ -73,7 +73,7 @@ function updateWorkspaceConfig(tree: Tree) {
     sourceRoot: `packages/${name}`,
     targets: {
       build: {
-        executor: '@nrwl/js:tsc',
+        executor: '@nx/js:tsc',
         options: {
           outputPath: `dist/packages/${name}`,
           tsConfig: `packages/${name}/tsconfig.json`,
@@ -123,7 +123,7 @@ function updateWorkspaceConfig(tree: Tree) {
         },
       },
       lint: {
-        executor: '@nrwl/linter:eslint',
+        executor: '@nx/linter:eslint',
         options: {
           lintFilePatterns: [`packages/${name}/**/*.ts`],
         },

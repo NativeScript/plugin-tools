@@ -1,6 +1,5 @@
 {
   "$schema": "http://json-schema.org/schema",
-  "cli": "nx",
   "id": "sync-packages-with-demos",
   "title": "Sync packages with demo apps.",
   "type": "object",

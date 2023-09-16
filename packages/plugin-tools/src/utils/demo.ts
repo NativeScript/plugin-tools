@@ -1,8 +1,8 @@
 /**
  * Demo utilities
  */
-import { Tree, serializeJson } from '@nrwl/devkit';
-import { stringUtils } from '@nrwl/workspace';
+import { Tree, serializeJson } from '@nx/devkit';
+import { stringUtils } from '@nx/workspace';
 import { checkPackages, getJsonFromFile, getPackageNamesToUpdate, getAllPackages, getNpmScope, getNpmPackageNames } from './workspace';
 const xml2js = require('xml2js');
 

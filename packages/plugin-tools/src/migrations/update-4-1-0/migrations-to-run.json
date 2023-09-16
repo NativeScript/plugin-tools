@@ -45,7 +45,7 @@
       "description": "Replace @nrwl/tao with nx",
       "cli": "nx",
       "implementation": "./src/migrations/update-13-9-0/replace-tao-with-nx",
-      "package": "@nrwl/workspace",
+      "package": "@nx/workspace",
       "name": "13-9-0-replace-tao-with-nx"
     },
     {
@@ -53,7 +53,7 @@
       "description": "Update the decorate-angular-cli script to require nx instead of @nrwl/cli",
       "cli": "nx",
       "implementation": "./src/migrations/update-13-10-0/update-decorate-cli",
-      "package": "@nrwl/workspace",
+      "package": "@nx/workspace",
       "name": "13-10-0-update-decorate-cli"
     },
     {
@@ -61,7 +61,7 @@
       "description": "Update the tasks runner property to import it from the nx package instead of @nrwl/worksapce",
       "cli": "nx",
       "implementation": "./src/migrations/update-13-10-0/update-tasks-runner",
-      "package": "@nrwl/workspace",
+      "package": "@nx/workspace",
       "name": "13-10-0-update-tasks-runner"
     },
     {
@@ -69,15 +69,15 @@
       "description": "Changes the presets in nx.json to come from the nx package",
       "cli": "nx",
       "implementation": "./src/migrations/update-14-0-0/change-nx-json-presets",
-      "package": "@nrwl/workspace",
+      "package": "@nx/workspace",
       "name": "14-0-0-change-nx-json-presets"
     },
     {
       "version": "14.0.0-beta.0",
-      "description": "Migrates from @nrwl/workspace:run-script to nx:run-script",
+      "description": "Migrates from @nx/workspace:run-script to nx:run-script",
       "cli": "nx",
       "implementation": "./src/migrations/update-14-0-0/change-npm-script-executor",
-      "package": "@nrwl/workspace",
+      "package": "@nx/workspace",
       "name": "14-0-0-change-npm-script-executor"
     },
     {
@@ -85,7 +85,7 @@
       "description": "Explicitly enable sourceAnalysis for all workspaces extending from npm.json or core.json (this was default behavior prior to 14.2)",
       "cli": "nx",
       "implementation": "./src/migrations/update-14-2-0/enable-source-analysis",
-      "package": "@nrwl/workspace",
+      "package": "@nx/workspace",
       "name": "14-2-0-enable-source-analysis"
     },
     {
@@ -93,7 +93,7 @@
       "version": "14.2.0-beta.0",
       "description": "Adjusts calls to createTreeWithEmptyWorkspace to reflect new API",
       "factory": "./src/migrations/update-14-2-0/split-create-empty-tree",
-      "package": "@nrwl/devkit",
+      "package": "@nx/devkit",
       "name": "split-create-tree"
     },
     {
@@ -101,7 +101,7 @@
       "cli": "nx",
       "description": "Update move jest config files to .ts files.",
       "factory": "./src/migrations/update-14-0-0/update-jest-config-ext",
-      "package": "@nrwl/jest",
+      "package": "@nx/jest",
       "name": "update-jest-config-extensions"
     },
     {
@@ -109,7 +109,7 @@
       "cli": "nx",
       "description": "Update to export default in jest config and revert jest.preset.ts to jest.preset.js",
       "factory": "./src/migrations/update-14-1-5/update-exports-jest-config",
-      "package": "@nrwl/jest",
+      "package": "@nx/jest",
       "name": "update-to-export-default"
     },
     {
@@ -117,7 +117,7 @@
       "cli": "nx",
       "description": "Exclude jest.config.ts from tsconfig where missing.",
       "factory": "./src/migrations/update-14-0-0/update-jest-config-ext",
-      "package": "@nrwl/jest",
+      "package": "@nx/jest",
       "name": "exclude-jest-config-from-ts-config"
     },
     {
@@ -125,7 +125,7 @@
       "cli": "nx",
       "description": "Update jest configs to support jest 28 changes (https://jestjs.io/docs/upgrading-to-jest28#configuration-options)",
       "factory": "./src/migrations/update-14-6-0/update-configs-jest-28",
-      "package": "@nrwl/jest",
+      "package": "@nx/jest",
       "name": "update-configs-jest-28"
     },
     {
@@ -133,7 +133,7 @@
       "cli": "nx",
       "description": "Update jest test files  to support jest 28 changes (https://jestjs.io/docs/upgrading-to-jest28)",
       "factory": "./src/migrations/update-14-6-0/update-tests-jest-28",
-      "package": "@nrwl/jest",
+      "package": "@nx/jest",
       "name": "update-tests-jest-28"
     },
     {
@@ -141,7 +141,7 @@
       "version": "14.1.9-beta.0",
       "description": "Adds @swc/core and @swc-node as a dev dep if you are using them",
       "factory": "./src/migrations/update-14-1-9/add-swc-deps-if-needed",
-      "package": "@nrwl/linter",
+      "package": "@nx/linter",
       "name": "add-swc-deps"
     },
     {
@@ -149,7 +149,7 @@
       "version": "14.2.3-beta.0",
       "description": "Adds @swc/core and @swc-node as a dev dep if you are using them (repeated due to prior mistake)",
       "factory": "./src/migrations/update-14-1-9/add-swc-deps-if-needed",
-      "package": "@nrwl/linter",
+      "package": "@nx/linter",
       "name": "add-swc-deps-again"
     },
     {
@@ -157,7 +157,7 @@
       "version": "14.4.4",
       "description": "Adds @typescript-eslint/utils as a dev dep",
       "factory": "./src/migrations/update-14-4-4/experimental-to-utils-deps",
-      "package": "@nrwl/linter",
+      "package": "@nx/linter",
       "name": "experimental-to-utils-deps"
     },
     {
@@ -165,31 +165,31 @@
       "version": "14.4.4",
       "description": "Switch from  @typescript-eslint/experimental-utils to @typescript-eslint/utils in all rules and rules.spec files",
       "factory": "./src/migrations/update-14-4-4/experimental-to-utils-rules",
-      "package": "@nrwl/linter",
+      "package": "@nx/linter",
       "name": "experimental-to-utils-rules"
     },
     {
       "cli": "nx",
       "version": "13.8.5-beta.1",
-      "description": "Renames @nrwl/node:build to @nrwl/node:webpack",
+      "description": "Renames @nx/node:build to @nx/node:webpack",
       "factory": "./src/migrations/update-13-8-5/rename-build-to-webpack",
-      "package": "@nrwl/node",
+      "package": "@nx/node",
       "name": "rename-build-to-webpack"
     },
     {
       "cli": "nx",
       "version": "13.8.5-beta.1",
-      "description": "Renames @nrwl/node:execute to @nrwl/node:node",
+      "description": "Renames @nx/node:execute to @nx/node:node",
       "factory": "./src/migrations/update-13-8-5/rename-execute-to-node",
-      "package": "@nrwl/node",
+      "package": "@nx/node",
       "name": "rename-execute-to-node"
     },
     {
       "cli": "nx",
       "version": "13.8.5-beta.1",
-      "description": "Renames @nrwl/node:package to @nrwl/js:tsc",
+      "description": "Renames @nx/node:package to @nx/js:tsc",
       "factory": "./src/migrations/update-13-8-5/update-package-to-tsc",
-      "package": "@nrwl/node",
+      "package": "@nx/node",
       "name": "update-package-to-tsc"
     }
   ]

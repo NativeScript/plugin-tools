@@ -1,4 +1,4 @@
-import { readJson, Tree, updateJson } from '@nrwl/devkit';
+import { readJson, Tree, updateJson } from '@nx/devkit';
 
 export default async function (tree: Tree) {
   updateJson(tree, 'package.json', (json) => {
