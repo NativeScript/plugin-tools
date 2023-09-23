@@ -1,7 +1,7 @@
 import { sanitizeCollectionArgs, getDemoTypeFromName, updateDemoDependencies, setPackageNamesToUpdate, getAllPackages, resetIndexForDemoType, getPluginDemoPath, updateDemoSharedIndex, getNpmScope, prerun, getNpmPackageNames, getSrcFolderForType } from '../../utils';
 import { Schema } from './schema';
-import { wrapAngularDevkitSchematic } from '@nrwl/devkit/ngcli-adapter';
-import { Tree } from '@nrwl/devkit';
+import { wrapAngularDevkitSchematic } from '@nx/devkit/ngcli-adapter';
+import { Tree } from '@nx/devkit';
 
 let focusPackages: Array<string>;
 let allPackages: Array<string>;

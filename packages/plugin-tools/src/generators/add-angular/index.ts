@@ -1,5 +1,5 @@
-import { generateFiles, joinPathFragments, readJson, Tree, updateJson } from '@nrwl/devkit';
-import { stringUtils } from '@nrwl/workspace';
+import { generateFiles, joinPathFragments, readJson, Tree, updateJson } from '@nx/devkit';
+import { stringUtils } from '@nx/workspace';
 import { prerun, getNpmScope, getNxNpmScope } from '../../utils';
 import { Schema } from './schema';
 

@@ -1,4 +1,4 @@
-import { checkFilesExist, ensureNxProject, readJson, runNxCommandAsync, uniq } from '@nrwl/nx-plugin/testing';
+import { checkFilesExist, ensureNxProject, readJson, runNxCommandAsync, uniq } from '@nx/plugin/testing';
 describe('plugin-tools e2e', () => {
   it('should create plugin-tools', async () => {
     const plugin = uniq('plugin-tools');

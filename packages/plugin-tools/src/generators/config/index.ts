@@ -1,7 +1,7 @@
 import { getJsonFromFile } from '../../utils';
 import { Schema } from './schema';
-import { stringUtils } from '@nrwl/workspace';
-import { serializeJson, Tree, updateJson, writeJson } from '@nrwl/devkit';
+import { stringUtils } from '@nx/workspace';
+import { serializeJson, Tree, updateJson, writeJson } from '@nx/devkit';
 
 let customNpmScope: string;
 let gitRepo = 'https://github.com/NativeScript/plugins';

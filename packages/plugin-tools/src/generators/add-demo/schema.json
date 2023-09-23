@@ -1,8 +1,8 @@
 {
   "$schema": "http://json-schema.org/schema",
-  "cli": "nx",
   "title": "Add a demo app",
-  "id": "add-demo",
+  "$id": "add-demo",
+  "cli": "nx",
   "type": "object",
   "properties": {
     "type": {

@@ -1,6 +1,6 @@
 import { join } from 'path';
 import * as fs from 'fs';
-import { generateFiles, joinPathFragments, readJson, Tree, updateJson, writeJson } from '@nrwl/devkit';
+import { generateFiles, joinPathFragments, readJson, Tree, updateJson, writeJson } from '@nx/devkit';
 
 export default async function (tree: Tree) {
   updateJson(tree, 'package.json', (json) => {

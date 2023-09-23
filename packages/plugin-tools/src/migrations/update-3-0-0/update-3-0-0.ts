@@ -1,5 +1,5 @@
-import { formatFiles, generateFiles, getProjects, getWorkspaceLayout, joinPathFragments, readJson, readProjectConfiguration, readWorkspaceConfiguration, removeProjectConfiguration, TargetDependencyConfig, Tree, updateJson, updateProjectConfiguration } from '@nrwl/devkit';
-import { convertToNxProjectGenerator } from '@nrwl/workspace';
+import { formatFiles, generateFiles, getProjects, getWorkspaceLayout, joinPathFragments, readJson, readProjectConfiguration, removeProjectConfiguration, TargetDependencyConfig, Tree, updateJson, updateProjectConfiguration } from '@nx/devkit';
+import { convertToNxProjectGenerator } from '@nx/workspace';
 import { relative } from 'path';
 import { updateDemoAppPackages } from '../../utils/migrations';
 
@@ -169,7 +169,7 @@ function updateProjectTargets(tree: Tree) {
     }
     const projectConfig = readProjectConfiguration(tree, name);
     if (projectConfig.targets?.['build']) {
-      projectConfig.targets['build'].executor = '@nrwl/js:tsc';
+      projectConfig.targets['build'].executor = '@nx/js:tsc';
     }
     if (projectConfig.targets?.['build.all']) {
       projectConfig.targets['build.all'].outputs = projectConfig.targets['build.all'].outputs || [];
@@ -185,7 +185,7 @@ function updateProjectTargets(tree: Tree) {
   getProjects(tree).forEach((project, name) => {
     project.targets = project.targets || {};
     project.targets['lint'] = project.targets['lint'] || {
-      executor: '@nrwl/linter:eslint',
+      executor: '@nx/linter:eslint',
       options: {
         lintFilePatterns: [joinPathFragments(project.root, '**', '*.ts')],
       },
@@ -209,7 +209,7 @@ function updateProjectTargets(tree: Tree) {
         });
       }
       const additionalDeps = [];
-      if (project.targets[target].executor === '@nrwl/workspace:run-commands') {
+      if (project.targets[target].executor === '@nx/workspace:run-commands') {
         if (project.targets[target].options?.commands) {
           const newCommands = [...project.targets[target].options.commands];
           for (const cmd of <string[]>project.targets[target].options.commands) {
@@ -257,7 +257,7 @@ function doNxMigrations(tree: Tree) {
     delete json.projects;
     json.tasksRunnerOptions = json.tasksRunnerOptions || {
       default: {
-        runner: '@nrwl/workspace/tasks-runners/default',
+        runner: '@nx/workspace/tasks-runners/default',
         options: {
           cacheableOperations: ['build', 'build.all', 'lint', 'test', 'e2e'],
           runtimeCacheInputs: ['node -v'],

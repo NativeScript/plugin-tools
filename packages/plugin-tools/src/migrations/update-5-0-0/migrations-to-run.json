@@ -29,7 +29,7 @@
       "cli": "nx",
       "description": "Stop hashing jest spec files and config files for build targets and dependent tasks",
       "factory": "./src/migrations/update-15-0-0/add-jest-inputs",
-      "package": "@nrwl/jest",
+      "package": "@nx/jest",
       "name": "add-jest-inputs"
     },
     {
@@ -37,7 +37,7 @@
       "version": "15.0.0-beta.0",
       "description": "Stop hashing eslint config files for build targets and dependent tasks",
       "factory": "./src/migrations/update-15-0-0/add-eslint-inputs",
-      "package": "@nrwl/linter",
+      "package": "@nx/linter",
       "name": "add-eslint-inputs"
     },
     {
@@ -45,7 +45,7 @@
       "version": "14.7.6-beta.1",
       "description": "Update usages of webpack executors to @nrwl/webpack",
       "factory": "./src/migrations/update-14-7-6/update-webpack-executor",
-      "package": "@nrwl/node",
+      "package": "@nx/node",
       "name": "update-webpack-executor"
     },
     {
@@ -53,15 +53,15 @@
       "version": "15.0.0-beta.0",
       "description": "Migrates executor schema files to v2",
       "factory": "./src/migrations/update-15-0-0/specify-output-capture",
-      "package": "@nrwl/nx-plugin",
+      "package": "@nx/plugin",
       "name": "update-15-0-0"
     },
     {
       "version": "14.8.0-beta.0",
-      "description": "Migrates from @nrwl/workspace:run-commands to nx:run-commands",
+      "description": "Migrates from @nx/workspace:run-commands to nx:run-commands",
       "cli": "nx",
       "implementation": "./src/migrations/update-14-8-0/change-run-commands-executor",
-      "package": "@nrwl/workspace",
+      "package": "@nx/workspace",
       "name": "14-8-0-change-run-commands-executor"
     }
   ]

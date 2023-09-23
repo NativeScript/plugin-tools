@@ -1,4 +1,4 @@
-import { formatFiles, Tree, updateJson } from '@nrwl/devkit';
+import { formatFiles, Tree, updateJson } from '@nx/devkit';
 import { readModulePackageJson } from 'nx/src/utils/package-json';
 import { updateDemoAppPackages } from '../../utils/migrations';
 import { dirname } from 'path';

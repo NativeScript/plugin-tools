@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 import { spawn } from 'child_process';
 import * as path from 'path';
 import { existsSync, readFileSync, writeFileSync, mkdirSync } from 'fs';
-import { Tree, serializeJson } from '@nrwl/devkit';
+import { Tree, serializeJson } from '@nx/devkit';
 
 interface ISemVer {
   major: number;

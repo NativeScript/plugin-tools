@@ -1,4 +1,4 @@
-import { Tree, readJson, updateJson } from '@nrwl/devkit';
+import { Tree, readJson, updateJson } from '@nx/devkit';
 export function updateDemoAppPackages(tree: Tree, updates: { dependencies?: any; devDependencies?: any }) {
   const appFolders = tree.children('apps');
   for (const dir of appFolders) {
