@@ -37,7 +37,7 @@
       "version": "15.0.0-beta.0",
       "description": "Stop hashing eslint config files for build targets and dependent tasks",
       "factory": "./src/migrations/update-15-0-0/add-eslint-inputs",
-      "package": "@nx/linter",
+      "package": "@nx/eslint",
       "name": "add-eslint-inputs"
     },
     {

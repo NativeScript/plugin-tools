@@ -5,8 +5,6 @@ import { Tree, parseJson, readJson, serializeJson, updateJson } from '@nx/devkit
 
 // includes '@' prefix
 let npmScope: string;
-// raw scope without '@' prefix
-let nxNpmScope: string;
 // allow non-scoped packages
 // maps package folder name to full npm name
 // ie, { 'ui-calendar': 'nativescript-ui-calendar', 'camera': '@nativescript/camera' }, etc.
@@ -19,23 +17,26 @@ export function getNpmScope() {
   return npmScope;
 }
 
-export function getNxNpmScope() {
-  return nxNpmScope;
-}
-
 export function getNpmPackageNames() {
   return npmPackageNames;
 }
 
 export function prerun(tree: Tree) {
   if (!npmScope) {
-    const nxConfig = getJsonFromFile(tree, 'nx.json');
-    if (nxConfig && nxConfig.npmScope) {
-      nxNpmScope = nxConfig.npmScope;
-      npmScope = `@${nxConfig.npmScope}`;
+    const toolsPackageSettingsPath = 'tools/package-settings.json';
+    if (tree.exists(toolsPackageSettingsPath)) {
+      const toolsPackageSettings = getJsonFromFile(tree, toolsPackageSettingsPath);
+      if (toolsPackageSettings && toolsPackageSettings.name) {
+        npmScope = toolsPackageSettings.name;
+      }
     }
   }
-  checkPackages(tree);
+
+  if (npmScope) {
+    checkPackages(tree);
+  } else {
+    throw new Error(`Please run "npm run config" to confirm your workspace settings before continuing.`);
+  }
 }
 
 let packageNamesToUpdate: Array<string>;

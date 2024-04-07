@@ -3,20 +3,17 @@
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "packages/plugin-tools/src",
   "projectType": "library",
+  "tags": [],
   "targets": {
     "lint": {
-      "executor": "@nx/linter:eslint",
-      "options": {
-        "lintFilePatterns": ["packages/plugin-tools/**/*.ts", "packages/plugin-tools/package.json"]
-      },
+      "executor": "@nx/eslint:lint",
       "outputs": ["{options.outputFile}"]
     },
     "test": {
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/packages/plugin-tools"],
       "options": {
-        "jestConfig": "packages/plugin-tools/jest.config.ts",
-        "passWithNoTests": true
+        "jestConfig": "packages/plugin-tools/jest.config.ts"
       }
     },
     "build": {
@@ -57,6 +54,5 @@
         ]
       }
     }
-  },
-  "tags": []
+  }
 }

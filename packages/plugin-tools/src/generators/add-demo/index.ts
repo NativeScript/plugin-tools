@@ -1,5 +1,5 @@
 import { addProjectConfiguration, generateFiles, joinPathFragments, readProjectConfiguration, Tree, updateJson, updateProjectConfiguration } from '@nx/devkit';
-import { stringUtils } from '@nx/workspace';
+import * as stringUtils from '@nx/devkit/src/utils/string-utils';
 import { updateReadMe, prerun, getNpmScope, getSrcFolderForType, SupportedDemoType, getAllPackages } from '../../utils';
 import syncPackagesWithDemos from '../sync-packages-with-demos';
 import { Schema } from './schema';
@@ -153,7 +153,7 @@ function updateWorkspaceConfig(tree: Tree, name: string, type: SupportedDemoType
         },
       },
       lint: {
-        executor: '@nx/linter:eslint',
+        executor: '@nx/eslint:eslint',
         options: {
           lintFilePatterns: [`apps/${name}/**/*.ts`],
         },

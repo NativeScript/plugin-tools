@@ -45,7 +45,7 @@
       "version": "15.7.1-beta.0",
       "description": "Add node_modules to root eslint ignore",
       "factory": "./src/migrations/update-15-7-1/add-eslint-ignore",
-      "package": "@nx/linter",
+      "package": "@nx/eslint",
       "name": "add-eslint-ignore"
     }
   ]

@@ -2,7 +2,7 @@
  * Demo utilities
  */
 import { Tree, serializeJson } from '@nx/devkit';
-import { stringUtils } from '@nx/workspace';
+import * as stringUtils from '@nx/devkit/src/utils/string-utils';
 import { checkPackages, getJsonFromFile, getPackageNamesToUpdate, getAllPackages, getNpmScope, getNpmPackageNames } from './workspace';
 const xml2js = require('xml2js');
 
@@ -48,6 +48,11 @@ export function addDependencyToDemoApp(tree: Tree, type: SupportedDemoType, demo
 export function updateDemoDependencies(tree: Tree, type: SupportedDemoType, demoAppRoot: string, allPackages?: Array<string>, focus?: boolean) {
   const packagePath = `${demoAppRoot}/package.json`;
   const packageData = getJsonFromFile(tree, packagePath);
+
+  // update tsconfig
+  const tsconfigPath = `${demoAppRoot}/tsconfig.json`;
+  const tsconfig = getJsonFromFile(tree, tsconfigPath);
+
   const npmPackageNames = getNpmPackageNames();
   if (packageData) {
     packageData.dependencies = packageData.dependencies || {};
@@ -56,12 +61,20 @@ export function updateDemoDependencies(tree: Tree, type: SupportedDemoType, demo
       // reset to all
       if (allPackages) {
         for (const name of allPackages) {
-          packageData.dependencies[npmPackageNames[name]] = getPathToPackageForDemo(type, name);
+          const packageName = npmPackageNames[name];
+          packageData.dependencies[packageName] = getPathToPackageForDemo(type, name);
+          if (tsconfig?.compilerOptions?.paths && !tsconfig.compilerOptions.paths[packageName]) {
+            tsconfig.compilerOptions.paths[packageName] = [`../../packages/${name}/index.d.ts`];
+          }
         }
       }
     } else {
       for (const name of packageNamesToUpdate) {
-        packageData.dependencies[npmPackageNames[name]] = getPathToPackageForDemo(type, name);
+        const packageName = npmPackageNames[name];
+        packageData.dependencies[packageName] = getPathToPackageForDemo(type, name);
+        if (tsconfig?.compilerOptions?.paths && !tsconfig.compilerOptions.paths[packageName]) {
+          tsconfig.compilerOptions.paths[packageName] = [`../../packages/${name}/index.d.ts`];
+        }
       }
       if (focus && allPackages) {
         // when focusing packages, remove others not being focused on
@@ -74,6 +87,7 @@ export function updateDemoDependencies(tree: Tree, type: SupportedDemoType, demo
     }
 
     tree.write(packagePath, serializeJson(packageData));
+    tree.write(tsconfigPath, serializeJson(tsconfig));
   }
 }
 

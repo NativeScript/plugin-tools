@@ -98,7 +98,7 @@ function updateTsConfigPaths(tree: Tree) {
   // add to the root tsconfig, for every package: "@scope/package": "packages/package/index.ts",
   // add to the root tsconfig, for every package with angular: "@scope/package/angular": "packages/package/angular/index.ts"
   // on apps' tsconfig.json, change paths to be { "~/": "app/*", ...all the things from the root tsconfig paths }
-  const scope = getWorkspaceLayout(tree).npmScope;
+  const scope = (getWorkspaceLayout(tree) as any).npmScope;
   // TODO handle scope/noscope
   const rootPaths: { [key: string]: string[] } = {};
   getProjects(tree).forEach((project, name) => {
@@ -185,7 +185,7 @@ function updateProjectTargets(tree: Tree) {
   getProjects(tree).forEach((project, name) => {
     project.targets = project.targets || {};
     project.targets['lint'] = project.targets['lint'] || {
-      executor: '@nx/linter:eslint',
+      executor: '@nx/eslint:eslint',
       options: {
         lintFilePatterns: [joinPathFragments(project.root, '**', '*.ts')],
       },
