@@ -1,3 +1,13 @@
+## [5.2.3](https://github.com/NativeScript/plugin-tools/compare/5.0.3...5.2.3) (2024-04-07)
+
+
+### Features
+
+* add bump-packages generator ([#19](https://github.com/NativeScript/plugin-tools/issues/19)) ([5061aff](https://github.com/NativeScript/plugin-tools/commit/5061affe4828fc87fa6152d8bf3cf1c6b825a0d6))
+* Nx 18+ with migrations and dep updates ([#18](https://github.com/NativeScript/plugin-tools/issues/18)) ([4ecc884](https://github.com/NativeScript/plugin-tools/commit/4ecc8844974e910f92eb266281c7268f82a1c020))
+
+
+
 ## [5.0.3](https://github.com/NativeScript/plugin-tools/compare/5.0.2...5.0.3) (2022-12-28)
 
 
