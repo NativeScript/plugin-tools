@@ -1,5 +1,5 @@
-import { Tree, readJson, updateJson, formatFiles, generateFiles, joinPathFragments } from '@nrwl/devkit';
-import { stringUtils } from '@nrwl/workspace';
+import { Tree, readJson, updateJson, formatFiles, generateFiles, joinPathFragments } from '@nx/devkit';
+import * as stringUtils from '@nx/devkit/src/utils/string-utils';
 import { sanitizeCollectionArgs, setPackageNamesToUpdate, setDemoTypes, SupportedDemoTypes, SupportedDemoType, getDemoTypes, getPackageNamesToUpdate, getDemoAppRoot, addDependencyToDemoApp, checkPackages, getDemoIndexButtonForType, getDemoIndexPathForType, resetAngularIndex, getPluginDemoPath, resetAngularRoutes, updateDemoSharedIndex, getAllPackages, prerun, getNpmScope, getDemoFlavorExt, getNpmPackageNames, INpmPackageNameMap } from '../../utils';
 import { Schema } from './schema';
 
@@ -34,8 +34,6 @@ export default function (tree: Tree, schema?: Schema, relativePrefix?: string, a
   }
   addDemoSharedFiles(tree, relativePrefix);
   updateDemoSharedIndex(tree, getAllPackages(tree), getPackageNamesToUpdate(), addingNew);
-
-  formatFiles(tree);
 }
 
 function addDemoFiles(tree: Tree, type: SupportedDemoType, demoAppRoot: string, relativePrefix: string = '') {

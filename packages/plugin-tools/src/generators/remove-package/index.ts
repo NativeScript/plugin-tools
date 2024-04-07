@@ -1,5 +1,5 @@
-import { Tree, removeProjectConfiguration, updateJson, readProjectConfiguration, updateProjectConfiguration, readJson } from '@nrwl/devkit';
-import { stringUtils } from '@nrwl/workspace';
+import { Tree, removeProjectConfiguration, updateJson, readProjectConfiguration, updateProjectConfiguration, readJson } from '@nx/devkit';
+import * as stringUtils from '@nx/devkit/src/utils/string-utils';
 import { prerun, getNpmScope, getDemoTypes, getDemoAppRoot, getPluginDemoPath, SupportedDemoType, checkPackages, getDemoIndexPathForType, getPackageNamesToUpdate, getPathToPackageForDemo, updateReadMe, getNpmPackageNames } from '../../utils';
 import { Schema } from './schema';
 

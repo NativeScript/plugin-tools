@@ -1,8 +1,8 @@
 {
   "$schema": "http://json-schema.org/schema",
-  "cli": "nx",
   "$id": "BumpPackages",
-  "title": "",
+  "cli": "nx",
+  "title": "Bump Packages",
   "type": "object",
   "properties": {
     "targetVersion": {

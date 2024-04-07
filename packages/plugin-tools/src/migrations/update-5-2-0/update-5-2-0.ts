@@ -51,8 +51,8 @@ export default async function (tree: Tree) {
   });
   updateDemoAppPackages(tree, {
     devDependencies: {
-      '@nativescript/android': '~8.4.0',
-      '@nativescript/ios': '~8.4.0',
+      '@nativescript/android': '~8.6.0',
+      '@nativescript/ios': '~8.6.0',
     },
   });
   for (const migration of migrations.migrations) {
@@ -98,22 +98,29 @@ export default async function (tree: Tree) {
 function updateDependencies(tree: Tree) {
   updateJson(tree, 'package.json', (json) => {
     if (json.devDependencies['@angular/core']) {
-      json.devDependencies['@angular-devkit/build-angular'] = '^15.0.0';
+      json.devDependencies['@angular-devkit/build-angular'] = '^17.0.0';
       for (const key in json.devDependencies) {
         if (key.indexOf('@angular/') > -1) {
-          json.devDependencies[key] = '^15.0.0';
+          json.devDependencies[key] = '^17.0.0';
         }
         if (key.indexOf('@angular-eslint/') > -1) {
-          json.devDependencies[key] = '^15.1.0';
+          json.devDependencies[key] = '^17.0.0';
         }
       }
     }
-    json.devDependencies['@nativescript/angular'] = '^15.0.0';
-    json.devDependencies['@nativescript/core'] = '~8.4.0';
-    json.devDependencies['@nativescript/types'] = '~8.4.0';
-    json.devDependencies['@ngtools/webpack'] = '^15.0.0';
-    json.devDependencies['ng-packagr'] = '^15.0.0';
-    json.devDependencies['typescript'] = '~4.8.0';
+    json.devDependencies['@nativescript/angular'] = '^17.0.0';
+    json.devDependencies['@nativescript/core'] = '~8.6.0';
+    json.devDependencies['@nativescript/types'] = '~8.6.0';
+    json.devDependencies['@ngtools/webpack'] = '^17.0.0';
+    json.devDependencies['husky'] = '~9.0.0';
+    json.devDependencies['ng-packagr'] = '^17.0.0';
+    json.devDependencies['rxjs'] = '~7.8.0';
+    json.devDependencies['zone.js'] = '~0.14.0';
+    json.devDependencies['typescript'] = '~5.4.0';
+
+    if (json.devDependencies['ts-patch']) {
+      json.devDependencies['ts-patch'] = '^3.0.0';
+    }
     return json;
   });
 }

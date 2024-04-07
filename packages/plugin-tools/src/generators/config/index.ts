@@ -1,7 +1,7 @@
 import { getJsonFromFile } from '../../utils';
 import { Schema } from './schema';
-import { stringUtils } from '@nrwl/workspace';
-import { serializeJson, Tree, updateJson, writeJson } from '@nrwl/devkit';
+import * as stringUtils from '@nx/devkit/src/utils/string-utils';
+import { serializeJson, Tree, updateJson, writeJson } from '@nx/devkit';
 
 let customNpmScope: string;
 let gitRepo = 'https://github.com/NativeScript/plugins';
@@ -9,6 +9,9 @@ let gitAuthorName = 'NativeScript';
 let gitAuthorEmail = 'oss@nativescript.org';
 export default async function (tree: Tree, schema: Schema) {
   customNpmScope = stringUtils.dasherize(schema.scope);
+  if (customNpmScope.indexOf('@') === -1) {
+    customNpmScope = `@${customNpmScope}`;
+  }
   if (schema.repo) {
     const repo = schema.repo.replace('.git', '');
     gitRepo = repo.trim();
@@ -23,6 +26,7 @@ export default async function (tree: Tree, schema: Schema) {
   // package.json settings that apply to all new packages added to workspace
   const toolsPackageSettingsPath = 'tools/package-settings.json';
   const packageSettings = {
+    name: customNpmScope,
     repository: {
       type: 'git',
       url: `${gitRepo}.git`,
@@ -42,6 +46,9 @@ export default async function (tree: Tree, schema: Schema) {
     writeJson(tree, toolsPackageSettingsPath, packageSettings);
   } else {
     updateJson(tree, toolsPackageSettingsPath, (json) => {
+      if (!json.name) {
+        json.name = packageSettings.name;
+      }
       if (!json.repository) {
         json.repository = {
           type: 'git',
@@ -63,18 +70,11 @@ export default async function (tree: Tree, schema: Schema) {
     });
   }
 
-  const nxConfigPath = `nx.json`;
-  const nxConfig = getJsonFromFile(tree, nxConfigPath);
-  if (nxConfig && nxConfig.npmScope) {
-    nxConfig.npmScope = customNpmScope;
-    tree.write(nxConfigPath, serializeJson(nxConfig));
-  }
-
   const tsconfigBasePath = `tsconfig.base.json`;
   const tsconfigBase = getJsonFromFile(tree, tsconfigBasePath);
   if (tsconfigBase && tsconfigBase.compilerOptions && tsconfigBase.compilerOptions.paths) {
     delete tsconfigBase.compilerOptions.paths[`@nativescript/*`];
-    tsconfigBase.compilerOptions.paths[`@${customNpmScope}/*`] = ['packages/*'];
+    tsconfigBase.compilerOptions.paths[`${customNpmScope}/*`] = ['packages/*'];
     tree.write(tsconfigBasePath, serializeJson(tsconfigBase));
   }
 
@@ -88,7 +88,7 @@ export default async function (tree: Tree, schema: Schema) {
 
       if (demoTsConfig && demoTsConfig.compilerOptions && demoTsConfig.compilerOptions.paths) {
         delete demoTsConfig.compilerOptions.paths[`@nativescript/*`];
-        demoTsConfig.compilerOptions.paths[`@${customNpmScope}/*`] = [`../../${dir.indexOf('angular') > -1 ? 'dist/' : ''}packages/*`];
+        demoTsConfig.compilerOptions.paths[`${customNpmScope}/*`] = [`../../${dir.indexOf('angular') > -1 ? 'dist/' : ''}packages/*`];
         tree.write(demoTsConfigPath, serializeJson(demoTsConfig));
       }
     }
@@ -96,13 +96,13 @@ export default async function (tree: Tree, schema: Schema) {
 
   const travisPath = `.travis.yml`;
   let travisContent = tree.read(travisPath).toString('utf-8');
-  travisContent = travisContent.replace(/@nativescript/gm, `@${customNpmScope}`);
+  travisContent = travisContent.replace(/@nativescript/gm, `${customNpmScope}`);
   // context.logger.info('travisContent:' + travisContent);
   tree.write(travisPath, travisContent);
 
   const workspaceScriptsPath = `tools/workspace-scripts.js`;
   let workspaceScripts = tree.read(workspaceScriptsPath).toString('utf-8');
-  workspaceScripts = workspaceScripts.replace(/@nativescript/gm, `@${customNpmScope}`);
+  workspaceScripts = workspaceScripts.replace(/@nativescript/gm, `${customNpmScope}`);
   // context.logger.info(travisContent);
   tree.write(workspaceScriptsPath, workspaceScripts);
 
@@ -110,7 +110,7 @@ export default async function (tree: Tree, schema: Schema) {
   let sharedDemoTsConfig = getJsonFromFile(tree, sharedDemoTsConfigPath);
   if (sharedDemoTsConfig && sharedDemoTsConfig.compilerOptions && sharedDemoTsConfig.compilerOptions.paths) {
     delete sharedDemoTsConfig.compilerOptions.paths[`@nativescript/*`];
-    sharedDemoTsConfig.compilerOptions.paths[`@${customNpmScope}/*`] = [`../../packages/*`];
+    sharedDemoTsConfig.compilerOptions.paths[`${customNpmScope}/*`] = [`../../packages/*`];
     tree.write(sharedDemoTsConfigPath, serializeJson(sharedDemoTsConfig));
   }
 
@@ -123,9 +123,9 @@ export default async function (tree: Tree, schema: Schema) {
       readme = readme.substring(headingIndex, readme.length);
     }
   }
-  readme = readme.replace(/@nativescript/gm, `@${customNpmScope}`);
+  readme = readme.replace(/@nativescript/gm, `${customNpmScope}`);
   // context.logger.info(travisContent);
   tree.write(readmePath, readme);
 
-  console.log(`Workspace has been configured for npm scope: @${customNpmScope}\n\n`);
+  console.log(`Workspace has been configured for npm scope: ${customNpmScope}\n\n`);
 }

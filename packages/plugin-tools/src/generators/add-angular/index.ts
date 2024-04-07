@@ -1,6 +1,6 @@
-import { generateFiles, joinPathFragments, readJson, Tree, updateJson } from '@nrwl/devkit';
-import { stringUtils } from '@nrwl/workspace';
-import { prerun, getNpmScope, getNxNpmScope } from '../../utils';
+import { generateFiles, joinPathFragments, readJson, Tree, updateJson } from '@nx/devkit';
+import * as stringUtils from '@nx/devkit/src/utils/string-utils';
+import { prerun, getNpmScope } from '../../utils';
 import { Schema } from './schema';
 
 let name: string;
@@ -25,5 +25,5 @@ function addAngularFiles(tree: Tree) {
   const packageJson = readJson(tree, `packages/${name}/package.json`);
   npmPackageName = packageJson.name;
 
-  generateFiles(tree, joinPathFragments(__dirname, 'files'), `./packages/${name}/angular`, { name, npmPackageName, npmScope: getNpmScope(), nxNpmScope: getNxNpmScope(), stringUtils, tmpl: '', dot: '.' });
+  generateFiles(tree, joinPathFragments(__dirname, 'files'), `./packages/${name}/angular`, { name, npmPackageName, npmScope: getNpmScope(), stringUtils, tmpl: '', dot: '.' });
 }

@@ -1,8 +1,8 @@
 {
   "$schema": "http://json-schema.org/schema",
-  "cli": "nx",
   "title": "Add Angular support to package",
-  "id": "add-angular",
+  "$id": "add-angular",
+  "cli": "nx",
   "type": "object",
   "properties": {
     "name": {
