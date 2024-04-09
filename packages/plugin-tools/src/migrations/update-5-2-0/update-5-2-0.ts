@@ -51,8 +51,8 @@ export default async function (tree: Tree) {
   });
   updateDemoAppPackages(tree, {
     devDependencies: {
-      '@nativescript/android': '~8.6.0',
-      '@nativescript/ios': '~8.6.0',
+      '@nativescript/android': '~8.7.0',
+      '@nativescript/ios': '~8.7.0',
     },
   });
   for (const migration of migrations.migrations) {
@@ -109,8 +109,8 @@ function updateDependencies(tree: Tree) {
       }
     }
     json.devDependencies['@nativescript/angular'] = '^17.0.0';
-    json.devDependencies['@nativescript/core'] = '~8.6.0';
-    json.devDependencies['@nativescript/types'] = '~8.6.0';
+    json.devDependencies['@nativescript/core'] = '~8.7.0';
+    json.devDependencies['@nativescript/types'] = '~8.7.0';
     json.devDependencies['@ngtools/webpack'] = '^17.0.0';
     json.devDependencies['husky'] = '~9.0.0';
     json.devDependencies['ng-packagr'] = '^17.0.0';
