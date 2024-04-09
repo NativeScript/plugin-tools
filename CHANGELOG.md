@@ -1,3 +1,12 @@
+## [5.2.4](https://github.com/NativeScript/plugin-tools/compare/5.2.3...5.2.4) (2024-04-09)
+
+
+### Features
+
+* 8.7 ([456e2ae](https://github.com/NativeScript/plugin-tools/commit/456e2ae81b95aff5f1baf7e08dddea1ceb427e20))
+
+
+
 ## [5.2.3](https://github.com/NativeScript/plugin-tools/compare/5.0.3...5.2.3) (2024-04-07)
 
 
