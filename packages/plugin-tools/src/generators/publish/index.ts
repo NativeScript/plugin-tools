@@ -4,7 +4,7 @@ import parseVersionString from 'parse-version-string';
 import { Observable } from 'rxjs';
 import { spawn } from 'child_process';
 import * as path from 'path';
-import { existsSync, readFileSync, writeFileSync, mkdirSync } from 'fs';
+import { existsSync, readFileSync, writeFileSync, unlinkSync } from 'fs';
 import { Tree, serializeJson } from '@nx/devkit';
 
 interface ISemVer {
@@ -88,6 +88,25 @@ export default async function (tree: Tree, schema: Schema) {
     await new Promise<void>((resolve, reject) => {
       // console.log(options.args);
       let cnt = 0;
+      const cleanPackage = () => {
+        // helps remove unwanted properties which may be added by other tooling
+        const p = publishPackages[cnt];
+        const packageJsonPath = path.resolve(workspaceDir, 'dist', 'packages', p, 'package.json');
+        let packageJson: any = readFileSync(packageJsonPath, { encoding: 'utf-8' });
+        if (packageJson) {
+          packageJson = jsonParse(packageJson);
+          // we don't need module or type properties at the moment
+          delete packageJson['module'];
+          delete packageJson['type'];
+          writeFileSync(packageJsonPath, serializeJson(packageJson));
+
+          const angularNpmIgnorePath = path.resolve(workspaceDir, 'dist', 'packages', p, 'angular', '.npmignore');
+          // remove .npmignore as we don't need it in angular folder if found
+          if (existsSync(angularNpmIgnorePath)) {
+            unlinkSync(angularNpmIgnorePath);
+          }
+        }
+      };
       const buildPackage = () => {
         const p = publishPackages[cnt];
 
@@ -105,6 +124,8 @@ export default async function (tree: Tree, schema: Schema) {
         child.on('close', (res) => {
           console.log('build finished with code:', res);
           child.kill();
+          // cleanup anything with the package not needed
+          cleanPackage();
           cnt++;
           if (cnt === publishPackages.length) {
             console.log(`✅ Successfully built ${packageVersions.map((p) => `${p.name}:${p.version}`).join(',')}`);
