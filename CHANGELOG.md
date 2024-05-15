@@ -1,3 +1,12 @@
+## [5.2.5](https://github.com/NativeScript/plugin-tools/compare/5.2.4...5.2.5) (2024-05-15)
+
+
+### Bug Fixes
+
+* **publish:** package preparation ([d9423c5](https://github.com/NativeScript/plugin-tools/commit/d9423c5451898ff75ed4e2c123e3b7bacb93c571))
+
+
+
 ## [5.2.4](https://github.com/NativeScript/plugin-tools/compare/5.2.3...5.2.4) (2024-04-09)
 
 
