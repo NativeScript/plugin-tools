@@ -1,3 +1,12 @@
+# [5.3.0](https://github.com/NativeScript/plugin-tools/compare/5.2.5...5.3.0) (2024-06-19)
+
+
+### Features
+
+* Nx 19.3+ ([#20](https://github.com/NativeScript/plugin-tools/issues/20)) ([cfb5664](https://github.com/NativeScript/plugin-tools/commit/cfb5664ce926017991d629afe55bb3621ee9ff6f))
+
+
+
 ## [5.2.5](https://github.com/NativeScript/plugin-tools/compare/5.2.4...5.2.5) (2024-05-15)
 
 
