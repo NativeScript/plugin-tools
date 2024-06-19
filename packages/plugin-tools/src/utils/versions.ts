@@ -1,2 +1,2 @@
 export const toolsVersion = '*';
-export const nxVersion = '18.2.3';
+export const nxVersion = '19.3.0';
