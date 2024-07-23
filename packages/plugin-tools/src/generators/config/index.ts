@@ -102,7 +102,8 @@ export default async function (tree: Tree, schema: Schema) {
 
   const workspaceScriptsPath = `tools/workspace-scripts.js`;
   let workspaceScripts = tree.read(workspaceScriptsPath).toString('utf-8');
-  workspaceScripts = workspaceScripts.replace(/@nativescript/gm, `${customNpmScope}`);
+  workspaceScripts = workspaceScripts.replace(/@nativescript/gm, `${customNpmScope}`)
+    .replace(new RegExp(`${customNpmScope}/plugin-tools:`, 'gm'), `@nativescript/plugin-tools:`);
   // context.logger.info(travisContent);
   tree.write(workspaceScriptsPath, workspaceScripts);
 
