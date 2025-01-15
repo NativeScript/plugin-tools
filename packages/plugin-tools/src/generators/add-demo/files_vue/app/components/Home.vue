@@ -22,7 +22,7 @@ export default Vue.extend({
 });
 </script>
 
-<style scoped lang="scss">
+<style scoped lang="css">
 .info {
   font-size: 20;
   horizontal-align: center;

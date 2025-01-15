@@ -67,13 +67,15 @@ function updateRootPackageDeps(tree: Tree, type: SupportedDemoType) {
         devDependencies = {
           svelte: '~3.35.0',
           'svelte-loader-hot': '~0.3.1',
-          'svelte-native-preprocessor': '^0.2.0',
-          'svelte-native': '~0.9.5',
+          'svelte-native-preprocessor': '^1.0.0',
+          'svelte-native': '~1.0.0',
           'svelte-preprocess': '^4.7.0',
         };
         break;
       case 'vue':
         devDependencies = {
+          'nativescript-vue-template-compiler': '^2.9.3',
+          'nativescript-vue': '^2.9.3',
           vue: '~2.6.12',
         };
         break;
