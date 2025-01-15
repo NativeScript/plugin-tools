@@ -87,7 +87,9 @@ export function updateDemoDependencies(tree: Tree, type: SupportedDemoType, demo
     }
 
     tree.write(packagePath, serializeJson(packageData));
-    tree.write(tsconfigPath, serializeJson(tsconfig));
+    if (tsconfig) {
+      tree.write(tsconfigPath, serializeJson(tsconfig));
+    }
   }
 }
 
@@ -158,7 +160,7 @@ export function getDemoFlavorExt(type: SupportedDemoType) {
 
 export function getDemoIndexButtonForType(
   type: SupportedDemoType,
-  packageName: string
+  packageName: string,
 ): {
   buttonStart: string;
   buttonTap: string;

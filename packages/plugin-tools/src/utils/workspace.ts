@@ -50,7 +50,10 @@ export function getPackageNamesToUpdate(): Array<string> {
 }
 
 export function getJsonFromFile(tree: Tree, path: string) {
-  return readJson(tree, path);
+  if (tree.exists(path)) {
+    return readJson(tree, path);
+  }
+  return null;
 }
 
 export function jsonParse(content: string) {
