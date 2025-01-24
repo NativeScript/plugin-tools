@@ -45,5 +45,6 @@
   "useDaemonProcess": false,
   "parallel": 1,
   "useInferencePlugins": false,
-  "defaultBase": "master"
+  "defaultBase": "master",
+  "useLegacyCache": true
 }
