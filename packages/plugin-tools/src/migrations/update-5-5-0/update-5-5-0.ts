@@ -55,16 +55,40 @@ export default async function (tree: Tree) {
       '@nativescript/ios': '~8.8.0',
     },
   });
-  const angularDemoProject = 'apps/demo-angular/project.json';
-  if (tree.exists(angularDemoProject)) {
-    updateJson(tree, angularDemoProject, (json) => {
-      if (json.targets?.build?.options) {
-        // ensure migrations to run against it
-        json.targets.build.options.tsConfig = 'apps/demo-angular/tsconfig.json';
-      }
-      return json;
-    });
+  // update demo project configs
+  const flavors = ['', 'angular', 'react', 'svelte', 'vue'];
+  for (const flavor of flavors) {
+    const projectBase = `apps/demo${flavor ? '-' + flavor : ''}`;
+    const projectConfigPath = `${projectBase}/project.json`;
+    if (tree.exists(projectConfigPath)) {
+      updateJson(tree, projectConfigPath, (json) => {
+        delete json.targets.ios;
+        delete json.targets.android;
+        json.targets.debug = {
+          executor: '@nativescript/nx:debug',
+          options: {
+            noHmr: true,
+            uglify: false,
+            release: false,
+            forDevice: false,
+            prepare: false,
+          },
+        };
+        json.targets.clean = {
+          executor: '@nativescript/nx:clean',
+          options: {},
+        };
+
+        if (json.targets?.build?.options) {
+          json.targets.build.options.tsConfig = `${projectBase}/tsconfig.json`;
+        }
+        return json;
+      });
+    }
   }
+  // update workspace scripts
+  fixWorkspaceScripts(tree);
+
   updateJson(tree, 'nx.json', (json) => {
     json.release = {
       releaseTagPattern: '{version}-{projectName}',
@@ -121,6 +145,20 @@ export default async function (tree: Tree) {
   console.log(`   This will ensure your workspace is properly reset with all the updates.`);
   console.log(`   It is also recommended to clean all your demo apps.`);
   console.log(`\n`);
+}
+
+function fixWorkspaceScripts(tree: Tree) {
+  let workspaceScripts = tree.read('tools/workspace-scripts.js', 'utf-8');
+  workspaceScripts = workspaceScripts.replace(`nx run demo:clean`, 'nx clean demo');
+  workspaceScripts = workspaceScripts.replace(`nx run demo:ios`, 'nx debug demo ios');
+  workspaceScripts = workspaceScripts.replace(`nx run demo:android`, 'nx debug demo android');
+  const flavors = ['angular', 'react', 'svelte', 'vue'];
+  for (const flavor of flavors) {
+    workspaceScripts = workspaceScripts.replace(`nx run demo-${flavor}:clean`, `nx clean demo-${flavor}`);
+    workspaceScripts = workspaceScripts.replace(`nx run demo-${flavor}:ios`, `nx debug demo-${flavor} ios`);
+    workspaceScripts = workspaceScripts.replace(`nx run demo-${flavor}:android`, `nx debug demo-${flavor} android`);
+  }
+  tree.write('tools/workspace-scripts.js', workspaceScripts);
 }
 
 function updateDependencies(tree: Tree) {
