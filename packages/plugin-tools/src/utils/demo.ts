@@ -168,7 +168,7 @@ export function getDemoIndexButtonForType(
   buttonEnd: string;
   buttonMarkup: string;
 } {
-  let buttonClass = `class="btn btn-primary view-demo"`;
+  let buttonClass = `class="btn btn-primary rounded view-demo"`;
   let buttonEnd = `/>`;
   let buttonStart: string;
   let buttonTap: string;

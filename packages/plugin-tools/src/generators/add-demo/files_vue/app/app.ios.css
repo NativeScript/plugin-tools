@@ -1,1 +1,5 @@
 @import 'nativescript-theme-core/css/core.light.ios.css';
+
+.rounded {
+    border-radius: 20;
+}

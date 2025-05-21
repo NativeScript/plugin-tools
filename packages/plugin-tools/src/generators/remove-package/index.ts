@@ -101,7 +101,7 @@ function removeFromDemoIndex(tree: Tree, type: SupportedDemoType, demoAppRoot: s
 
   const demoIndexViewPath = `${demoAppRoot}/${getDemoIndexPathForType(type)}`;
   let indexViewContent = tree.read(demoIndexViewPath).toString('utf-8');
-  indexViewContent = indexViewContent.replace(`<Button text="${name}" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>`, '');
+  indexViewContent = indexViewContent.replace(`<Button text="${name}" tap="{{ viewDemo }}" class="btn btn-primary rounded view-demo"/>`, '');
   // console.log(indexViewContent);
   tree.write(demoIndexViewPath, indexViewContent);
 }

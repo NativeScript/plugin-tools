@@ -1,1 +1,5 @@
 @import 'nativescript-theme-core/css/core.light.android.css';
+
+.rounded {
+    border-radius: 20;
+}
