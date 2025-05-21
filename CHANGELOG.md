@@ -1,3 +1,13 @@
+## [5.5.3](https://github.com/NativeScript/plugin-tools/compare/5.5.1...5.5.3) (2025-05-21)
+
+
+### Features
+
+* add migration for improved demo aesthetic ([c7a1ae6](https://github.com/NativeScript/plugin-tools/commit/c7a1ae6d085eb4b9e6d4a2378d8466f5a3bfd3d6))
+* NativeScript 8.9 
+
+
+
 # [5.3.0](https://github.com/NativeScript/plugin-tools/compare/5.2.5...5.3.0) (2024-06-19)
 
 

@@ -1,6 +1,6 @@
 {
   "name": "@nativescript/plugin-tools",
-  "version": "5.5.1",
+  "version": "5.5.3",
   "description": "NativeScript plugin tooling for workspaces",
   "homepage": "https://nativescript.org",
   "repository": {
